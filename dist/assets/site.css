@@ -10,3 +10,11 @@
 .league-image{width:min(1180px,100%);height:auto;aspect-ratio:616 / 353;margin:24px auto 0;border:1px solid var(--line);border-radius:4px}
 .league-image:after{display:none}.league-image img{object-fit:contain}
 .languages{justify-content:center}
+.gateway{min-height:100svh}
+.selection{min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(24px,4vh,52px);padding:clamp(20px,4vw,55px)}
+.selection-image{width:min(1120px,100%);height:auto;aspect-ratio:616 / 353;object-fit:contain}
+.flag-choices{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:clamp(12px,3vw,38px)}
+.flag-choices a,.languages a{display:grid;place-items:center;min-width:62px;min-height:54px;border:1px solid transparent;border-radius:5px;transition:transform .15s,border-color .15s,background-color .15s}
+.flag-choices a:hover,.flag-choices a:focus-visible,.languages a:hover,.languages a:focus-visible{transform:translateY(-3px);border-color:var(--red);background:#20232b}
+.flag-choices img,.languages img{width:48px;height:30px;object-fit:cover;border:1px solid #ffffff40;box-shadow:0 3px 12px #0009}
+.flag-choices a:focus-visible{outline:2px solid white}
