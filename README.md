@@ -1,3 +1,3 @@
 # ATXRACING
 
-Portail ACC et ACE. Source du Site privé ATXRACING.
+Portail des ligues ACC et ACE. Déployé avec Sites.
