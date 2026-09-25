@@ -13,9 +13,10 @@ def page(lang,game,section):
  head=f'<!doctype html><html lang="{lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#08090c"><meta name="description" content="ATXRACING · ACC & ACE"><title>{escape(title)} · ATXRACING</title><link rel="stylesheet" href="/assets/site.css"></head><body data-game="{game}" data-page="{section}"><header class="topbar"><div class="wrap top-inner"><a class="brand" href="/" aria-label="ATXRACING"><img src="/assets/logo.webp" alt="ATXRACING"></a>{nav}</div></header>'
  footer='<footer class="footer"><div class="wrap"><span>© 2026 ATXRACING</span><span><a href="https://discord.com/invite/dgyJJYTSsD">Discord</a> · <a href="https://www.thesimgrid.com/communities/atxracing">SimGrid</a></span></div></footer>'
  if section=='home':
-  body=f'<section class="hero"><img src="/assets/banner.webp" alt="ATXRACING" fetchpriority="high"><div class="hero-copy"><span class="eyebrow">ATXRACING</span><h1>{escape(t["welcome"])}</h1><p>{escape(t["select"])}</p></div></section><main class="wrap choose"><h2>{escape(t["choose"])}</h2><div class="split">'+''.join(f'<a class="choice" href="/{lang}/{g}/"><img src="/assets/{g}.jpg" alt=""><span class="choice-content"><span class="eyebrow">{escape(t["enter"])}</span><strong>{g.upper()}</strong><small>{escape(t[g])}</small><span class="go">→</span></span></a>' for g in ['acc','ace'])+'</div></main>'
+  # The supplied banner itself is the league chooser; keep its ACC and ACE artwork intact.
+  body=f'<main class="gateway"><div class="gateway-art"><img src="/assets/banner.webp" alt="ATXRACING · ACC à gauche, ACE à droite" fetchpriority="high"><a class="gateway-link gateway-acc" href="/{lang}/acc/" aria-label="{escape(t["enter"])} ACC"><span class="sr-only">ACC — {escape(t["acc"])}</span></a><a class="gateway-link gateway-ace" href="/{lang}/ace/" aria-label="{escape(t["enter"])} ACE"><span class="sr-only">ACE — {escape(t["ace"])}</span></a></div></main>'
  else:
-  banner=f'<div class="league-image"><img src="/assets/{game}.jpg" alt=""><div class="wrap"><span class="eyebrow">Assetto Corsa {"Competizione" if game=="acc" else "EVO"}</span><h1>{game.upper()}</h1></div></div>'
+  banner=f'<div class="league-image"><img src="/assets/{game}.jpg" alt="Assetto Corsa {"Competizione" if game=="acc" else "EVO"}"></div>'
   languages='<div class="wrap languages" aria-label="Language">'+''.join(f'<a href="/{l}/{game}/{"" if section=="league" else section+".html"}" hreflang="{l}" '+('aria-current="true"' if l==lang else '')+f' lang="{l}" title="{l.upper()}">{flags[l]} {l.upper()}</a>' for l in T)+'</div>'
   sub='<nav class="subnav" aria-label="League">'+''.join(f'<a href="/{lang}/{game}/{s}.html" '+('aria-current="page"' if s==section else '')+f'>{escape(t[s])}</a>' for s in ['courses','ranking','records','profile'])+'</nav>'
   main=f'<main class="wrap content">{sub}'
@@ -25,7 +26,7 @@ def page(lang,game,section):
    main+=f'<span class="eyebrow">{game.upper()} · ATXRACING</span><h2>{escape(t[section])}</h2><p class="intro">{escape(t["events_desc" if section=="courses" else section+"_desc"])}</p>'
    if game=='ace': main+=f'<p class="empty">{escape(t["soon"])}</p>'
    else:
-    if section=='ranking':main+=f'<div class="controls"><label>{escape(t["category"])} <select id="category"><option value="DR">Daily Race</option><option value="WGT">World GT</option><option value="OL">Open Lobby</option><option value="BA">Ballade ATX</option></select></label></div>'
+    if section=='ranking':main+=f'<div class="controls"><label>{escape(t["category"])} <select id="category"><option value="DR">Daily Race</option><option value="WGT">World GT</option><option value="BA">Ballade ATX</option></select></label></div>'
     if section=='records':main+=f'<div class="controls"><label>{escape(t["circuit"])} <select id="circuit"></select></label></div>'
     main+='<div id="results" aria-live="polite"><p class="loading">…</p></div>'
     if section=='profile':main+=f'<p><a class="pill" href="https://athoxmotorsport-lab.github.io/atx-racing/profil-pilote.html">{escape(t["legacy"])} →</a></p>'
