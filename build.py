@@ -2,6 +2,7 @@ from pathlib import Path
 from html import escape
 from os import environ
 import re
+import shutil
 R=Path(__file__).parent/'dist'
 BASE=environ.get('ATX_BASE_PATH','/atxracing/').rstrip('/')+'/'
 CSS=(Path(__file__).parent/'src/site.css').read_text()
@@ -59,3 +60,11 @@ for l in T:
   for s in ('league','courses','ranking','records','profile'):page(l,g,s)
 (R/'index.html').write_text((R/'fr/index.html').read_text())
 for g in ('acc','ace'):selector(g)
+
+# GitHub Pages for this repository is configured to publish main / (root).
+# Mirror only generated public files there; sources and docs remain in place.
+for generated in R.rglob('*'):
+ if generated.is_file():
+  target=Path(__file__).parent/generated.relative_to(R)
+  target.parent.mkdir(parents=True,exist_ok=True)
+  shutil.copy2(generated,target)

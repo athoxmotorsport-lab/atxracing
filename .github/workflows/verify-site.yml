@@ -21,4 +21,4 @@ jobs:
       - run: python3 build.py
       - run: python3 scripts/verify_site.py
       - run: node --check dist/assets/site.min.js
-      - run: git diff --exit-code -- dist
+      - run: git diff --exit-code

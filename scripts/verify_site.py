@@ -26,6 +26,10 @@ for path in ROOT.rglob('*.html'):
   for key in ('href','src'):
    target=local_path(attrs.get(key,''))
    if target is not None:assert target.is_file(),f'{path}: missing {attrs[key]}'
+for generated in ROOT.rglob('*'):
+ if generated.is_file():
+  mirrored=ROOT.parent/generated.relative_to(ROOT)
+  assert mirrored.is_file() and mirrored.read_bytes()==generated.read_bytes(),f'missing or stale Pages root file: {mirrored}'
 for path in ('index.html','fr/index.html'):
  tags=page(path)
  assert not any(t in ('header','footer') for t,_ in tags)
@@ -45,4 +49,4 @@ for lang in ('fr','en','de','it','es'):
 assert 'value="OL"' not in (ROOT/'fr/acc/ranking.html').read_text()
 assert not list((ROOT/'assets').glob('site.js')) and not list((ROOT/'assets').glob('site.css'))
 assert (ROOT/'assets/site.min.js').is_file() and (ROOT/'assets/site.min.css').is_file()
-print('Verified 58 pages, assets, ACC/ACE entry, flag routes, league switch and minified bundles')
+print('Verified 58 pages, assets, Pages root mirror, ACC/ACE entry, flag routes, league switch and minified bundles')
