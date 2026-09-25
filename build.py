@@ -3,6 +3,7 @@ from html import escape
 from os import environ
 import re
 import shutil
+from content import COPY
 R=Path(__file__).parent/'dist'
 BASE=environ.get('ATX_BASE_PATH','/atxracing/').rstrip('/')+'/'
 CSS=(Path(__file__).parent/'src/site.css').read_text()
@@ -27,7 +28,7 @@ def selector(game):
  out=f'<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#08090c"><title>{game.upper()} · ATXRACING</title><link rel="stylesheet" href="/assets/site.min.css"></head><body data-page="selector"><main class="selection"><img class="selection-image" src="/assets/{game}-banner.webp" alt="Assetto Corsa {image}"><nav class="flag-choices" aria-label="Choisir une langue / Choose a language">{choices}</nav></main></body></html>'
  write(R/game/'index.html',out)
 def page(lang,game,section):
- t=T[lang]; title=t.get(section,t['choose']); root='/' if not game else f'/{lang}/{game}/'
+ t=T[lang]; v=COPY[lang]; title=t.get(section,t['choose']); root='/' if not game else f'/{lang}/{game}/'
  nav='<nav class="primary-nav" aria-label="Navigation">'+''.join(f'<a href="{root}{sec}.html" '+('aria-current="page"' if section==sec else '')+f'>{t[sec]}</a>' for sec in ['courses','ranking','records','profile'] if game)+'</nav>'
  switch=f'<nav class="game-switch" aria-label="Jeu / Game"><a href="/{lang}/acc/" '+('aria-current="true"' if game=='acc' else '')+f'>ACC</a><a href="/{lang}/ace/" '+('aria-current="true"' if game=='ace' else '')+'>ACE</a></nav>' if game else ''
  head=f'<!doctype html><html lang="{lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#08090c"><meta name="atx-base" content="{BASE}"><meta name="description" content="ATXRACING · ACC & ACE"><title>{escape(title)} · ATXRACING</title><link rel="stylesheet" href="/assets/site.min.css"></head><body data-game="{game}" data-page="{section}"><header class="topbar"><div class="wrap top-inner"><a class="brand" href="/" aria-label="ATXRACING"><img src="/assets/logo.webp" alt="ATXRACING"></a>{switch}{nav}</div></header>'
@@ -38,20 +39,22 @@ def page(lang,game,section):
  else:
   banner=f'<div class="league-image"><img src="/assets/{game}-banner.webp" alt="Assetto Corsa {"Competizione" if game=="acc" else "EVO"}"></div>'
   languages='<div class="wrap languages" aria-label="Language">'+''.join(f'<a href="/{l}/{game}/{"" if section=="league" else section+".html"}" hreflang="{l}" '+('aria-current="true"' if l==lang else '')+f' lang="{l}" title="{escape(language_names[l])}"><img src="/assets/flag-{l}.svg" alt=""><span class="sr-only">{escape(language_names[l])}</span></a>' for l in T)+'</div>'
-  sub='<nav class="subnav" aria-label="League">'+''.join(f'<a href="/{lang}/{game}/{s}.html" '+('aria-current="page"' if s==section else '')+f'>{escape(t[s])}</a>' for s in ['courses','ranking','records','profile'])+'</nav>'
-  main=f'<main class="wrap content">{sub}'
+  main='<main class="wrap content">'
   if section=='league':
-   main+=f'<section class="league-overview"><div class="overview-copy"><span class="eyebrow">{game.upper()} · ATXRACING</span><h1>{escape(t[game+"_intro"])}</h1><p>{escape(t["events_desc"])} {escape(t["ranking_desc"])}</p><a class="action" href="/{lang}/{game}/courses.html">{escape(t["courses"])} <span aria-hidden="true">↗</span></a></div><div class="overview-art"><img src="/assets/{game}-banner.webp" alt=""></div></section><div class="section-intro"><span class="eyebrow">{game.upper()}</span><h2>{escape(t["choose"])}</h2></div><div class="grid">'+''.join(f'<a class="panel" href="/{lang}/{game}/{s}.html"><span class="meta">0{i}</span><h3>{escape(t[s])} <span aria-hidden="true">↗</span></h3><p>{escape(t["events_desc" if s=="courses" else s+"_desc"])}</p></a>' for i,s in enumerate(['courses','ranking','records','profile'],1))+'</div>'
+   main+=f'<section class="league-overview"><div class="overview-copy"><span class="eyebrow">{escape(v["stage"])} / {game.upper()}</span><h1>{escape(v["league_"+game])}</h1><p>{escape(v["lead_"+game])}</p><a class="action" href="/{lang}/{game}/courses.html">{escape(v["discover"])} <span aria-hidden="true">↗</span></a></div><div class="overview-art"><img src="/assets/{game}-banner.webp" alt=""></div></section><div class="section-intro"><span class="eyebrow">{game.upper()} / 01—04</span><h2>{escape(v["section"])}</h2></div><div class="grid feature-grid">'+''.join(f'<a class="panel feature-panel" href="/{lang}/{game}/{s}.html"><span class="meta">0{i} / {game.upper()}</span><h3>{escape(t[s])} <span aria-hidden="true">↗</span></h3><p>{escape(v["courses_lead" if s=="courses" else s+"_lead"])}</p></a>' for i,s in enumerate(['courses','ranking','records','profile'],1))+'</div>'
   else:
-   main+=f'<span class="eyebrow">{game.upper()} · ATXRACING</span><h2>{escape(t[section])}</h2><p class="intro">{escape(t["events_desc" if section=="courses" else section+"_desc"])}</p>'
-   if game=='ace': main+=f'<p class="empty">{escape(t["soon"])}</p>'
+   main+=f'<section class="page-masthead"><div class="masthead-copy"><span class="eyebrow">{game.upper()} / {escape(v["stage"])}</span><h1>{escape(t[section])}</h1><p>{escape(v[section+"_lead"])}</p></div><div class="masthead-art"><img src="/assets/{game}-banner.webp" alt=""></div></section>'
+   if game=='ace': main+=f'<section class="status-panel"><span class="eyebrow">ACE / {escape(v["published"])}</span><h2>{escape(v["league_ace"])}</h2><p>{escape(v["ace_pending"])}</p><a class="pill" href="/{lang}/acc/">{escape(v["back_acc"])} ↗</a></section>'
    else:
-    if section=='ranking':main+=f'<div class="controls"><label>{escape(t["category"])} <select id="category"><option value="DR">Daily Race</option><option value="WGT">World GT</option><option value="BA">Ballade ATX</option></select></label></div>'
-    if section=='records':main+=f'<div class="controls"><label>{escape(t["circuit"])} <select id="circuit"></select></label></div>'
+    if section=='courses':
+     main+=f'<div class="section-intro"><span class="eyebrow">01 / {escape(v["formats"])}</span><h2>{escape(v["formats"])}</h2></div><div class="format-grid">'+''.join(f'<article class="format-card"><span class="meta">0{i} / ACC</span><h3>{escape(name)}</h3><p>{escape(description)}</p></article>' for i,(name,description) in enumerate(v['formats_items'],1))+'</div>'
+     main+=f'<div class="section-intro"><span class="eyebrow">02 / {escape(v["schedule"])}</span><h2>{escape(v["next"])}</h2></div>'
+    if section=='ranking': main+=f'<div class="section-intro"><span class="eyebrow">01 / {escape(v["source"])}</span><h2>{escape(v["standings"])}</h2></div><div id="ranking-highlights" class="podium" aria-live="polite"></div><div class="controls"><label for="category">{escape(v["category"])} <select id="category"><option value="DR">Daily Race</option><option value="WGT">World GT</option><option value="BA">Ballade ATX</option></select></label></div>'
+    if section=='records': main+=f'<div class="section-intro"><span class="eyebrow">01 / {escape(v["source"])}</span><h2>{escape(v["fastest"])}</h2></div><div id="record-spotlight" class="record-spotlight" aria-live="polite"></div><div class="controls"><label for="circuit">{escape(v["track"])} <select id="circuit"></select></label></div>'
+    if section=='profile':main+=f'<div class="section-intro"><span class="eyebrow">01 / {escape(v["profile_public"])}</span><h2>{escape(v["drivers"])}</h2></div><div id="driver-directory" class="driver-directory"><label for="driver-search">{escape(v["search"])}</label><input id="driver-search" type="search" placeholder="{escape(v["search_hint"])}" autocomplete="off"></div>'
     main+='<div id="results" aria-live="polite"><p class="loading">…</p></div>'
-    if section=='profile':main+=f'<p><a class="pill" href="https://athoxmotorsport-lab.github.io/atx-racing/profil-pilote.html">{escape(t["legacy"])} →</a></p>'
-  main+=f'<p style="margin-top:36px"><a href="/{lang}/">← {escape(t["back"])}</a></p></main>'
-  body=languages+main if section=='league' else banner+languages+main
+  main+=f'<p class="return-link"><a href="/{lang}/">← {escape(t["back"])}</a></p></main>'
+  body=languages+main
  out=(head if section!='home' else head.split('<header class="topbar">')[0])+body+(footer if section!='home' else '')+('<script src="/assets/site.min.js" defer></script>' if game and section not in ('league','home') else '')+'</body></html>'
  path=R/lang/(game or '')/('index.html' if section in ('home','league') else section+'.html');write(path,out)
 for l in T:
