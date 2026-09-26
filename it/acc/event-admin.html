@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Administration des événements | ATX Racing</title>
+  <title>Gestione eventi | ATX Racing</title>
   <meta name="description" content="Administration des événements ATX Racing.">
   <meta name="robots" content="noindex,nofollow">
   <meta name="theme-color" content="#000000">
@@ -39,64 +39,64 @@
   <main>
     <section>
       <div class="wrap admin-shell">
-        <div class="section-label" data-fr="Administration" data-en="Administration">Administration</div>
-        <h1><span data-fr="Gestion des événements" data-en="Event management">Gestion des événements</span></h1>
-        <p class="hero-copy" data-fr="Créez, modifiez ou retirez vos événements ATX Racing. Les changements sont enregistrés dans Supabase et se répercutent sur l’accueil et le calendrier." data-en="Create, edit or remove ATX Racing events. Changes are stored in Supabase and reflected on the home page and calendar.">Créez, modifiez ou retirez vos événements ATX Racing. Les changements sont enregistrés dans Supabase et se répercutent sur l’accueil et le calendrier.</p>
+        <div class="section-label" data-fr="Amministrazione" data-en="Administration">Amministrazione</div>
+        <h1><span data-fr="Gestione degli eventi" data-en="Event management">Gestione degli eventi</span></h1>
+        <p class="hero-copy" data-fr="Crea, modifica o ritira i tuoi eventi ATX Racing. Le modifiche vengono salvate in Supabase e visualizzate nella home e nel calendario." data-en="Create, edit or remove ATX Racing events. Changes are stored in Supabase and reflected on the home page and calendar.">Crea, modifica o ritira i tuoi eventi ATX Racing. Le modifiche vengono salvate in Supabase e visualizzate nella home e nel calendario.</p>
         <div class="actions" style="margin-bottom:28px">
-          <a class="btn primary" href="#event-manager" data-fr="Modifier / retirer" data-en="Edit / remove">Modifier / retirer</a>
+          <a class="btn primary" href="#event-manager" data-fr="Modifica / ritira" data-en="Edit / remove">Modifica / ritira</a>
           <a class="btn" href="#gtworld-manager">WorldGT S1</a>
-          <a class="btn" href="#new-event-form" data-fr="Créer un événement" data-en="Create event">Créer un événement</a>
+          <a class="btn" href="#new-event-form" data-fr="Crea un evento" data-en="Create event">Crea un evento</a>
         </div>
-        <p class="form-status" data-form-status role="status" aria-live="polite" data-fr="Vérification de votre session…" data-en="Checking your session…">Vérification de votre session…</p>
+        <p class="form-status" data-form-status role="status" aria-live="polite" data-fr="Verifica della sessione…" data-en="Checking your session…">Verifica della sessione…</p>
 
         <section class="admin-event-manager" id="event-manager" data-admin-event-manager>
           <div class="admin-event-manager-head">
             <div>
-              <div class="section-label" data-fr="Événements enregistrés" data-en="Saved events">Événements enregistrés</div>
-              <h2 data-fr="Modifier ou retirer un événement" data-en="Edit or remove an event">Modifier ou retirer un événement</h2>
-              <p class="intro" data-fr="Choisissez un événement ci-dessous. Le bouton Modifier ouvre tous ses paramètres ; Retirer le masque du site sans supprimer ses résultats." data-en="Choose an event below. Edit opens all parameters; Remove hides it from the website without deleting its results.">Choisissez un événement ci-dessous. Le bouton Modifier ouvre tous ses paramètres ; Retirer le masque du site sans supprimer ses résultats.</p>
+              <div class="section-label" data-fr="Eventi salvati" data-en="Saved events">Eventi salvati</div>
+              <h2 data-fr="Modifica o ritira un evento" data-en="Edit or remove an event">Modifica o ritira un evento</h2>
+              <p class="intro" data-fr="Scegli un evento qui sotto. Modifica apre tutte le impostazioni; Ritira lo nasconde dal sito senza eliminarne i risultati." data-en="Choose an event below. Edit opens all parameters; Remove hides it from the website without deleting its results.">Scegli un evento qui sotto. Modifica apre tutte le impostazioni; Ritira lo nasconde dal sito senza eliminarne i risultati.</p>
             </div>
-            <button class="btn small" type="button" data-admin-events-refresh data-fr="Actualiser" data-en="Refresh">Actualiser</button>
+            <button class="btn small" type="button" data-admin-events-refresh data-fr="Aggiorna" data-en="Refresh">Aggiorna</button>
           </div>
-          <p class="form-status" data-admin-events-status>Chargement des événements…</p>
+          <p class="form-status" data-admin-events-status>Caricamento degli eventi…</p>
           <div class="admin-events-list" data-admin-events-list></div>
           <div class="admin-edit-wrap" data-admin-edit-wrap hidden>
-            <div class="admin-edit-head"><h3 data-admin-edit-title>Modifier l'événement</h3><button class="btn small" type="button" data-admin-edit-cancel>Annuler</button></div>
+            <div class="admin-edit-head"><h3 data-admin-edit-title>Modifica evento</h3><button class="btn small" type="button" data-admin-edit-cancel>Annulla</button></div>
             <form class="admin-form admin-edit-form" data-admin-edit-form></form>
           </div>
         </section>
 
         <div id="new-event-form" style="margin-top:64px;padding-top:36px;border-top:1px solid var(--line)">
-          <div class="section-label" data-fr="Nouvel événement" data-en="New event">Nouvel événement</div>
-          <h2 data-fr="Créer et publier" data-en="Create and publish">Créer et publier</h2>
+          <div class="section-label" data-fr="Nuovo evento" data-en="New event">Nuovo evento</div>
+          <h2 data-fr="Crea e pubblica" data-en="Create and publish">Crea e pubblica</h2>
         </div>
         <form class="admin-form" data-event-form hidden>
-          <div class="form-field"><label for="title-fr">Titre français</label><input id="title-fr" name="titleFr" maxlength="96" required></div>
-          <div class="form-field"><label for="title-en">English title</label><input id="title-en" name="titleEn" maxlength="96" required></div>
+          <div class="form-field"><label for="title-fr">Titolo francese</label><input id="title-fr" name="titleFr" maxlength="96" required></div>
+          <div class="form-field"><label for="title-en">Titolo inglese</label><input id="title-en" name="titleEn" maxlength="96" required></div>
           <div class="form-field"><label for="circuit" data-fr="Circuit" data-en="Circuit">Circuit</label><input id="circuit" name="circuit" maxlength="64" required></div>
-          <div class="form-field"><label for="starts-at" data-fr="Date et heure Belgique" data-en="Belgium date and time">Date et heure Belgique</label><input id="starts-at" name="startsAt" type="datetime-local" required></div>
-          <div class="form-field"><label for="event-type" data-fr="Format" data-en="Format">Format</label><select id="event-type" name="eventType"><option value="daily_race">Daily Race</option><option value="sprint">Sprint</option><option value="endurance">Endurance</option><option value="championship">Championship</option><option value="special_event">Ballade ATX (BALLADE ATX)</option></select><small>Pour Ballade ATX, choisissez ce format : le nom du serveur sera préfixé « BALLADE ATX » et la course sera classée dans son calendrier dédié.</small></div>
-          <div class="form-field"><label for="duration" data-fr="Durée de course (minutes)" data-en="Race duration (minutes)">Durée de course (minutes)</label><input id="duration" name="durationMinutes" type="number" min="1" max="1440" value="60" required></div>
-          <div class="form-field"><label for="max-drivers" data-fr="Pilotes maximum" data-en="Maximum drivers">Pilotes maximum</label><input id="max-drivers" name="maxDrivers" type="number" min="1" max="28" value="28" required></div>
-          <div class="form-field"><label for="car-class" data-fr="Voitures" data-en="Cars">Voitures</label><input id="car-class" name="carClass" value="GT3" maxlength="32" required></div>
-          <div class="form-field"><label for="timezone-label" data-fr="Fuseau affiché sur Discord" data-en="Timezone shown on Discord">Fuseau affiché sur Discord</label><input id="timezone-label" name="timezoneLabel" value="UTC+2" maxlength="32" required></div>
-          <fieldset class="form-field full schedule-editor"><legend data-fr="Programme de la journée" data-en="Event schedule">Programme de la journée</legend>
-            <div class="schedule-editor-row"><strong data-fr="Essais libres" data-en="Free practice">Essais libres</strong><label><span data-fr="Début" data-en="Start">Début</span><input name="practice1Start" type="time" required></label><label><span data-fr="Fin" data-en="End">Fin</span><input name="practice1End" type="time" required></label></div>
-            <div class="schedule-editor-row"><strong data-fr="Essais libres 2 · Briefing Discord" data-en="Free practice 2 · Discord briefing">Essais libres 2 · Briefing Discord</strong><label><span data-fr="Début" data-en="Start">Début</span><input name="briefingStart" type="time" required></label><label><span data-fr="Fin" data-en="End">Fin</span><input name="briefingEnd" type="time" required></label></div>
-            <div class="schedule-editor-row"><strong data-fr="Qualifications" data-en="Qualifying">Qualifications</strong><label><span data-fr="Début" data-en="Start">Début</span><input name="qualifyingStart" type="time" required></label><label><span data-fr="Fin" data-en="End">Fin</span><input name="qualifyingEnd" type="time" required></label></div>
-            <div class="schedule-editor-row"><strong data-fr="Course" data-en="Race">Course</strong><label><span data-fr="Début" data-en="Start">Début</span><input name="raceStart" type="time" required></label><label><span data-fr="Fin" data-en="End">Fin</span><input name="raceEnd" type="time" required></label></div>
+          <div class="form-field"><label for="starts-at" data-fr="Data e ora del Belgio" data-en="Belgium date and time">Data e ora del Belgio</label><input id="starts-at" name="startsAt" type="datetime-local" required></div>
+          <div class="form-field"><label for="event-type" data-fr="Format" data-en="Format">Format</label><select id="event-type" name="eventType"><option value="daily_race">Daily Race</option><option value="sprint">Sprint</option><option value="endurance">Endurance</option><option value="championship">Campionato</option><option value="special_event">Ballade ATX (BALLADE ATX)</option></select><small>Per Ballade ATX scegli questo formato: il nome del server avrà il prefisso «BALLADE ATX» e la gara apparirà nel calendario dedicato.</small></div>
+          <div class="form-field"><label for="duration" data-fr="Durata gara (minuti)" data-en="Race duration (minutes)">Durata gara (minuti)</label><input id="duration" name="durationMinutes" type="number" min="1" max="1440" value="60" required></div>
+          <div class="form-field"><label for="max-drivers" data-fr="Numero massimo di piloti" data-en="Maximum drivers">Numero massimo di piloti</label><input id="max-drivers" name="maxDrivers" type="number" min="1" max="28" value="28" required></div>
+          <div class="form-field"><label for="car-class" data-fr="Auto" data-en="Cars">Auto</label><input id="car-class" name="carClass" value="GT3" maxlength="32" required></div>
+          <div class="form-field"><label for="timezone-label" data-fr="Fuso orario mostrato su Discord" data-en="Timezone shown on Discord">Fuso orario mostrato su Discord</label><input id="timezone-label" name="timezoneLabel" value="UTC+2" maxlength="32" required></div>
+          <fieldset class="form-field full schedule-editor"><legend data-fr="Programma della giornata" data-en="Event schedule">Programma della giornata</legend>
+            <div class="schedule-editor-row"><strong data-fr="Prove libere" data-en="Free practice">Prove libere</strong><label><span data-fr="Inizio" data-en="Start">Inizio</span><input name="practice1Start" type="time" required></label><label><span data-fr="Fine" data-en="End">Fine</span><input name="practice1End" type="time" required></label></div>
+            <div class="schedule-editor-row"><strong data-fr="Prove libere 2 · Briefing Discord" data-en="Free practice 2 · Discord briefing">Prove libere 2 · Briefing Discord</strong><label><span data-fr="Inizio" data-en="Start">Inizio</span><input name="briefingStart" type="time" required></label><label><span data-fr="Fine" data-en="End">Fine</span><input name="briefingEnd" type="time" required></label></div>
+            <div class="schedule-editor-row"><strong data-fr="Qualifiche" data-en="Qualifying">Qualifiche</strong><label><span data-fr="Inizio" data-en="Start">Inizio</span><input name="qualifyingStart" type="time" required></label><label><span data-fr="Fine" data-en="End">Fine</span><input name="qualifyingEnd" type="time" required></label></div>
+            <div class="schedule-editor-row"><strong data-fr="Course" data-en="Race">Course</strong><label><span data-fr="Inizio" data-en="Start">Inizio</span><input name="raceStart" type="time" required></label><label><span data-fr="Fine" data-en="End">Fine</span><input name="raceEnd" type="time" required></label></div>
           </fieldset>
-          <div class="form-field"><label for="mandatory-stop" data-fr="Arrêt au stand obligatoire" data-en="Mandatory pit stop">Arrêt au stand obligatoire</label><select id="mandatory-stop" name="mandatoryPitStop"><option value="true">Oui / Yes</option><option value="false">Non / No</option></select></div>
-          <div class="form-field"><label for="mandatory-tyres" data-fr="Changement de pneus obligatoire" data-en="Mandatory tyre change">Changement de pneus obligatoire</label><select id="mandatory-tyres" name="mandatoryTyreChange"><option value="false">Non / No</option><option value="true">Oui / Yes</option></select></div>
-          <div class="form-field"><label for="mandatory-fuel" data-fr="Ravitaillement obligatoire" data-en="Mandatory refuelling">Ravitaillement obligatoire</label><select id="mandatory-fuel" name="mandatoryRefuelling"><option value="false">Non / No</option><option value="true">Oui / Yes</option></select></div>
-          <div class="form-field"><label for="fixed-refuel" data-fr="Durée fixe du ravitaillement (secondes)" data-en="Fixed refuelling time (seconds)">Durée fixe du ravitaillement (secondes)</label><input id="fixed-refuel" name="fixedRefuellingSeconds" type="number" min="0" step="1" placeholder="0"><small>Valeur libre selon la course, en secondes (ex. 4800). 0 ou vide = aucune durée fixe.</small></div>
-          <div class="form-field"><label for="time-multiplier" data-fr="Accélération du temps" data-en="Time multiplier">Accélération du temps</label><input id="time-multiplier" name="timeMultiplier" type="number" min="1" max="24" step="0.1" value="1" required></div>
-          <div class="form-field"><label for="server-name" data-fr="Nom du serveur" data-en="Server name">Nom du serveur</label><input id="server-name" name="serverName" maxlength="120" placeholder="BALLADE ATX | Monza (pour une Ballade ATX)"></div>
-          <div class="form-field"><label for="server-password" data-fr="Mot de passe serveur (non enregistré)" data-en="Server password (not saved)">Mot de passe serveur (non enregistré)</label><input id="server-password" name="serverPassword" type="text" maxlength="64" autocomplete="off"><small data-fr="Utilisé uniquement pour générer le rappel Discord dans votre navigateur." data-en="Only used to generate the Discord reminder in your browser.">Utilisé uniquement pour générer le rappel Discord dans votre navigateur.</small></div>
-          <div class="form-field"><label for="simgrid">Lien SimGrid</label><input id="simgrid" name="simgridUrl" type="url" maxlength="300" placeholder="https://www.thesimgrid.com/..." required></div>
-          <div class="form-field full"><label for="image" data-fr="Affiche de l’événement (JPG, PNG ou WebP, 5 Mo max.)" data-en="Event poster (JPG, PNG or WebP, 5 MB max.)">Affiche de l’événement (JPG, PNG ou WebP, 5 Mo max.)</label><input id="image" name="image" type="file" accept="image/jpeg,image/png,image/webp" required></div>
-          <div class="form-field full discord-preview"><label for="discord-reminder" data-fr="Rappel Discord prêt à copier" data-en="Discord reminder ready to copy">Rappel Discord prêt à copier</label><textarea id="discord-reminder" data-discord-reminder rows="19" readonly></textarea><button class="btn small" type="button" data-copy-discord data-fr="Copier le rappel Discord" data-en="Copy Discord reminder">Copier le rappel Discord</button></div>
-          <div class="form-field full"><button class="btn primary" type="submit" data-fr="Valider et publier" data-en="Validate and publish">Valider et publier</button><p class="form-status" data-publish-status role="status" aria-live="polite"></p><p data-published-event hidden></p></div>
+          <div class="form-field"><label for="mandatory-stop" data-fr="Sosta ai box obbligatoria" data-en="Mandatory pit stop">Sosta ai box obbligatoria</label><select id="mandatory-stop" name="mandatoryPitStop"><option value="true">Sì</option><option value="false">No</option></select></div>
+          <div class="form-field"><label for="mandatory-tyres" data-fr="Cambio gomme obbligatorio" data-en="Mandatory tyre change">Cambio gomme obbligatorio</label><select id="mandatory-tyres" name="mandatoryTyreChange"><option value="false">No</option><option value="true">Sì</option></select></div>
+          <div class="form-field"><label for="mandatory-fuel" data-fr="Rifornimento obbligatorio" data-en="Mandatory refuelling">Rifornimento obbligatorio</label><select id="mandatory-fuel" name="mandatoryRefuelling"><option value="false">No</option><option value="true">Sì</option></select></div>
+          <div class="form-field"><label for="fixed-refuel" data-fr="Durata fissa del rifornimento (secondi)" data-en="Fixed refuelling time (seconds)">Durata fissa del rifornimento (secondi)</label><input id="fixed-refuel" name="fixedRefuellingSeconds" type="number" min="0" step="1" placeholder="0"><small>Valore variabile secondo la gara, in secondi (es. 4800). 0 o vuoto significa nessuna durata fissa.</small></div>
+          <div class="form-field"><label for="time-multiplier" data-fr="Accelerazione del tempo" data-en="Time multiplier">Accelerazione del tempo</label><input id="time-multiplier" name="timeMultiplier" type="number" min="1" max="24" step="0.1" value="1" required></div>
+          <div class="form-field"><label for="server-name" data-fr="Nome del server" data-en="Server name">Nome del server</label><input id="server-name" name="serverName" maxlength="120" placeholder="BALLADE ATX | Monza (pour une Ballade ATX)"></div>
+          <div class="form-field"><label for="server-password" data-fr="Password del server (non salvata)" data-en="Server password (not saved)">Password del server (non salvata)</label><input id="server-password" name="serverPassword" type="text" maxlength="64" autocomplete="off"><small data-fr="Usata solo nel browser per creare il promemoria Discord." data-en="Only used to generate the Discord reminder in your browser.">Usata solo nel browser per creare il promemoria Discord.</small></div>
+          <div class="form-field"><label for="simgrid">Link SimGrid</label><input id="simgrid" name="simgridUrl" type="url" maxlength="300" placeholder="https://www.thesimgrid.com/..." required></div>
+          <div class="form-field full"><label for="image" data-fr="Locandina evento (JPG, PNG o WebP, massimo 5 MB)" data-en="Event poster (JPG, PNG or WebP, 5 MB max.)">Locandina evento (JPG, PNG o WebP, massimo 5 MB)</label><input id="image" name="image" type="file" accept="image/jpeg,image/png,image/webp" required></div>
+          <div class="form-field full discord-preview"><label for="discord-reminder" data-fr="Promemoria Discord pronto da copiare" data-en="Discord reminder ready to copy">Promemoria Discord pronto da copiare</label><textarea id="discord-reminder" data-discord-reminder rows="19" readonly></textarea><button class="btn small" type="button" data-copy-discord data-fr="Copia il promemoria Discord" data-en="Copy Discord reminder">Copia il promemoria Discord</button></div>
+          <div class="form-field full"><button class="btn primary" type="submit" data-fr="Conferma e pubblica" data-en="Validate and publish">Conferma e pubblica</button><p class="form-status" data-publish-status role="status" aria-live="polite"></p><p data-published-event hidden></p></div>
         </form>
       </div>
     </section>
