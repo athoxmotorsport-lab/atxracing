@@ -27,7 +27,7 @@ SHARED = sorted(p for p in SOURCE.iterdir() if p.suffix in ('.css', '.js'))
 ASSETS = (SOURCE / 'assets', SOURCE / 'events')
 
 
-def adapt_html(original: str, lang: str) -> str:
+def adapt_html(original: str, lang: str, nested: bool = False) -> str:
     # The legacy page structure and its production CSS and JS references stay
     # intact. Steam may return only to a path explicitly allowed by the API.
     result = original.replace(
@@ -35,8 +35,9 @@ def adapt_html(original: str, lang: str) -> str:
         f'href="https://twjpjzalyvbsdpbzhqln.supabase.co/functions/v1/auth-steam?return_path=/atxracing/{lang}/acc/profile.html"',
     )
     result = re.sub(r'<html lang="(?:fr|en)">', f'<html lang="{lang}">', result, count=1)
-    result = result.replace('</head>', '<link rel="stylesheet" href="acc-language-bridge.css"></head>', 1)
-    bridge = f'<script src="acc-language-bridge.js" defer data-atx-language="{lang}"></script>'
+    prefix = '../' if nested else ''
+    result = result.replace('</head>', f'<link rel="stylesheet" href="{prefix}acc-language-bridge.css"></head>', 1)
+    bridge = f'<script src="{prefix}acc-language-bridge.js" defer data-atx-language="{lang}"></script>'
     return result.replace('</body>', bridge + '</body>', 1)
 
 
@@ -55,6 +56,8 @@ def sync():
             if original.name.startswith('google'):
                 continue
             (dest / original.name).write_text(adapt_html(original.read_text(), lang))
+        for original in (SOURCE / 'events').glob('*.html'):
+            (dest / 'events' / original.name).write_text(adapt_html(original.read_text(), lang, nested=True))
         for alias, original in ALIASES.items():
             (dest / alias).write_text(adapt_html((SOURCE / original).read_text(), lang))
         # The original circuit records are the 'Classement par circuit' tab,

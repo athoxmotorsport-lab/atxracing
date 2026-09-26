@@ -88,4 +88,6 @@ for language in ('fr','en','de','it','es'):
   assert (acc/js).read_bytes()==(legacy/js).read_bytes()
  for asset in (legacy/'assets').rglob('*'):
   if asset.is_file():assert (acc/'assets'/asset.relative_to(legacy/'assets')).read_bytes()==asset.read_bytes()
+ for event in (legacy/'events').glob('*.html'):
+  assert (acc/'events'/event.name).read_text()==adapt_html(event.read_text(),language,nested=True)
 print('Verified 198 pages, original ACC HTML structure, production CSS/JS bytes, rankings, profile and game selectors')
