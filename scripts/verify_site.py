@@ -43,9 +43,16 @@ for game in ('acc','ace'):
  assert [a['src'] for t,a in tags if t=='img'][1:]==[BASE+f'assets/flag-{lang}.svg' for lang in ('fr','en','de','it','es')]
 for lang in ('fr','en','de','it','es'):
  for game in ('acc','ace'):
-  tags=page(f'{lang}/{game}/index.html')
-  assert any(t=='nav' and a.get('class')=='game-switch' for t,a in tags)
-  assert any(t=='img' and a.get('src')==BASE+f'assets/{game}-banner.webp' for t,a in tags)
+  for section in ('index.html','courses.html','ranking.html','records.html','profile.html'):
+   tags=page(f'{lang}/{game}/{section}')
+   assert any(t=='nav' and a.get('class')=='game-switch' for t,a in tags)
+   assert any(t=='img' and a.get('src')==BASE+f'assets/{game}-banner.webp' for t,a in tags)
+   assert len([1 for t,a in tags if t=='nav' and a.get('class')=='header-languages'])==1
+   assert [a['href'] for t,a in tags if t=='a' and a.get('hreflang') in ('fr','en','de','it','es')]==[BASE+f'{language}/{game}/{"" if section=="index.html" else section}' for language in ('fr','en','de','it','es')]
+   assert not any(t=='div' and a.get('class')=='wrap languages' for t,a in tags)
+css=(ROOT/'assets/site.min.css').read_text()
+assert '.league-overview{height:480px;' in css
+assert 'font-family:Rajdhani' in css
 assert 'value="OL"' not in (ROOT/'fr/acc/ranking.html').read_text()
 assert not list((ROOT/'assets').glob('site.js')) and not list((ROOT/'assets').glob('site.css'))
 assert (ROOT/'assets/site.min.js').is_file() and (ROOT/'assets/site.min.css').is_file()
