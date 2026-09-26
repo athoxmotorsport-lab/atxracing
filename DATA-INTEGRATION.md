@@ -10,10 +10,14 @@ Le nouveau site ne copie pas la base de production. Ses pages publiques consulte
 | Classement | `public-leaderboard?category=WGT,DR,BA,ALL` | Points, rythme, progression, SAFE, circuits, équipes |
 | Meilleurs temps | `public-leaderboard?category=ALL` | Meilleurs tours officiels publiés |
 | Profils pilotes | `public-driver?driver=<id>` | Profil public et résultats |
+| Chronos détaillés | `public-driver-sectors` | Meilleurs tours et secteurs du Collector |
+| Calendrier, archives, fiche course | `public-event` | Événements publiés, inscriptions et résultats |
 
 La fonction `public-leaderboard` du dépôt ACC reste la source de vérité des calculs. Elle sépare WGT, DR et Ballade ATX, filtre les événements non publics et les sessions non officielles, et calcule les points d'équipe WorldGT. Le nouveau site affiche la réponse ; aucune importation ni nouvelle clé exposée dans le navigateur.
 
 La publication des résultats reste assurée par le Collector ACC existant. Après son traitement, les données publiées apparaissent au prochain chargement du site. Si le résultat n'est pas visible, vérifier le statut public/officiel de l'événement et le déploiement des fonctions avant de modifier le calcul.
+
+La connexion Steam utilise la même identité et les mêmes sessions que l'ancien site, puis redirige vers le profil du jeu et de la langue choisis. Le site statique garde temporairement le jeton dans `sessionStorage` comme l'ancien site ; seules les fonctions `auth-session`, `manage-profile`, `upload-driver-avatar` et `auth-logout` accèdent aux données privées. L'Edge Function `auth-steam` n'accepte comme destination que les profils ACC/ACE des cinq langues et l'ancien profil ; aucun domaine arbitraire n'est autorisé.
 
 ## Suite multi-jeu
 

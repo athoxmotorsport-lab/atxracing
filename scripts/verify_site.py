@@ -20,7 +20,7 @@ def local_path(url):
  if candidate.is_dir():candidate=candidate/'index.html'
  return candidate
 
-assert len(list(ROOT.rglob('*.html')))==58
+assert len(list(ROOT.rglob('*.html')))==98
 for path in ROOT.rglob('*.html'):
  for tag,attrs in page(path.relative_to(ROOT)):
   for key in ('href','src'):
@@ -43,7 +43,7 @@ for game in ('acc','ace'):
  assert [a['src'] for t,a in tags if t=='img'][1:]==[BASE+f'assets/flag-{lang}.svg' for lang in ('fr','en','de','it','es')]
 for lang in ('fr','en','de','it','es'):
  for game in ('acc','ace'):
-  for section in ('index.html','courses.html','ranking.html','records.html','profile.html'):
+  for section in ('index.html','courses.html','calendar.html','ranking.html','records.html','archives.html','event.html','rules.html','profile.html'):
    tags=page(f'{lang}/{game}/{section}')
    assert any(t=='nav' and a.get('class')=='game-switch' for t,a in tags)
    assert any(t=='img' and a.get('src')==BASE+f'assets/{game}-banner.webp' for t,a in tags)
@@ -57,9 +57,17 @@ assert 'value="OL"' not in (ROOT/'fr/acc/ranking.html').read_text()
 assert not list((ROOT/'assets').glob('site.js')) and not list((ROOT/'assets').glob('site.css'))
 assert (ROOT/'assets/site.min.js').is_file() and (ROOT/'assets/site.min.css').is_file()
 assert (ROOT/'assets/ranking.min.js').is_file()
+for asset in ('account.min.js','events.min.js','circuit-images.min.js'):
+ assert (ROOT/'assets'/asset).is_file()
 for language in ('fr','en','de','it','es'):
  ranking=(ROOT/language/'acc/ranking.html').read_text()
  assert all(f'data-view="{view}"' in ranking for view in ('points','circuit','driver','team'))
  assert BASE+'assets/ranking.min.js' in ranking
  assert BASE+'assets/site.min.js' not in ranking
-print('Verified 58 pages, assets, Pages root mirror, ACC/ACE entry, flag routes, league switch and minified bundles')
+ records=(ROOT/language/'acc/records.html').read_text()
+ assert 'id="circuit-grid"' in records and BASE+'assets/circuit-images.min.js' in records
+ profile=(ROOT/language/'acc/profile.html').read_text()
+ assert 'id="account-app"' in profile and BASE+'assets/account.min.js' in profile
+ for section in ('calendar','archives','event'):
+  assert BASE+'assets/events.min.js' in (ROOT/language/'acc'/f'{section}.html').read_text()
+print('Verified 98 pages, assets, root mirror, language routes, ACC records, calendar, archives, event and Steam profile')
