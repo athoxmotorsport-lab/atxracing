@@ -36,48 +36,48 @@
 <link rel="stylesheet" href="acc-language-bridge.css"></head>
 <body class="atx-editorial-layout">
   <aside class="side-nav" aria-label="Navigation principale">
-    <div class="side-brand"><a class="brand" href="index.html">ATX <span>Racing</span></a><small>Event Division</small></div>
+    <div class="side-brand"><a class="brand" href="index.html">ATX <span>Racing</span></a><small>Rennorganisation</small></div>
     <nav class="side-links">
-      <a href="index.html"><span data-fr="Accueil" data-en="Home">Accueil</span></a>
-      <a class="active" href="calendrier.html"><span data-fr="Calendrier" data-en="Calendar">Calendrier</span></a>
-      <a href="reglement.html"><span data-fr="Règlement" data-en="Rules">Règlement</span></a>
-      <a href="classement.html"><span data-fr="Classement" data-en="Ranking">Classement</span></a>
-      <a href="archives.html"><span data-fr="Archives" data-en="Archive">Archives</span></a>
+      <a href="index.html"><span data-fr="Startseite" data-en="Home">Startseite</span></a>
+      <a class="active" href="calendrier.html"><span data-fr="Kalender" data-en="Calendar">Kalender</span></a>
+      <a href="reglement.html"><span data-fr="Reglement" data-en="Rules">Reglement</span></a>
+      <a href="classement.html"><span data-fr="Wertung" data-en="Ranking">Wertung</span></a>
+      <a href="archives.html"><span data-fr="Archiv" data-en="Archive">Archiv</span></a>
     </nav>
     <div class="side-actions">
       <a class="steam-button" href="https://twjpjzalyvbsdpbzhqln.supabase.co/functions/v1/auth-steam?return_path=/atxracing/de/acc/profile.html" aria-label="Sign in through Steam"><img src="https://community.fastly.steamstatic.com/public/images/signinthroughsteam/sits_01.png" alt="Sign in through Steam"></a>
-      <div class="side-tools"><small data-fr="Changer de langue" data-en="Change language">Changer de langue</small><button class="lang-switch" type="button" data-lang-switch><img src="assets/ui/flag-en.svg" alt="English"></button></div>
+      <div class="side-tools"><small data-fr="Sprache wechseln" data-en="Change language">Sprache wechseln</small><button class="lang-switch" type="button" data-lang-switch><img src="assets/ui/flag-en.svg" alt="English"></button></div>
     </div>
   </aside>
   <main data-public-event>
     <section>
       <div class="wrap">
-        <div class="section-label" data-fr="Classement officiel" data-en="Official standings">Classement officiel</div>
-        <h1 data-event-title>Course ATX Racing · ACC</h1>
+        <div class="section-label" data-fr="Offizielle Wertung" data-en="Official standings">Offizielle Wertung</div>
+        <h1 data-event-title>ATX-Racing-Rennen · ACC</h1>
         <nav class="atx-journey" data-event-journey aria-label="Navigation de la course" hidden><a data-event-format href="gtworld.html">01 · WorldGT</a><span class="atx-journey-separator" aria-hidden="true">/</span><a data-event-calendar href="calendrier.html?type=WGT">02 · Calendrier</a><span class="atx-journey-separator" aria-hidden="true">/</span><a data-event-race href="#programme" aria-current="page">03 · Course</a><span class="atx-journey-separator" aria-hidden="true">/</span><a data-event-result-link href="#resultats">04 · Résultats</a><span class="atx-journey-separator" aria-hidden="true">/</span><a data-event-ranking href="classement.html?type=WGT#points">05 · Classement</a></nav><div class="event-result-meta"><span data-event-circuit>—</span><span data-event-date>—</span></div>
         <div class="public-event-overview" id="programme" data-event-overview hidden>
-          <div><h2 data-fr="Programme" data-en="Schedule">Programme</h2><div class="schedule public-event-schedule" data-event-schedule></div></div>
-          <div><h2 data-fr="Paramètres de course" data-en="Race settings">Paramètres de course</h2><div class="schedule-grid-grid" data-event-settings></div></div>
-          <div class="actions"><a class="btn primary" data-event-registration target="_blank" rel="noopener" data-fr="S’inscrire" data-en="Register">S’inscrire</a><a class="btn" href="reglement.html" data-fr="Lire le règlement" data-en="Read the rules">Lire le règlement</a></div>
+          <div><h2 data-fr="Zeitplan" data-en="Schedule">Zeitplan</h2><div class="schedule public-event-schedule" data-event-schedule></div></div>
+          <div><h2 data-fr="Renneinstellungen" data-en="Race settings">Renneinstellungen</h2><div class="schedule-grid-grid" data-event-settings></div></div>
+          <div class="actions"><a class="btn primary" data-event-registration target="_blank" rel="noopener" data-fr="Anmelden" data-en="Register">Anmelden</a><a class="btn" href="reglement.html" data-fr="Reglement lesen" data-en="Read the rules">Reglement lesen</a></div>
         </div>
-        <h2 id="resultats" class="results-heading" data-fr="Résultats officiels" data-en="Official results">Résultats officiels</h2>
-        <p class="empty-state" data-event-status data-fr="Chargement du classement…" data-en="Loading standings…">Chargement du classement…</p>
+        <h2 id="resultats" class="results-heading" data-fr="Offizielle Ergebnisse" data-en="Official results">Offizielle Ergebnisse</h2>
+        <p class="empty-state" data-event-status data-fr="Wertung wird geladen…" data-en="Loading standings…">Wertung wird geladen…</p>
         <div class="event-honours" data-event-honours hidden>
           <article class="honour-card fast"><div class="honour-emblem">FD</div><div><small>Fast Driver</small><strong data-fast-driver>—</strong><span data-fast-detail>—</span></div></article>
           <article class="honour-card gentleman"><div class="honour-emblem">GD</div><div><small>Gentleman Driver</small><strong data-gentleman-driver>—</strong><span data-gentleman-detail>—</span></div></article>
         </div>
-        <p class="atx-scoring-example" data-event-points-note hidden><strong>Points WorldGT :</strong> pour chaque équipe engagée, le résultat officiel de son équipage détermine ses points et ceux de chacun de ses pilotes participants, bonus du meilleur tour compris. Les points individuels bruts de l’import ACC ne constituent pas les points WorldGT. Les points de chaque équipage ne sont publiés qu’après association des pilotes à leur équipe pour cette manche. <a href="gtworld.html#classement">Consulter le barème et l’exemple</a>.</p><div class="results-table-wrap" data-event-results-wrap hidden>
+        <p class="atx-scoring-example" data-event-points-note hidden><strong>WorldGT-Punkte:</strong> Für jedes gemeldete Team bestimmt das offizielle Ergebnis der Besatzung die Punkte aller beteiligten Fahrer, einschließlich des Bonus für die schnellste Runde. Die Rohpunkte aus dem ACC-Import gelten nicht als WorldGT-Punkte. Team- und Fahrerpunkte werden erst veröffentlicht, wenn die Fahrer für diesen Lauf ihrem Team zugeordnet wurden. <a href="gtworld.html#classement">Punktesystem und Beispiel ansehen</a>.</p><div class="results-table-wrap" data-event-results-wrap hidden>
           <table class="results-table">
-            <thead><tr><th data-fr="Place" data-en="Pos.">Place</th><th data-event-driver-label data-fr="Pilote" data-en="Driver">Pilote</th><th data-fr="Voiture" data-en="Car">Voiture</th><th data-fr="Tours" data-en="Laps">Tours</th><th data-fr="Meilleur tour" data-en="Best lap">Meilleur tour</th><th>Points</th></tr></thead>
+            <thead><tr><th data-fr="Place" data-en="Pos.">Place</th><th data-event-driver-label data-fr="Fahrer" data-en="Driver">Fahrer</th><th data-fr="Voiture" data-en="Car">Voiture</th><th data-fr="Tours" data-en="Laps">Tours</th><th data-fr="Schnellste Runde" data-en="Best lap">Schnellste Runde</th><th>Punkte</th></tr></thead>
             <tbody data-event-results></tbody>
           </table>
         </div>
       </div>
     </section>
   </main>
-  <footer class="site-footer"><div class="wrap"><div class="footer-grid"><a class="brand" href="index.html">ATX <span>Racing</span></a><div class="socials"><a href="https://discord.gg/dgyJJYTSsD" target="_blank" rel="noopener">Discord</a><a href="https://www.thesimgrid.com/communities/atxracing" target="_blank" rel="noopener">SimGrid</a><a href="reglement.html" data-fr="Règlement" data-en="Rules">Règlement</a><a href="confidentialite.html" data-fr="Confidentialité" data-en="Privacy">Confidentialité</a></div></div><div class="legal"><span>© 2026 ATX Racing · ATX Motorsport</span><a href="mailto:athoxmotorsport@gmail.com">athoxmotorsport@gmail.com</a></div></div></footer>
+  <footer class="site-footer"><div class="wrap"><div class="footer-grid"><a class="brand" href="index.html">ATX <span>Racing</span></a><div class="socials"><a href="https://discord.gg/dgyJJYTSsD" target="_blank" rel="noopener">Discord</a><a href="https://www.thesimgrid.com/communities/atxracing" target="_blank" rel="noopener">SimGrid</a><a href="reglement.html" data-fr="Reglement" data-en="Rules">Reglement</a><a href="confidentialite.html" data-fr="Datenschutz" data-en="Privacy">Datenschutz</a></div></div><div class="legal"><span>© 2026 ATX Racing · ATX Motorsport</span><a href="mailto:athoxmotorsport@gmail.com">athoxmotorsport@gmail.com</a></div></div></footer>
   <script src="main.min.js?v=20260924-i18n-cleanup" defer></script>
   <script src="premium-shell.min.js?v=20260924-course-nav-fixed" data-premium-shell defer></script>
   <script src="atx-experience.min.js?v=20260920-polish1" data-atx-experience defer></script>
-<script src="acc-language-bridge.js" defer data-atx-language="de"></script></body>
+<script src="acc-translations.js" defer></script><script src="acc-language-bridge.js" defer data-atx-language="de"></script></body>
 </html>

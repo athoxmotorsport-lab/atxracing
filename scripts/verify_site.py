@@ -62,9 +62,21 @@ for asset in ('account.min.js','events.min.js','circuit-images.min.js'):
 legacy=ROOT.parent/'legacy-acc'
 sys.path.insert(0,str(ROOT.parent))
 from sync_acc import adapt_html
+from acc_translations import WORDS, LOCALES
 expected={'index.html','classement.html','calendrier.html','course.html','profil-pilote.html','reglement.html','gtworld.html','daily-race.html','open-lobby.html','archives.html','confidentialite.html','event-admin.html'}
 for language in ('fr','en','de','it','es'):
  acc=ROOT/language/'acc'
+ if language in LOCALES:
+  assert (acc/'acc-translations.js').is_file()
+  assert len(WORDS)>150
+  for filename,needle in {
+   'gtworld.html':('WorldGT <strong>— ', 'data-course-page="WGT"'),
+   'reglement.html':(WORDS['Règlement sportif.'][LOCALES[language]],),
+   'confidentialite.html':(WORDS['6. Conservation et sécurité'][LOCALES[language]],),
+   'classement.html':(WORDS['Classement des pilotes'][LOCALES[language]],),
+  }.items():
+   markup=(acc/filename).read_text()
+   assert all(value in markup for value in needle), f'{language}/{filename}: missing localized content'
  for name in expected:
   src=(legacy/name).read_text();dst=(acc/name).read_text()
   assert dst==adapt_html(src,language),f'ACC page differs from production beyond game and language integration: {language}/{name}'

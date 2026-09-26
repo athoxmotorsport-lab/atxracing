@@ -7,6 +7,8 @@ This step never reads or writes the ACE section.
 from pathlib import Path
 import re
 import shutil
+import json
+from acc_translations import WORDS, LOCALES, translate_html
 
 ROOT = Path(__file__).parent
 SOURCE = ROOT / 'legacy-acc'
@@ -34,10 +36,18 @@ def adapt_html(original: str, lang: str, nested: bool = False) -> str:
         'href="https://twjpjzalyvbsdpbzhqln.supabase.co/functions/v1/auth-steam"',
         f'href="https://twjpjzalyvbsdpbzhqln.supabase.co/functions/v1/auth-steam?return_path=/atxracing/{lang}/acc/profile.html"',
     )
+    # Editorial correction requested for the championship. WGT stays the
+    # scoring code and the data-course-page/API category is not changed.
+    result = result.replace(
+        '<h1>ATXRACING - WGT - <strong>Saison 1</strong></h1>',
+        '<h1>WorldGT <strong>— Saison 1</strong></h1>',
+    )
     result = re.sub(r'<html lang="(?:fr|en)">', f'<html lang="{lang}">', result, count=1)
+    result = translate_html(result,lang)
     prefix = '../' if nested else ''
     result = result.replace('</head>', f'<link rel="stylesheet" href="{prefix}acc-language-bridge.css"></head>', 1)
-    bridge = f'<script src="{prefix}acc-language-bridge.js" defer data-atx-language="{lang}"></script>'
+    translations = f'<script src="{prefix}acc-translations.js" defer></script>' if lang in LOCALES else ''
+    bridge = translations + f'<script src="{prefix}acc-language-bridge.js" defer data-atx-language="{lang}"></script>'
     return result.replace('</body>', bridge + '</body>', 1)
 
 
@@ -48,6 +58,9 @@ def sync():
             shutil.copy2(path, dest / path.name)
         shutil.copy2(ROOT / 'src/acc-language-bridge.js', dest / 'acc-language-bridge.js')
         shutil.copy2(ROOT / 'src/acc-language-bridge.css', dest / 'acc-language-bridge.css')
+        if lang in LOCALES:
+            dictionary={key:values[LOCALES[lang]] for key,values in WORDS.items()}
+            (dest / 'acc-translations.js').write_text('window.ATX_ACC_I18N='+json.dumps(dictionary,ensure_ascii=False)+';\n')
         for folder in ASSETS:
             shutil.copytree(folder, dest / folder.name, dirs_exist_ok=True)
         for flag in ('de', 'it', 'es'):
