@@ -56,4 +56,10 @@ assert 'font-family:Rajdhani' in css
 assert 'value="OL"' not in (ROOT/'fr/acc/ranking.html').read_text()
 assert not list((ROOT/'assets').glob('site.js')) and not list((ROOT/'assets').glob('site.css'))
 assert (ROOT/'assets/site.min.js').is_file() and (ROOT/'assets/site.min.css').is_file()
+assert (ROOT/'assets/ranking.min.js').is_file()
+for language in ('fr','en','de','it','es'):
+ ranking=(ROOT/language/'acc/ranking.html').read_text()
+ assert all(f'data-view="{view}"' in ranking for view in ('points','circuit','driver','team'))
+ assert BASE+'assets/ranking.min.js' in ranking
+ assert BASE+'assets/site.min.js' not in ranking
 print('Verified 58 pages, assets, Pages root mirror, ACC/ACE entry, flag routes, league switch and minified bundles')

@@ -30,3 +30,11 @@ COPY={
  ('World GT Endurance','Equipos de 1 a 6 pilotos. Pruebas de resistencia en grandes circuitos.'),
  ('Daily Race','Carrera de 60 minutos. Una parada obligatoria entre los minutos 25 y 35.')],
 }}
+
+RANKING_UI = {
+ 'fr': dict(points_view='Points par catégorie', circuit_view='Classement par circuit', driver_view='Parcours par pilote', team_view='Classement des équipes'),
+ 'en': dict(points_view='Points by category', circuit_view='Standings by circuit', driver_view='Driver performance', team_view='Team standings'),
+ 'de': dict(points_view='Punkte nach Kategorie', circuit_view='Wertung nach Strecke', driver_view='Fahrerleistungen', team_view='Teamwertung'),
+ 'it': dict(points_view='Punti per categoria', circuit_view='Classifica per circuito', driver_view='Percorso del pilota', team_view='Classifica squadre'),
+ 'es': dict(points_view='Puntos por categoría', circuit_view='Clasificación por circuito', driver_view='Trayectoria del piloto', team_view='Clasificación por equipos'),
+}
