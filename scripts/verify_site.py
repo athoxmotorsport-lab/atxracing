@@ -20,7 +20,7 @@ def local_path(url):
  if candidate.is_dir():candidate=candidate/'index.html'
  return candidate
 
-assert len(list(ROOT.rglob('*.html')))==148
+assert len(list(ROOT.rglob('*.html')))==198
 for path in ROOT.rglob('*.html'):
  for tag,attrs in page(path.relative_to(ROOT)):
   for key in ('href','src'):
@@ -42,7 +42,7 @@ for game in ('acc','ace'):
  assert [a['href'] for t,a in tags if t=='a']==[BASE+f'{lang}/{game}/' for lang in ('fr','en','de','it','es')]
  assert [a['src'] for t,a in tags if t=='img'][1:]==[BASE+f'assets/flag-{lang}.svg' for lang in ('fr','en','de','it','es')]
 for lang in ('fr','en','de','it','es'):
- for game in ('acc','ace'):
+ for game in ('ace',):
   for section in ('index.html','courses.html','worldgt.html','daily-race.html','ballade.html','calendar.html','ranking.html','records.html','archives.html','event.html','course.html','rules.html','privacy.html','profile.html'):
    tags=page(f'{lang}/{game}/{section}')
    assert any(t=='nav' and a.get('class')=='game-switch' for t,a in tags)
@@ -59,17 +59,33 @@ assert (ROOT/'assets/site.min.js').is_file() and (ROOT/'assets/site.min.css').is
 assert (ROOT/'assets/ranking.min.js').is_file()
 for asset in ('account.min.js','events.min.js','circuit-images.min.js'):
  assert (ROOT/'assets'/asset).is_file()
+legacy=ROOT.parent/'legacy-acc'
+sys.path.insert(0,str(ROOT.parent))
+from sync_acc import adapt_html
+expected={'index.html','classement.html','calendrier.html','course.html','profil-pilote.html','reglement.html','gtworld.html','daily-race.html','open-lobby.html','archives.html','confidentialite.html','event-admin.html'}
 for language in ('fr','en','de','it','es'):
- ranking=(ROOT/language/'acc/ranking.html').read_text()
- assert all(f'data-view="{view}"' in ranking for view in ('points','circuit','driver','team'))
- assert BASE+'assets/ranking.min.js' in ranking
- assert BASE+'assets/site.min.js' not in ranking
- records=(ROOT/language/'acc/records.html').read_text()
- assert 'id="circuit-grid"' in records and BASE+'assets/circuit-images.min.js' in records
- profile=(ROOT/language/'acc/profile.html').read_text()
- assert 'id="account-app"' in profile and BASE+'assets/account.min.js' in profile
- for section in ('calendar','archives','event','course'):
-  assert BASE+'assets/events.min.js' in (ROOT/language/'acc'/f'{section}.html').read_text()
- for section in ('worldgt','daily-race','ballade'):
-  assert BASE+'assets/events.min.js' in (ROOT/language/'acc'/f'{section}.html').read_text()
-print('Verified 148 pages, assets, root mirror, language routes, ACC formats, race detail, records, calendar, archives, privacy and Steam profile')
+ acc=ROOT/language/'acc'
+ for name in expected:
+  src=(legacy/name).read_text();dst=(acc/name).read_text()
+  assert dst==adapt_html(src,language),f'ACC page differs from production beyond game and language integration: {language}/{name}'
+  assert '<script src="acc-language-bridge.js" defer' in dst, name
+  assert 'atx-home.min.css' in dst if name=='index.html' else 'atx-core.min.css' in dst
+  for cls in ('side-nav','side-links'):
+   assert f'class="{cls}"' in src and f'class="{cls}"' in dst
+  original=Page();original.feed(src)
+  copied=Page();copied.feed(dst)
+  assert len([1 for tag,_ in copied.tags if tag=='main'])==len([1 for tag,_ in original.tags if tag=='main'])
+ for page_name,selectors in {
+  'classement.html':('data-ranking-panel="circuit"','data-ranking-panel="driver"','data-circuit-ranking-body','data-driver-circuit-grid'),
+  'course.html':('data-event-overview','data-event-settings','data-event-honours','data-event-results'),
+  'profil-pilote.html':('data-profile-form','data-profile-best-laps','data-profile-results'),
+ }.items():
+  markup=(acc/page_name).read_text()
+  assert all(selector in markup for selector in selectors)
+ for css in ('atx-home.min.css','atx-core.min.css','atx-clean-editorial.css','ranking-session-labels.min.css','driver-ranking-premium.min.css','team-ranking-premium.min.css','profile-best-laps.min.css'):
+  assert (acc/css).read_bytes()==(legacy/css).read_bytes()
+ for js in ('main.min.js','premium-shell.min.js','home-experience.min.js','atx-experience.min.js','ranking-session-labels.min.js','driver-ranking-premium.min.js','team-ranking-premium.min.js','profile-identity-enhancements.min.js'):
+  assert (acc/js).read_bytes()==(legacy/js).read_bytes()
+ for asset in (legacy/'assets').rglob('*'):
+  if asset.is_file():assert (acc/'assets'/asset.relative_to(legacy/'assets')).read_bytes()==asset.read_bytes()
+print('Verified 198 pages, original ACC HTML structure, production CSS/JS bytes, rankings, profile and game selectors')

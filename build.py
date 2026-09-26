@@ -81,6 +81,11 @@ for l in T:
 (R/'index.html').write_text((R/'fr/index.html').read_text())
 for g in ('acc','ace'):selector(g)
 
+# The ACC site is a byte-for-byte production snapshot at legacy-acc/. Keep
+# generated game navigation outside it, and mirror the original pages last.
+from sync_acc import sync as sync_acc
+sync_acc()
+
 # GitHub Pages for this repository is configured to publish main / (root).
 # Mirror only generated public files there; sources and docs remain in place.
 for generated in R.rglob('*'):

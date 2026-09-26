@@ -1,0 +1,6 @@
+/* Only the multi-game controls; all ACC presentation stays in production CSS. */
+.side-tools .language-options{display:flex;flex-wrap:wrap;gap:4px}
+.side-tools .language-option{width:34px;height:27px;padding:2px}
+.side-tools .language-option[aria-current=page]{border-color:var(--brand-red)}
+.side-brand .atx-league-return{display:inline-block;margin-top:11px;color:var(--brand-metal-light);font:700 11px Rajdhani,"Arial Narrow",sans-serif;text-decoration:none}
+.side-brand .atx-league-return:hover{color:var(--brand-red)}
