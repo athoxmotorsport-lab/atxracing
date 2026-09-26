@@ -6,7 +6,7 @@
  // Keep the selected event, public driver or category when changing language.
  const page=document.body.dataset.page, current=new URLSearchParams(location.search);
  const preserved=new URLSearchParams();
- if(page==='event'&&/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(current.get('slug')||''))preserved.set('slug',current.get('slug'));
+ if((page==='event'||page==='course')&&/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(current.get('slug')||current.get('event')||''))preserved.set('slug',current.get('slug')||current.get('event'));
  if(page==='profile'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(current.get('driver')||''))preserved.set('driver',current.get('driver'));
  if(['calendar','ranking'].includes(page)&&['WGT','DR','BA'].includes(current.get('type')?.toUpperCase()))preserved.set('type',current.get('type').toUpperCase());
  if(preserved.size)document.querySelectorAll('.header-languages a').forEach(a=>{a.href+='?'+preserved.toString()});

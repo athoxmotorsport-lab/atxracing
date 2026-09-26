@@ -20,7 +20,7 @@ def local_path(url):
  if candidate.is_dir():candidate=candidate/'index.html'
  return candidate
 
-assert len(list(ROOT.rglob('*.html')))==138
+assert len(list(ROOT.rglob('*.html')))==148
 for path in ROOT.rglob('*.html'):
  for tag,attrs in page(path.relative_to(ROOT)):
   for key in ('href','src'):
@@ -43,7 +43,7 @@ for game in ('acc','ace'):
  assert [a['src'] for t,a in tags if t=='img'][1:]==[BASE+f'assets/flag-{lang}.svg' for lang in ('fr','en','de','it','es')]
 for lang in ('fr','en','de','it','es'):
  for game in ('acc','ace'):
-  for section in ('index.html','courses.html','worldgt.html','daily-race.html','ballade.html','calendar.html','ranking.html','records.html','archives.html','event.html','rules.html','privacy.html','profile.html'):
+  for section in ('index.html','courses.html','worldgt.html','daily-race.html','ballade.html','calendar.html','ranking.html','records.html','archives.html','event.html','course.html','rules.html','privacy.html','profile.html'):
    tags=page(f'{lang}/{game}/{section}')
    assert any(t=='nav' and a.get('class')=='game-switch' for t,a in tags)
    assert any(t=='img' and a.get('src')==BASE+f'assets/{game}-banner.webp' for t,a in tags)
@@ -68,8 +68,8 @@ for language in ('fr','en','de','it','es'):
  assert 'id="circuit-grid"' in records and BASE+'assets/circuit-images.min.js' in records
  profile=(ROOT/language/'acc/profile.html').read_text()
  assert 'id="account-app"' in profile and BASE+'assets/account.min.js' in profile
- for section in ('calendar','archives','event'):
+ for section in ('calendar','archives','event','course'):
   assert BASE+'assets/events.min.js' in (ROOT/language/'acc'/f'{section}.html').read_text()
  for section in ('worldgt','daily-race','ballade'):
   assert BASE+'assets/events.min.js' in (ROOT/language/'acc'/f'{section}.html').read_text()
-print('Verified 138 pages, assets, root mirror, language routes, ACC formats, records, calendar, archives, privacy and Steam profile')
+print('Verified 148 pages, assets, root mirror, language routes, ACC formats, race detail, records, calendar, archives, privacy and Steam profile')

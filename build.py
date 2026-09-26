@@ -32,7 +32,7 @@ def selector(game):
  out=f'<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#08090c"><title>{game.upper()} · ATXRACING</title><link rel="stylesheet" href="/assets/site.min.css"></head><body data-page="selector"><main class="selection"><img class="selection-image" src="/assets/{game}-banner.webp" alt="Assetto Corsa {image}"><nav class="flag-choices" aria-label="Choisir une langue / Choose a language">{choices}</nav></main></body></html>'
  write(R/game/'index.html',out)
 def page(lang,game,section):
- t={**T[lang], **EXTRA[lang], **{key:value[0] for key,value in FORMATS[lang].items()},'privacy':PRIVACY[lang]['title']}; v={**COPY[lang], **RANKING_UI[lang], **EXTRA[lang], **{key+'_lead':value[1] for key,value in FORMATS[lang].items()},'privacy_lead':PRIVACY[lang]['lead']}; title=t.get(section,t['choose']); root='/' if not game else f'/{lang}/{game}/'
+ t={**T[lang], **EXTRA[lang], **{key:value[0] for key,value in FORMATS[lang].items()},'privacy':PRIVACY[lang]['title']}; v={**COPY[lang], **RANKING_UI[lang], **EXTRA[lang], **{key+'_lead':value[1] for key,value in FORMATS[lang].items()},'privacy_lead':PRIVACY[lang]['lead']}; t['course']=t['courses'];v['course_lead']=v['courses_lead'];title=t.get(section,t['choose']); root='/' if not game else f'/{lang}/{game}/'
  nav='<nav class="primary-nav" aria-label="Navigation">'+''.join(f'<a href="{root}{sec}.html" '+('aria-current="page"' if section==sec else '')+f'>{t[sec]}</a>' for sec in ['courses','calendar','ranking','records','archives','rules','profile'] if game)+'</nav>'
  switch=f'<nav class="game-switch" aria-label="Jeu / Game"><a href="/{lang}/acc/" '+('aria-current="true"' if game=='acc' else '')+f'>ACC</a><a href="/{lang}/ace/" '+('aria-current="true"' if game=='ace' else '')+'>ACE</a></nav>' if game else ''
  languages='<nav class="header-languages" aria-label="Langue / Language">'+''.join(f'<a href="/{l}/{game}/{"" if section=="league" else section+".html"}" hreflang="{l}" '+('aria-current="page"' if l==lang else '')+f' lang="{l}" aria-label="{escape(language_names[l])}" title="{escape(language_names[l])}"><img src="/assets/flag-{l}.svg" alt=""></a>' for l in T)+'</nav>' if game else ''
@@ -72,12 +72,12 @@ def page(lang,game,section):
     if section not in ('ranking','rules','privacy','worldgt','daily-race','ballade'):main+='<div id="results" aria-live="polite"><p class="loading">…</p></div>'
   main+=f'<p class="return-link"><a href="/{lang}/">← {escape(t["back"])}</a></p></main>'
   body=main
- out=(head if section!='home' else head.split('<header class="topbar">')[0])+body+(footer if section!='home' else '')+('<script src="/assets/circuit-images.min.js" defer></script>' if section=='records' and game=='acc' else '')+('<script src="/assets/site.min.js" defer></script>' if game=='acc' and section in ('courses','records','profile') else '')+('<script src="/assets/ranking.min.js" defer></script>' if section=='ranking' and game=='acc' else '')+('<script src="/assets/events.min.js" defer></script>' if game=='acc' and section in ('calendar','archives','event','worldgt','daily-race','ballade') else '')+('<script src="/assets/account.min.js" defer></script>' if game else '')+'</body></html>'
+ out=(head if section!='home' else head.split('<header class="topbar">')[0])+body+(footer if section!='home' else '')+('<script src="/assets/circuit-images.min.js" defer></script>' if section=='records' and game=='acc' else '')+('<script src="/assets/site.min.js" defer></script>' if game=='acc' and section in ('courses','records','profile') else '')+('<script src="/assets/ranking.min.js" defer></script>' if section=='ranking' and game=='acc' else '')+('<script src="/assets/events.min.js" defer></script>' if game=='acc' and section in ('calendar','archives','event','course','worldgt','daily-race','ballade') else '')+('<script src="/assets/account.min.js" defer></script>' if game else '')+'</body></html>'
  path=R/lang/(game or '')/('index.html' if section in ('home','league') else section+'.html');write(path,out)
 for l in T:
  page(l,'','home')
  for g in ('acc','ace'):
-  for s in ('league','courses','worldgt','daily-race','ballade','calendar','ranking','records','archives','event','rules','privacy','profile'):page(l,g,s)
+  for s in ('league','courses','worldgt','daily-race','ballade','calendar','ranking','records','archives','event','course','rules','privacy','profile'):page(l,g,s)
 (R/'index.html').write_text((R/'fr/index.html').read_text())
 for g in ('acc','ace'):selector(g)
 
