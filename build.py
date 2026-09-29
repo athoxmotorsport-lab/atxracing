@@ -16,6 +16,7 @@ CSS=re.sub(r'\s*([{}:;,>])\s*',r'\1',CSS).strip()
 (R/'assets/circuit-images.min.js').write_text((Path(__file__).parent/'src/circuit-images.js').read_text())
 (R/'assets/account.min.js').write_text((Path(__file__).parent/'src/account.js').read_text())
 (R/'assets/events.min.js').write_text((Path(__file__).parent/'src/events.js').read_text())
+(R/'assets/admin.min.js').write_text((Path(__file__).parent/'src/admin.js').read_text())
 def write(path,html):
  path.parent.mkdir(parents=True,exist_ok=True)
  path.write_text(html.replace('href="/','href="'+BASE).replace('src="/','src="'+BASE))
@@ -33,7 +34,7 @@ def selector(game):
  out=f'<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#08090c"><title>{game.upper()} · ATXRACING</title><link rel="stylesheet" href="/assets/site.min.css"></head><body data-page="selector"><main class="selection"><img class="selection-image" src="/assets/{game}-banner.webp" alt="Assetto Corsa {image}"><nav class="flag-choices" aria-label="Choisir une langue / Choose a language">{choices}</nav></main></body></html>'
  write(R/game/'index.html',out)
 def page(lang,game,section):
- t={**T[lang], **EXTRA[lang], **{key:value[0] for key,value in FORMATS[lang].items()},'privacy':PRIVACY[lang]['title']}; v={**COPY[lang], **RANKING_UI[lang], **EXTRA[lang], **{key+'_lead':value[1] for key,value in FORMATS[lang].items()},'privacy_lead':PRIVACY[lang]['lead']}; t['course']=t['courses'];v['course_lead']=v['courses_lead'];title=t.get(section,t['choose']); root='/' if not game else f'/{lang}/{game}/'
+ t={**T[lang], **EXTRA[lang], **{key:value[0] for key,value in FORMATS[lang].items()},'privacy':PRIVACY[lang]['title']}; v={**COPY[lang], **RANKING_UI[lang], **EXTRA[lang], **{key+'_lead':value[1] for key,value in FORMATS[lang].items()},'privacy_lead':PRIVACY[lang]['lead']}; t['course']=t['courses'];v['course_lead']=v['courses_lead'];t['admin']='Administration des courses' if lang=='fr' else 'Race administration';v['admin_lead']='Importez une page SimGrid, préparez chaque manche, vérifiez puis publiez.' if lang=='fr' else 'Import a SimGrid page, prepare each round, review and publish.';title=t.get(section,t['choose']); root='/' if not game else f'/{lang}/{game}/'
  root=f'/{lang}/{game or "acc"}/'
  nav='<nav class="primary-nav" aria-label="Navigation">'+''.join(f'<a href="{root}{sec}.html" '+('aria-current="page"' if section==sec else '')+f'>{t[sec]}</a>' for sec in ['courses','calendar','ranking','records','archives','rules','profile'])+'</nav>'
  switch=f'<nav class="game-switch" aria-label="Jeu / Game"><a href="/{lang}/acc/" '+('aria-current="true"' if game=='acc' else '')+f'>ACC</a><a href="/{lang}/ace/" '+('aria-current="true"' if game=='ace' else '')+'>ACE</a></nav>'
@@ -50,6 +51,8 @@ def page(lang,game,section):
    main+=f'<section class="league-overview"><div class="overview-copy"><span class="eyebrow">{escape(v["stage"])} / {game.upper()}</span><h1>{escape(v["league_"+game])}</h1><p>{escape(v["lead_"+game])}</p><a class="action" href="/{lang}/{game}/courses.html">{escape(v["discover"])} <span aria-hidden="true">↗</span></a></div><div class="overview-art"><img src="/assets/{game}-banner.webp" alt=""></div></section><div class="section-intro"><span class="eyebrow">{game.upper()} / 01—04</span><h2>{escape(v["section"])}</h2></div><div class="grid feature-grid">'+''.join(f'<a class="panel feature-panel" href="/{lang}/{game}/{s}.html"><span class="meta">0{i} / {game.upper()}</span><h3>{escape(t[s])} <span aria-hidden="true">↗</span></h3><p>{escape(v["courses_lead" if s=="courses" else s+"_lead"])}</p></a>' for i,s in enumerate(['courses','ranking','records','profile'],1))+'</div>'
   else:
    main+=f'<section class="page-masthead"><div class="masthead-copy"><span class="eyebrow">{game.upper()} / {escape(v["stage"])}</span><h1>{escape(t[section])}</h1><p>{escape(v[section+"_lead"])}</p></div><div class="masthead-art"><img src="/assets/{game}-banner.webp" alt=""></div></section>'
+   if section=='admin':
+    main+='<section id="admin-app" class="admin-app" aria-live="polite"></section>'
    if section=='profile':
     intro='Votre identité. Votre rythme. Votre prochaine course.' if lang=='fr' else 'Your identity. Your pace. Your next race.'
     legend='Les cinq niveaux de rythme · attribution en cours de définition' if lang=='fr' else 'The five pace levels · assessment rules being defined'
@@ -74,15 +77,15 @@ def page(lang,game,section):
      penalties=PENALTIES[lang]
      main+=f'<section class="penalty-section"><h2>{escape(penalties["title"])}</h2><div class="ranking-table-wrap"><table class="ranking-table"><thead><tr>'+''.join(f'<th>{escape(h)}</th>' for h in penalties['headers'])+'</tr></thead><tbody>'+''.join('<tr>'+''.join(f'<td>{escape(cell)}</td>' for cell in row)+'</tr>' for row in penalties['rows'])+'</tbody></table></div></section>'
     if section=='profile' and game=='acc':main+=f'<div id="public-directory"><div class="section-intro"><span class="eyebrow">01 / {escape(v["profile_public"])}</span><h2>{escape(v["drivers"])}</h2></div><div id="driver-directory" class="driver-directory"><label for="driver-search">{escape(v["search"])}</label><input id="driver-search" type="search" placeholder="{escape(v["search_hint"])}" autocomplete="off"></div></div>'
-    if section not in ('ranking','rules','privacy','worldgt','daily-race','ballade'):main+='<div id="results" aria-live="polite"><p class="loading">…</p></div>'
+    if section not in ('ranking','rules','privacy','worldgt','daily-race','ballade','admin'):main+='<div id="results" aria-live="polite"><p class="loading">…</p></div>'
   main+=f'<p class="return-link"><a href="/{lang}/">← {escape(t["back"])}</a></p></main>'
   body=main
- out=head+body+footer+('<script src="/assets/circuit-images.min.js" defer></script>' if section=='records' and game=='acc' else '')+('<script src="/assets/site.min.js" defer></script>' if game=='acc' and section in ('courses','records','profile') else '')+('<script src="/assets/ranking.min.js" defer></script>' if section=='ranking' and game=='acc' else '')+('<script src="/assets/events.min.js" defer></script>' if game=='acc' and section in ('calendar','archives','event','course','worldgt','daily-race','ballade') else '')+('<script src="/assets/account.min.js" defer></script>' if game else '')+'</body></html>'
+ out=head+body+footer+('<script src="/assets/circuit-images.min.js" defer></script>' if section=='records' and game=='acc' else '')+('<script src="/assets/site.min.js" defer></script>' if game=='acc' and section in ('courses','records','profile') else '')+('<script src="/assets/ranking.min.js" defer></script>' if section=='ranking' and game=='acc' else '')+('<script src="/assets/events.min.js" defer></script>' if game=='acc' and section in ('calendar','archives','event','course','worldgt','daily-race','ballade') else '')+('<script src="/assets/admin.min.js" defer></script>' if section=='admin' else '')+('<script src="/assets/account.min.js" defer></script>' if game else '')+'</body></html>'
  path=R/lang/(game or '')/('index.html' if section in ('home','league') else section+'.html');write(path,out)
 for l in T:
  page(l,'','home')
  for g in ('acc','ace'):
-  for s in ('league','courses','worldgt','daily-race','ballade','calendar','ranking','records','archives','event','course','rules','privacy','profile'):page(l,g,s)
+  for s in ('league','courses','worldgt','daily-race','ballade','calendar','ranking','records','archives','event','course','rules','privacy','profile')+(('admin',) if g=='acc' else ()):page(l,g,s)
 (R/'index.html').write_text((R/'fr/index.html').read_text())
 for g in ('acc','ace'):selector(g)
 

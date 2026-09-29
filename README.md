@@ -2,7 +2,7 @@
 
 Portail statique ACC / ACE, en français et en anglais. Les drapeaux français et britannique permettent de changer de langue dans l’en-tête et le pied de page.
 
-- Source : `build.py`, `content.py`, `src/site.css`, `src/site.js`, `src/ranking.js`, `src/circuit-images.js`, `src/events.js`, `src/account.js`, `docs/refonte-multijeu.md`.
+- Source : `build.py`, `content.py`, `src/site.css`, `src/site.js`, `src/ranking.js`, `src/circuit-images.js`, `src/events.js`, `src/account.js`, `src/admin.js`, `docs/refonte-multijeu.md`.
 - Sortie GitHub Pages : `dist/` et miroir généré à la racine (Pages est configuré sur `main / (root)`, chemins `/atxracing/`). Exécuter `python3 build.py`, puis `node --check dist/assets/site.min.js` et `python3 scripts/verify_site.py`.
 - Domaine personnalisé à la racine : `ATX_BASE_PATH=/ python3 build.py` ; revenir au préfixe GitHub Pages avec `python3 build.py`.
 - Les pages ACC utilisent les fonctions publiques du projet Supabase existant. Le compte Steam et le profil pilote sont partagés entre ACC et ACE grâce aux fonctions Auth du même projet. Les courses et classements ACE attendent encore un collecteur et leurs propres tables.
@@ -16,6 +16,10 @@ Connexion Steam existante, puis trois étapes : identité (pseudo et nom public)
 Le profil ACC conserve son historique. ACE ne présente pas les statistiques ACC comme les siennes. L’illustration fournie représente les cinq niveaux ; elle n’est pas une jauge de complétion. Aucun nouveau seuil ni calcul Safe n’est défini : rythme « En évaluation », régularité et Safe en attente de règles validées, sur les profils privés et publics.
 
 Le backend ajouté est documenté dans [docs/profil-pilote.md](docs/profil-pilote.md). Il utilise les sessions Steam existantes et une table de préférences privée, sans changer le collecteur, les résultats ou les identités Steam.
+
+## Administration des courses
+
+Le panel ACC FR/EN permet de lire un championnat SimGrid, préparer chaque manche en brouillon privé, puis publier une course après vérification. La lecture peut être bloquée par SimGrid ; la saisie manuelle reste disponible et l'échec est explicite. Voir [docs/admin-simgrid.md](docs/admin-simgrid.md). Les formats officiels sont vérifiés à la publication ; l'import seul ne publie jamais.
 
 Vérifications supplémentaires (Node 22.18+ / 24) :
 
