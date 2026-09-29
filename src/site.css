@@ -41,3 +41,42 @@ h1,h2,h3,.primary-nav,.game-switch,.action,.eyebrow,.meta{font-family:Rajdhani,'
 .page-masthead{min-height:260px}.masthead-art{min-height:260px}.masthead-copy{padding:clamp(25px,3vw,42px)}.masthead-copy h1{font-size:clamp(2.45rem,3.8vw,3.8rem);margin:11px 0}.masthead-copy p{font-size:1rem}.page-masthead+.section-intro{margin-top:34px}@media(max-width:760px){.masthead-art{height:175px;min-height:0}.masthead-copy{padding:23px}.page-masthead{min-height:0}}
 .format-detail{padding:clamp(25px,4vw,52px);margin-top:35px;border:1px solid var(--line);background:linear-gradient(130deg,#281319,#111419)}.format-detail h2{margin-top:18px}.format-detail p{max-width:760px;font-size:1.05rem}.format-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:25px}.format-actions .pill{display:inline-flex;padding:12px 18px;font-weight:700}
 .privacy-sections{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:34px 0}.privacy-sections article{padding:25px;background:var(--surface);border:1px solid var(--line)}.privacy-sections h2{font-size:1.55rem;margin-top:12px}.privacy-sections p{margin-bottom:0}@media(max-width:760px){.privacy-sections{grid-template-columns:1fr}}
+/* Driver identity: sober controls, supplied artwork and distinct sporting indicators. */
+[hidden]{display:none!important}
+body[data-page=profile]{--text:#f4f1eb;--accent:#f12c3e}
+body[data-page=profile] .page-masthead{display:block;min-height:0;background:none;border:0}
+body[data-page=profile] .masthead-copy{padding:8px 0 24px}
+body[data-page=profile] .masthead-art{display:none}
+body[data-page=profile] .masthead-copy h1{font-size:clamp(2.8rem,5vw,4.8rem)}
+.driver-levels{margin:0;border:1px solid var(--line);background:#08090b;overflow:hidden}
+.driver-levels img{display:block;width:100%;height:auto;max-height:470px;object-fit:contain;background:#030303}
+.driver-levels figcaption{padding:12px 20px;font-size:.8rem;color:#bfc0c3;border-top:1px solid var(--line)}
+.profile-note{color:#bfc0c5;font-size:.92rem;line-height:1.65;max-width:760px}
+.profile-state{color:#bfc0c5;font-size:.85rem;letter-spacing:.04em}
+.account-avatar{position:relative}.account-avatar img{position:absolute;inset:0}
+.account-editor{scroll-margin-top:160px}.account-actions .action{cursor:pointer;color:#fff;background:#d91f32;border:1px solid #f34754;padding:12px 20px;font:700 1rem Rajdhani,sans-serif}
+.profile-steps{padding:0;margin:28px 0;display:grid;grid-template-columns:repeat(3,1fr);list-style:none;border-bottom:1px solid var(--line);gap:16px}
+.profile-steps li{padding:12px 0;color:#a7a9ae;font:600 1rem Rajdhani,sans-serif;border-bottom:3px solid transparent}
+.profile-steps [aria-current=step]{color:#fff;border-color:#f12c3e}
+.profile-wizard>fieldset{border:0;padding:0;margin:0;min-width:0;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.profile-wizard legend{font:700 1.5rem Rajdhani,sans-serif;margin-bottom:22px}
+.profile-wizard p,.profile-wizard h3,.profile-wizard dl{grid-column:1/-1;margin:0}
+.profile-field{display:flex;flex-direction:column;gap:9px;font-size:.94rem}
+.profile-field input{min-width:0;width:100%;padding:14px;color:#f4f1eb;background:#090a0c;border:1px solid #66676c;border-radius:3px;font:inherit}
+.profile-field input:focus-visible,.game-options input:focus-visible{outline:2px solid #f12c3e;outline-offset:3px}
+.game-options{border:1px solid var(--line);margin:0;padding:16px;min-width:0}
+.game-options legend{padding:0 6px;font-size:1.05rem;margin:0}
+.game-options label{display:inline-flex;align-items:center;gap:9px;padding:10px 20px 10px 0;cursor:pointer}
+.game-options input{width:20px;height:20px;accent-color:#ee2c40}
+.profile-summary{display:grid;grid-template-columns:minmax(120px,1fr) 2fr;gap:12px;width:100%}
+.profile-summary dt{color:#bfc0c5}.profile-summary dd{margin:0;overflow-wrap:anywhere}
+.driver-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px}
+.driver-metrics article{padding:24px;background:#101114;border:1px solid var(--line);border-top:2px solid #d82a3d}
+.driver-metrics h3{font-size:1.65rem;margin:14px 0}.driver-metrics p{font-size:.88rem;color:#bfc0c5;margin:0}
+.account-upload{border-top:1px solid var(--line);padding-top:24px}.account-upload .profile-note,.account-upload .form-status{flex-basis:100%;margin:0}
+.footer-languages{display:flex;align-items:center;gap:8px}.footer-languages a{display:grid;place-items:center;width:44px;height:44px;border:1px solid transparent;border-radius:3px}
+.footer-languages img{width:25px;height:17px;object-fit:cover}.footer-languages a[aria-current=page],.footer-languages a:hover{border-color:#e82a3c}
+.header-languages a{min-width:44px;min-height:44px}.account-actions button:disabled{opacity:.6;cursor:wait}
+.steam-connect{max-width:240px}.steam-connect [data-steam-label]{overflow:hidden;text-overflow:ellipsis}.account-guest{scroll-margin-top:150px}
+@media(max-width:1350px){.top-inner{flex-wrap:wrap}.top-inner .primary-nav{order:4;width:100%;overflow-x:auto;padding-bottom:6px}.header-languages{margin-left:auto}}
+@media(max-width:760px){.profile-wizard>fieldset,.driver-metrics{grid-template-columns:1fr}.driver-levels img{max-height:none}.profile-steps{gap:8px}.profile-steps li{font-size:.88rem}.profile-summary{grid-template-columns:1fr}.profile-summary dd{margin-bottom:10px}.account-actions{align-items:stretch}.account-actions>*{text-align:center}.footer .wrap{gap:20px;flex-wrap:wrap}}

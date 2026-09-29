@@ -17,7 +17,9 @@ La fonction `public-leaderboard` du dépôt ACC reste la source de vérité des 
 
 La publication des résultats reste assurée par le Collector ACC existant. Après son traitement, les données publiées apparaissent au prochain chargement du site. Si le résultat n'est pas visible, vérifier le statut public/officiel de l'événement et le déploiement des fonctions avant de modifier le calcul.
 
-La connexion Steam utilise la même identité et les mêmes sessions que l'ancien site, puis redirige vers le profil du jeu et de la langue choisis. Le site statique garde temporairement le jeton dans `sessionStorage` comme l'ancien site ; seules les fonctions `auth-session`, `manage-profile`, `upload-driver-avatar` et `auth-logout` accèdent aux données privées. L'Edge Function `auth-steam` n'accepte comme destination que les profils ACC/ACE des cinq langues et l'ancien profil ; aucun domaine arbitraire n'est autorisé.
+La connexion Steam utilise la même identité et les mêmes sessions que l'ancien site, puis redirige vers le profil du jeu et de la langue choisis. Le site statique garde temporairement le jeton dans `sessionStorage` comme l'ancien site. Le nouveau formulaire utilise `driver-profile`, les photos utilisent `upload-driver-avatar`, et `auth-session` / `auth-logout` conservent leur rôle. Le serveur historique autorise encore ses anciens chemins de retour, mais ce portail ne publie que FR et EN.
+
+La table `driver_profile_preferences` et la fonction `driver-profile` conservent les préférences personnelles séparément des données publiques. Voir `docs/profil-pilote.md`. La page ACE n'utilise pas les résultats ACC renvoyés par l'ancienne session. Les niveaux historiques à quatre classes ne sont plus présentés comme la nouvelle échelle à cinq niveaux sur les profils ; les autres pages sportives conservent leur comportement actuel.
 
 ## Suite multi-jeu
 

@@ -1,0 +1,67 @@
+/* Browser regression tests use mocked endpoints; never log in or modify real drivers. */
+const {chromium}=require('playwright');
+const assert=require('node:assert/strict');
+const http=require('node:http');
+const fs=require('node:fs');
+const path=require('node:path');
+const root=path.resolve(__dirname,'../dist');
+const output=path.resolve(__dirname,'../.local');fs.mkdirSync(output,{recursive:true});
+const server=http.createServer((req,res)=>{let name=decodeURIComponent(req.url.split('?')[0]).replace(/^\/atxracing\//,'');if(name.endsWith('/'))name+='index.html';const file=path.resolve(root,name);if(!file.startsWith(root+path.sep)){res.writeHead(403);return res.end();}try{const content=fs.readFileSync(file);res.setHeader('Content-Type',({'html':'text/html; charset=utf-8','js':'text/javascript; charset=utf-8','css':'text/css','png':'image/png','svg':'image/svg+xml','webp':'image/webp'})[file.split('.').pop()]||'application/octet-stream');res.end(content);}catch{res.writeHead(404);res.end();}});
+let browser;
+(async()=>{
+ await new Promise(r=>server.listen(0,'127.0.0.1',r));
+ const origin='http://127.0.0.1:'+server.address().port;
+ browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH||'C:/Program Files/Google/Chrome/Application/chrome.exe'});
+ const context=await browser.newContext({viewport:{width:1440,height:1000}});
+ const errors=[];context.on('page',p=>p.on('pageerror',e=>errors.push(e.message)));
+ let saved=null,failSave=false,sessionFailure=false;
+ let driver={id:'11111111-1111-4111-8111-111111111111',display_name:'Pilote Test',avatar_url:null,team_name:null,stats:{races:2,wins:1,podiums:1,points:25},results:[{best_lap_ms:100000,car_model_name:'GT3',event:{title_fr:'Course test ACC',title_en:'ACC test race'}}]};
+ await context.route('https://fonts.googleapis.com/**',r=>r.abort());
+ await context.route('https://fonts.gstatic.com/**',r=>r.abort());
+ await context.route('https://twjpjzalyvbsdpbzhqln.supabase.co/functions/v1/**',async route=>{
+  const req=route.request(),name=new URL(req.url()).pathname.split('/').pop();let body={},status=200;
+  if(name==='auth-session'){if(sessionFailure){status=503;body={error:'offline'};}else body={driver,access_token:'test-token'};}
+  if(name==='driver-profile'){
+   if(req.method()==='POST'){if(failSave){status=503;body={error:'offline'};}else{saved=req.postDataJSON();driver={...driver,display_name:saved.displayName,nickname:saved.nickname,team_name:saved.teamName||null,preferred_gt3:saved.preferredGt3||null,car_number:saved.carNumber||null,games_played:saved.gamesPlayed,games_to_discover:saved.gamesToDiscover,profile_confirmed_at:'2026-09-28T12:00:00Z'};body={driver};}}else body={driver};
+  }
+  if(name==='public-leaderboard')body={drivers:[]};
+  if(name==='public-driver')body={driver};
+  if(name==='public-driver-sectors')body={sectors:[]};
+  await route.fulfill({status,contentType:'application/json',body:JSON.stringify(body)});
+ });
+ const page=await context.newPage();
+ await page.goto(origin+'/atxracing/fr/acc/profile.html');
+ await page.getByRole('heading',{name:'Prenez place sur la grille.'}).waitFor();
+ assert.equal(await page.locator('.header-languages a').count(),2);assert.equal(await page.locator('.footer-languages a').count(),2);
+ await page.screenshot({path:path.join(output,'profile-guest-desktop.png'),fullPage:true});
+ await page.evaluate(()=>sessionStorage.setItem('atx-racing-session','test-token'));
+ await page.reload();await page.getByLabel('Pseudo',{exact:true}).waitFor();
+ await page.getByLabel('Pseudo',{exact:true}).fill('Mon pseudo');
+ await page.getByLabel('Nom public',{exact:true}).fill('Nom public test');
+ await page.getByRole('button',{name:'Continuer',exact:true}).click();
+ await page.getByLabel('GT3 préférée',{exact:true}).fill('Porsche 911 GT3 R');
+ await page.locator('[name=gamesPlayed][value=acc]').check();
+ await page.locator('[name=gamesToDiscover][value=ace]').check();
+ await page.getByRole('button',{name:'Retour',exact:true}).click();assert.equal(await page.getByLabel('Pseudo',{exact:true}).inputValue(),'Mon pseudo');
+ await page.locator('.header-languages a[lang=en]').click();await page.getByLabel('Nickname',{exact:true}).waitFor();
+ assert.equal(await page.getByLabel('Nickname',{exact:true}).inputValue(),'Mon pseudo');
+ await page.getByRole('button',{name:'Continue',exact:true}).click();assert.equal(await page.getByLabel('Preferred GT3',{exact:true}).inputValue(),'Porsche 911 GT3 R');
+ await page.getByRole('button',{name:'Continue',exact:true}).click();
+ failSave=true;await page.getByRole('button',{name:'Confirm and save',exact:true}).click();await page.getByText('Could not save. Your answers have been kept; please try again.',{exact:true}).waitFor();
+ failSave=false;await page.getByRole('button',{name:'Confirm and save',exact:true}).click();await page.getByText('Profile saved to your account.',{exact:true}).waitFor();
+ assert.equal(saved.nickname,'Mon pseudo');assert.deepEqual(saved.gamesPlayed,['acc']);assert.equal(saved.teamName,'');
+ assert.equal(await page.evaluate(()=>localStorage.getItem('atx-profile-draft-v1-11111111-1111-4111-8111-111111111111')),null);
+ await page.locator('.game-switch a',{hasText:'ACE'}).click();await page.getByText('Your identity is shared. Your ACE history will appear when ACE data becomes available.',{exact:true}).waitFor();
+ assert.equal(await page.getByText('ACC test race',{exact:true}).count(),0);assert.equal(await page.locator('.account-stats').count(),0);
+ await page.getByRole('button',{name:'Edit my profile',exact:true}).click();
+ await page.setViewportSize({width:390,height:844});
+ assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'mobile overflow');
+ await page.screenshot({path:path.join(output,'profile-owner-mobile.png'),fullPage:true});
+ sessionFailure=true;await page.reload();await page.getByRole('button',{name:'Try again',exact:true}).waitFor();
+ assert.equal(await page.evaluate(()=>sessionStorage.getItem('atx-racing-session')),'test-token');
+ sessionFailure=false;await page.getByRole('button',{name:'Try again',exact:true}).click();await page.getByRole('button',{name:'Edit my profile',exact:true}).waitFor();
+ await page.goto(origin+'/atxracing/en/acc/profile.html?driver='+driver.id);await page.locator('.public-driver-card').waitFor();
+ assert((await page.locator('.footer-languages a[lang=fr]').getAttribute('href')).includes('?driver='+driver.id));
+ assert.deepEqual(errors,[]);
+ console.log('Browser checks passed: guest, wizard, draft, FR/EN switching, failed/successful save, ACE isolation, mobile, transient session failure, public profile.');
+})().catch(e=>{console.error(e);process.exitCode=1;}).finally(async()=>{if(browser)await browser.close();server.close();});

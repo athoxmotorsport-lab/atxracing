@@ -1,0 +1,3 @@
+[functions.driver-profile]
+# Existing opaque Steam sessions are authenticated inside the function.
+verify_jwt = false
