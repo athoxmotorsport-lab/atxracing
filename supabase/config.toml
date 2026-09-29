@@ -1,3 +1,7 @@
 [functions.driver-profile]
 # Existing opaque Steam sessions are authenticated inside the function.
 verify_jwt = false
+
+[functions.atx-event-admin]
+# Checks the existing Steam session and admin role on every request.
+verify_jwt = false

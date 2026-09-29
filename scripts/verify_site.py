@@ -20,7 +20,7 @@ def local_path(url):
  if candidate.is_dir():candidate=candidate/'index.html'
  return candidate
 
-assert len(list(ROOT.rglob('*.html')))==61
+assert len(list(ROOT.rglob('*.html')))==63
 for path in ROOT.rglob('*.html'):
  for tag,attrs in page(path.relative_to(ROOT)):
   for key in ('href','src'):
@@ -60,6 +60,7 @@ assert (ROOT/'assets/site.min.js').is_file() and (ROOT/'assets/site.min.css').is
 assert (ROOT/'assets/ranking.min.js').is_file()
 for asset in ('account.min.js','events.min.js','circuit-images.min.js'):
  assert (ROOT/'assets'/asset).is_file()
+assert (ROOT/'assets/admin.min.js').is_file()
 for language in ('fr','en'):
  ranking=(ROOT/language/'acc/ranking.html').read_text()
  assert all(f'data-view="{view}"' in ranking for view in ('points','circuit','driver','team'))
@@ -69,10 +70,12 @@ for language in ('fr','en'):
  assert 'id="circuit-grid"' in records and BASE+'assets/circuit-images.min.js' in records
  profile=(ROOT/language/'acc/profile.html').read_text()
  assert 'id="account-app"' in profile and BASE+'assets/account.min.js' in profile
+ admin=(ROOT/language/'acc/admin.html').read_text()
+ assert 'id="admin-app"' in admin and BASE+'assets/admin.min.js' in admin
  for section in ('calendar','archives','event','course'):
   assert BASE+'assets/events.min.js' in (ROOT/language/'acc'/f'{section}.html').read_text()
  for section in ('worldgt','daily-race','ballade'):
   assert BASE+'assets/events.min.js' in (ROOT/language/'acc'/f'{section}.html').read_text()
 for language in ('de','es','it'):
  assert not (ROOT/language).exists(), 'Only FR and EN should be published'
-print('Verified 61 pages, assets, root mirror, FR/EN flags, ACC formats and Steam profile')
+print('Verified 63 pages, assets, root mirror, FR/EN flags, ACC formats, Steam profile and race administration')
