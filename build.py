@@ -6,6 +6,8 @@ import shutil
 from content import COPY, RANKING_UI, EXTRA, RULES, PENALTIES, FORMATS, PRIVACY
 R=Path(__file__).parent/'dist'
 BASE=environ.get('ATX_BASE_PATH','/atxracing/').rstrip('/')+'/'
+for image in ('site-background.jpg','landing-banner.jpg'):
+ shutil.copy2(Path(__file__).parent/'media'/image,R/'assets'/image)
 CSS=(Path(__file__).parent/'src/site.css').read_text()
 CSS=re.sub(r'/\*.*?\*/','',CSS,flags=re.S)
 CSS=re.sub(r'\s+',' ',CSS)
@@ -29,12 +31,10 @@ T={
 T={lang:T[lang] for lang in ('fr','en')}
 language_names={'fr':'Français','en':'English'}
 def selector(game):
- image='Competizione' if game=='acc' else 'EVO'
- choices=''.join(f'<a href="/{lang}/{game}/" hreflang="{lang}" lang="{lang}" aria-label="{escape(name)}"><img src="/assets/flag-{lang}.svg" alt=""><span class="sr-only">{escape(name)}</span></a>' for lang,name in language_names.items())
- out=f'<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#08090c"><title>{game.upper()} · ATXRACING</title><link rel="stylesheet" href="/assets/site.min.css"></head><body data-page="selector"><main class="selection"><img class="selection-image" src="/assets/{game}-banner.webp" alt="Assetto Corsa {image}"><nav class="flag-choices" aria-label="Choisir une langue / Choose a language">{choices}</nav></main></body></html>'
+ out=f'<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="refresh" content="0;url={BASE}fr/{game}/"><title>{game.upper()} · ATXRACING</title><link rel="canonical" href="/fr/{game}/"></head><body><main><p><a href="/fr/{game}/">{game.upper()} →</a></p></main></body></html>'
  write(R/game/'index.html',out)
 def page(lang,game,section):
- t={**T[lang], **EXTRA[lang], **{key:value[0] for key,value in FORMATS[lang].items()},'privacy':PRIVACY[lang]['title']}; v={**COPY[lang], **RANKING_UI[lang], **EXTRA[lang], **{key+'_lead':value[1] for key,value in FORMATS[lang].items()},'privacy_lead':PRIVACY[lang]['lead']}; t['course']=t['courses'];v['course_lead']=v['courses_lead'];t['admin']='Administration des courses' if lang=='fr' else 'Race administration';v['admin_lead']='Importez une page SimGrid, préparez chaque manche, vérifiez puis publiez.' if lang=='fr' else 'Import a SimGrid page, prepare each round, review and publish.';title=t.get(section,t['choose']); root='/' if not game else f'/{lang}/{game}/'
+ t={**T[lang], **EXTRA[lang], **{key:value[0] for key,value in FORMATS[lang].items()},'privacy':PRIVACY[lang]['title']}; v={**COPY[lang], **RANKING_UI[lang], **EXTRA[lang], **{key+'_lead':value[1] for key,value in FORMATS[lang].items()},'privacy_lead':PRIVACY[lang]['lead']}; t['course']=t['courses'];v['course_lead']=v['courses_lead'];t['about']='À propos' if lang=='fr' else 'About';t['admin']='Administration des courses' if lang=='fr' else 'Race administration';v['admin_lead']='Importez une page SimGrid, préparez chaque manche, vérifiez puis publiez.' if lang=='fr' else 'Import a SimGrid page, prepare each round, review and publish.';title=t.get(section,t['choose']); root='/' if not game else f'/{lang}/{game}/'
  root=f'/{lang}/{game or "acc"}/'
  nav='<nav class="primary-nav" aria-label="Navigation">'+''.join(f'<a href="{root}{sec}.html" '+('aria-current="page"' if section==sec else '')+f'>{t[sec]}</a>' for sec in ['courses','calendar','ranking','records','archives','rules','profile'])+'</nav>'
  switch=f'<nav class="game-switch" aria-label="Jeu / Game"><a href="/{lang}/acc/" '+('aria-current="true"' if game=='acc' else '')+f'>ACC</a><a href="/{lang}/ace/" '+('aria-current="true"' if game=='ace' else '')+'>ACE</a></nav>'
@@ -43,8 +43,12 @@ def page(lang,game,section):
  head=f'<!doctype html><html lang="{lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#050505"><meta name="atx-base" content="{BASE}"><meta name="description" content="ATXRACING · ACC & ACE"><title>{escape(title)} · ATXRACING</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&amp;family=Inter:wght@400;500;600;700;800&amp;family=Rajdhani:wght@600;700&amp;display=swap" rel="stylesheet"><link rel="stylesheet" href="/assets/site.min.css"></head><body data-game="{game}" data-page="{section}"><header class="topbar"><div class="wrap top-inner"><a class="brand" href="/" aria-label="ATXRACING"><img src="/assets/logo.webp" alt="ATXRACING"></a>{switch}{nav}{languages}{steam}</div></header>'
  footer=f'<footer class="footer"><div class="wrap"><span>© 2026 ATXRACING</span><span><a href="https://discord.com/invite/dgyJJYTSsD">Discord</a> · <a href="https://www.thesimgrid.com/communities/atxracing">SimGrid</a> · <a href="/{lang}/{game or "acc"}/privacy.html">{escape(t["privacy"])}</a></span>{languages.replace("header-languages","footer-languages")}</div></footer>'
  if section=='home':
-  # The supplied banner itself is the league chooser; keep its ACC and ACE artwork intact.
-  body=f'<main class="gateway"><div class="gateway-art"><img src="/assets/banner.webp" alt="ATXRACING · ACC à gauche, ACE à droite" fetchpriority="high"><a class="gateway-link gateway-acc" href="/acc/" aria-label="{escape(t["enter"])} ACC"><span class="sr-only">ACC — {escape(t["acc"])}</span></a><a class="gateway-link gateway-ace" href="/ace/" aria-label="{escape(t["enter"])} ACE"><span class="sr-only">ACE — {escape(t["ace"])}</span></a></div></main>'
+  # The supplied image contains the three visual targets. Each stays keyboard-accessible.
+  about='À propos' if lang=='fr' else 'About'
+  banner_alt='ATXRACING · ACC à gauche, la ligue au centre, ACE à droite' if lang=='fr' else 'ATXRACING · ACC on the left, the league in the centre, ACE on the right'
+  body=f'<main class="gateway"><div class="gateway-art"><img src="/assets/landing-banner.jpg" alt="{escape(banner_alt)}" fetchpriority="high" width="2560" height="1440"><a class="gateway-link gateway-acc" href="/{lang}/acc/" aria-label="ACC — {escape(t["acc"])}"><span class="sr-only">ACC</span></a><a class="gateway-link gateway-about" href="/{lang}/about.html" aria-label="{escape(about)}"><span class="sr-only">{escape(about)}</span></a><a class="gateway-link gateway-ace" href="/{lang}/ace/" aria-label="ACE — {escape(t["ace"])}"><span class="sr-only">ACE</span></a></div><nav class="gateway-mobile-nav" aria-label="Navigation"><a href="/{lang}/acc/">ACC</a><a href="/{lang}/about.html">{escape(about)}</a><a href="/{lang}/ace/">ACE</a></nav></main>'
+ elif section=='about':
+  body=f'<main class="wrap content about-content"><section class="about-empty"><span class="eyebrow">ATXRACING</span><h1>{escape(t["about"])}</h1></section></main>'
  else:
   main='<main class="wrap content">'
   if section=='league':
@@ -84,6 +88,7 @@ def page(lang,game,section):
  path=R/lang/(game or '')/('index.html' if section in ('home','league') else section+'.html');write(path,out)
 for l in T:
  page(l,'','home')
+ page(l,'','about')
  for g in ('acc','ace'):
   for s in ('league','courses','worldgt','daily-race','ballade','calendar','ranking','records','archives','event','course','rules','privacy','profile')+(('admin',) if g=='acc' else ()):page(l,g,s)
 (R/'index.html').write_text((R/'fr/index.html').read_text())
