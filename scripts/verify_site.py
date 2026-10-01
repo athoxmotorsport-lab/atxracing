@@ -20,7 +20,7 @@ def local_path(url):
  if candidate.is_dir():candidate=candidate/'index.html'
  return candidate
 
-assert len(list(ROOT.rglob('*.html')))==63
+assert len(list(ROOT.rglob('*.html')))==65
 for path in ROOT.rglob('*.html'):
  for tag,attrs in page(path.relative_to(ROOT)):
   for key in ('href','src'):
@@ -30,18 +30,22 @@ for generated in ROOT.rglob('*'):
  if generated.is_file():
   mirrored=ROOT.parent/generated.relative_to(ROOT)
   assert mirrored.is_file() and mirrored.read_bytes()==generated.read_bytes(),f'missing or stale Pages root file: {mirrored}'
-for path in ('index.html','fr/index.html'):
+for path,lang in (('index.html','fr'),('fr/index.html','fr'),('en/index.html','en')):
  tags=page(path)
  assert any(t=='header' for t,_ in tags) and any(t=='footer' for t,_ in tags)
- assert [a['href'] for t,a in tags if t=='a' and 'gateway-link' in a.get('class','')]==[BASE+'acc/',BASE+'ace/']
- assert any(t=='img' and a.get('src')==BASE+'assets/banner.webp' for t,a in tags)
+ assert len([1 for t,a in tags if t=='nav' and a.get('class')=='header-languages'])==1
+ assert [a['href'] for t,a in tags if t=='a' and 'gateway-link' in a.get('class','')]==[BASE+f'{lang}/acc/',BASE+f'{lang}/about.html',BASE+f'{lang}/ace/']
+ assert any(t=='img' and a.get('src')==BASE+'assets/landing-banner.jpg' for t,a in tags)
 for game in ('acc','ace'):
  tags=page(f'{game}/index.html')
  assert not any(t in ('header','footer') for t,_ in tags)
- assert [a['src'] for t,a in tags if t=='img'][0]==BASE+f'assets/{game}-banner.webp'
- assert [a['href'] for t,a in tags if t=='a']==[BASE+f'{lang}/{game}/' for lang in ('fr','en')]
- assert [a['src'] for t,a in tags if t=='img'][1:]==[BASE+f'assets/flag-{lang}.svg' for lang in ('fr','en')]
+ assert [a['href'] for t,a in tags if t=='a']==[BASE+f'fr/{game}/']
+ assert any(t=='meta' and a.get('http-equiv')=='refresh' and BASE+f'fr/{game}/' in a.get('content','') for t,a in tags)
 for lang in ('fr','en'):
+ about=page(f'{lang}/about.html')
+ assert any(t=='h1' for t,_ in about)
+ assert len([1 for t,a in about if t=='nav' and a.get('class')=='header-languages'])==1
+ assert [a['href'] for t,a in about if t=='a' and a.get('hreflang') in ('fr','en')]==[BASE+f'{language}/about.html' for language in ('fr','en')]*2
  for game in ('acc','ace'):
   for section in ('index.html','courses.html','worldgt.html','daily-race.html','ballade.html','calendar.html','ranking.html','records.html','archives.html','event.html','course.html','rules.html','privacy.html','profile.html'):
    tags=page(f'{lang}/{game}/{section}')
@@ -52,6 +56,9 @@ for lang in ('fr','en'):
    assert [a['href'] for t,a in tags if t=='a' and a.get('hreflang') in ('fr','en')]==[BASE+f'{language}/{game}/{"" if section=="index.html" else section}' for language in ('fr','en')]*2
    assert not any(t=='div' and a.get('class')=='wrap languages' for t,a in tags)
 css=(ROOT/'assets/site.min.css').read_text()
+assert "url('site-background.jpg')" in css and 'position:fixed' in css
+for image in ('site-background.jpg','landing-banner.jpg'):
+ assert (ROOT/'assets'/image).is_file()
 assert '.league-overview{height:480px;' in css
 assert 'font-family:Rajdhani' in css
 assert 'value="OL"' not in (ROOT/'fr/acc/ranking.html').read_text()
@@ -78,4 +85,4 @@ for language in ('fr','en'):
   assert BASE+'assets/events.min.js' in (ROOT/language/'acc'/f'{section}.html').read_text()
 for language in ('de','es','it'):
  assert not (ROOT/language).exists(), 'Only FR and EN should be published'
-print('Verified 63 pages, assets, root mirror, FR/EN flags, ACC formats, Steam profile and race administration')
+print('Verified 65 pages, fixed artwork, three-way gateway, FR/EN headers, ACC formats, Steam profile and race administration')

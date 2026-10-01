@@ -1,21 +1,23 @@
 # ATXRACING — refonte ACC + ACE
 
-État au 25 septembre 2026. Ce document décrit la cible et distingue les écrans réellement livrés des intégrations à venir. L'ancien dépôt `athoxmotorsport-lab/atx-racing` reste la source de vérité ACC pendant la migration. Aucune donnée Supabase ni aucun serveur de course n'est modifié par ce dépôt.
+État au 1er octobre 2026. Ce document décrit la cible et distingue les écrans réellement livrés des intégrations à venir. L'ancien dépôt `athoxmotorsport-lab/atx-racing` reste une référence pour les données ACC pendant la migration.
 
 ## Direction produit et visuelle
 
-- Une bannière ATXRACING unique ouvre deux portes : moitié gauche ACC, moitié droite ACE.
-- Deuxième écran : recadrage correspondant de cette même bannière, suivi de cinq **images** de drapeaux. Le drapeau définit la langue avant l'arrivée dans la ligue.
+- La bannière fournie ouvre trois destinations directement : voiture gauche ACC, marque centrale À propos, voiture droite ACE. Le français est la langue d'entrée par défaut.
+- Le fond de circuit fourni reste fixe derrière toutes les pages. Les surfaces du contenu l'assombrissent légèrement pour maintenir la lisibilité sans masquer l'image.
+- Le choix FR/EN par drapeaux se fait dans l'en-tête des pages intérieures ; aucun sélecteur de langue ne s'interpose après la bannière.
 - Le même shell (logo, sélection ACC/ACE, navigation, profil) reste identifiable après l'entrée. ACC privilégie le rouge de compétition et des repères de chronométrage ; ACE emploie des surfaces acier, un contraste plus froid et le même rouge de marque pour les actions importantes. On évite deux jeux de composants à maintenir.
-- Sur petit écran : bannière et sélecteur restent utilisables, navigation horizontale accessible, tableaux défilables, états vides honnêtes.
+- Sur petit écran : les trois zones de la bannière restent cliquables et trois liens explicites apparaissent dessous ; navigation horizontale accessible, tableaux défilables, états vides honnêtes.
 - De la référence evohub.gg, retenir la lisibilité des sessions, les cartes compactes, la séparation entre courses, classements, chronos et fiches pilotes. Aucun contenu, logo ou résultat d'EVOHUB n'est repris.
 
 ## Arborescence cible
 
 ```text
-/                            Bannière / sélecteur de jeu
-/acc/ et /ace/               Image du jeu + choix de langue
-/{lang}/{game}/              Accueil de la ligue (lang = fr, en, de, it, es)
+/                            Bannière ACC / À propos / ACE
+/acc/ et /ace/               Redirection des anciens liens vers /fr/{game}/
+/{lang}/about.html           Page À propos (contenu à venir)
+/{lang}/{game}/              Accueil de la ligue (lang = fr ou en)
 /{lang}/{game}/courses.html  Calendrier, types de courses, inscriptions
 /{lang}/{game}/ranking.html  Classement pilotes/équipes et saison
 /{lang}/{game}/records.html  Meilleurs temps par circuit, parcours pilote
@@ -25,13 +27,13 @@ Cible future : /{lang}/{game}/rules/ et /{lang}/{game}/broadcast/
 Cible future : /{lang}/drivers/{driver_id}/ (identité et historique global)
 ```
 
-Les pages et les cinq langues de base existent. Les routes « cible future » nécessitent leurs données et leurs traitements. L'ancien classement par circuit et le parcours pilote du dépôt ACC doivent être portés avec leur logique de filtrage ; il ne faut pas recalculer les points côté navigateur.
+Les pages FR et EN sont générées. Les routes « cible future » nécessitent leurs données et leurs traitements. Il ne faut pas recalculer les points côté navigateur.
 
 ## Parcours clés
 
 | Personne | Entrée | Actions attendues | État actuel |
 | --- | --- | --- | --- |
-| Nouveau visiteur | Bannière → moitié ACC ou ACE → drapeau | Découvrir la ligue, voir les courses puis s'inscrire | Sélecteur et pages présents ; inscription ACC renvoie vers SimGrid quand un événement public en fournit le lien |
+| Nouveau visiteur | Bannière → ACC, À propos ou ACE | Découvrir la ligue, voir les courses puis s'inscrire | Accès direct en français ; changement de langue dans l'en-tête ; inscription ACC sur SimGrid quand un événement public fournit le lien |
 | Pilote connecté | Même compte Steam → sélecteur de jeu dans le header | Garder pseudo et avatar, comparer classement et chronos ACC/ACE, consulter l'historique global | Identité partagée et synchronisation de session à intégrer ; la connexion de l'ancien site reste sur son domaine |
 | Spectateur | Course → fiche événement | Repérer le prochain stream, ouvrir diffusion et replay liés à l'événement | Pages événements et flux de diffusion à ajouter lorsque leurs URLs fiables existent |
 
@@ -45,7 +47,7 @@ Les pages et les cinq langues de base existent. Les routes « cible future » n�
 | `RankingTable` | Saison, catégorie, rang, pilote/équipe, points | Calcul officiel côté backend, colonnes numériques tabulaires |
 | `RecordCard` | Circuit, voiture, pilote, meilleur tour valide | Chronos privés exclus ; une voiture liée au chrono |
 | `LiveBanner` | Événement, plateforme, lien de diffusion, horaire | Affiché « en direct » uniquement avec signal fiable |
-| `LanguageSwitch` | FR / EN / DE / IT / ES sous forme de drapeaux | URL correspondante, libellés accessibles au lecteur d'écran |
+| `LanguageSwitch` | FR / EN sous forme de drapeaux dans l'en-tête et le pied de page | URL correspondante, libellés accessibles au lecteur d'écran |
 
 ## Architecture de données proposée
 
@@ -65,7 +67,7 @@ Le Collector ACC en production continue de surveiller son dossier actuel. Défin
 
 | Étape | Résultat vérifiable | Dépendance |
 | --- | --- | --- |
-| 1. Portail et design | Bannière, image et langue, shell responsive, composants et contrôle des liens | Livré dans ce dépôt |
+| 1. Portail et design | Bannière à trois zones, fond fixe, langues dans l'en-tête, shell responsive et contrôle des liens | Livré dans ce dépôt |
 | 2. ACC sans rupture | Portage fidèle courses/classements/records/profil depuis l'ancien dépôt ; tests des points et confidentialité ; Steam sur le nouveau domaine | Accès API et configuration du domaine |
 | 3. ACE données | Format serveur confirmé, migration Supabase et RLS, adaptateur Collector, jeux de données d'essai | Serveur ACE et exemples de résultats |
 | 4. Fiches & diffusion | Fiches événement, règlement, inscription, URLs live/replay gérées | Données et canaux Twitch/YouTube décidés |

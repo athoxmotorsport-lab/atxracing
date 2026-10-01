@@ -84,3 +84,28 @@ body[data-page=profile] .masthead-copy h1{font-size:clamp(2.8rem,5vw,4.8rem)}
 .admin-app{max-width:1050px;margin:35px auto 0}.admin-content{display:grid;gap:22px}.admin-panel{padding:clamp(20px,3vw,36px);background:var(--surface);border:1px solid var(--line)}.admin-panel h2{margin:8px 0 24px}.admin-import{display:flex;align-items:end;gap:12px}.admin-import label{flex:1}.admin-import input,.admin-form input,.admin-form textarea,.admin-form select{min-width:0;width:100%;padding:12px 13px;color:#f4f1eb;background:#090a0c;border:1px solid #66676c;border-radius:3px;font:inherit}.admin-import button,.admin-app button{cursor:pointer;color:#fff}.admin-app button:disabled{opacity:.6;cursor:wait}.admin-import-results{display:grid;gap:12px;margin-top:24px}.admin-import-results:empty{display:none}.admin-import-results h3{margin-bottom:0}.admin-round{display:flex;align-items:center;gap:12px;padding:15px 18px;background:#090a0c;border:1px solid var(--line)}.admin-round b,.admin-round strong{font:700 1.3rem Rajdhani,sans-serif}.admin-round span,.admin-round small{color:#bfc0c5}.admin-round button{margin-left:auto;flex:none}.admin-draft-list{display:grid;gap:9px}.admin-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.admin-form label:has(textarea),.admin-form>.profile-note{grid-column:1/-1}.admin-form textarea{min-height:110px;resize:vertical}.admin-preview{margin:25px 0;padding:18px;border-left:3px solid #ef3345;background:#090a0c}.admin-preview p{margin:8px 0 0}.admin-editor .account-actions{display:flex;gap:12px;flex-wrap:wrap}.admin-editor .account-actions button{padding:11px 17px}.admin-app .form-status:not(:empty){padding:12px 15px;background:#15181c;border-left:3px solid #f12c3e}
 .race-description{max-width:800px;white-space:pre-wrap;margin:14px 0 25px;color:#d1d2d5}
 @media(max-width:760px){.admin-import{flex-direction:column;align-items:stretch}.admin-form{grid-template-columns:1fr}.admin-form label:has(textarea),.admin-form>.profile-note{grid-column:auto}.admin-round{align-items:flex-start;flex-wrap:wrap}.admin-round span,.admin-round small{width:100%}.admin-round button{margin-left:0}.admin-editor .account-actions>*{width:100%}}
+/* Supplied artwork remains fixed behind every page; content surfaces soften it for legibility. */
+html{background:#050505}
+body{background:transparent;isolation:isolate;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(2,4,8,.43),rgba(2,4,8,.59)),url('site-background.jpg') center center/cover no-repeat}
+body[data-page=home]::before{background-image:url('site-background.jpg')}
+body:not([data-page=home]){--surface:rgba(8,11,15,.82);--raised:rgba(17,20,25,.88)}
+body[data-game=ace]:not([data-page=home]){--surface:rgba(11,15,20,.83);--raised:rgba(21,26,33,.89)}
+.league-overview,.page-masthead,.format-card,.status-panel,.rule-card,.event-tile,.race-overview,.account-card,.admin-panel,.privacy-sections article{background:rgba(7,10,14,.84);backdrop-filter:blur(6px)}
+.footer{background:rgba(4,6,9,.86)}
+.content>.section-intro,.content>.return-link,.content>.intro{text-shadow:0 2px 12px #000}
+/* Three direct destinations on the supplied arrival banner. */
+.gateway{min-height:0;display:flex;flex-direction:column;justify-content:center}
+.gateway-art{width:100%;height:calc(100svh - 78px);min-height:420px;position:relative;overflow:hidden}
+.gateway-art img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+.gateway-link{top:0;bottom:0;background:transparent}
+.gateway-acc{left:16%;width:25%}
+.gateway-about{left:41%;width:20%}
+.gateway-ace{left:61%;right:auto;width:24%}
+.gateway-link:hover{background:#ffffff0c}
+.gateway-link:focus-visible{outline:4px solid #fff;outline-offset:-8px;background:#e9233430}
+.gateway-mobile-nav{display:none}
+.about-content{min-height:calc(100svh - 220px)}
+.about-empty{min-height:45vh;padding:clamp(30px,5vw,72px);border:1px solid var(--line);background:rgba(7,10,14,.79);backdrop-filter:blur(6px)}
+@media(max-width:1120px){.gateway-art{height:calc(100svh - 130px)}}
+@media(max-width:760px){.gateway{gap:16px;padding:16px 0;justify-content:center}.gateway-art{height:clamp(320px,48svh,480px);min-height:0;overflow:hidden}.gateway-art img{height:100%;object-fit:cover;object-position:48% center}.gateway-acc{left:0;width:33.333333%}.gateway-about{left:33.333333%;width:33.333333%}.gateway-ace{left:66.666666%;width:33.333334%}.gateway-mobile-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;width:min(100% - 32px,600px);margin:0 auto}.gateway-mobile-nav a{display:grid;place-items:center;min-height:50px;border:1px solid #ffffff88;background:#080b0edb;color:#fff;font:700 1.12rem Rajdhani,sans-serif;text-align:center;padding:8px}.gateway-mobile-nav a:hover,.gateway-mobile-nav a:focus-visible{border-color:#ff3045;background:#661420}.about-content{min-height:calc(100svh - 270px)}}
