@@ -1,10 +1,11 @@
 # ATXRACING — refonte ACC + ACE
 
-État au 1er octobre 2026. Ce document décrit la cible et distingue les écrans réellement livrés des intégrations à venir. L'ancien dépôt `athoxmotorsport-lab/atx-racing` reste une référence pour les données ACC pendant la migration.
+État au 4 octobre 2026. Ce document décrit la cible et distingue les écrans réellement livrés des intégrations à venir. L'ancien dépôt `athoxmotorsport-lab/atx-racing` reste une référence pour les données ACC pendant la migration.
 
 ## Direction produit et visuelle
 
-- La bannière fournie ouvre trois destinations directement : voiture gauche ACC, marque centrale À propos, voiture droite ACE. Le français est la langue d'entrée par défaut.
+- L'entrée publique affiche le message Steam en français puis en anglais, dans un ordre miroir, sans logo, en-tête ni pied de page. Les textes correspondants ont la même taille.
+- Après connexion, « Mon paddock » ouvre deux grandes cartes illustrées ACC et ACE ; le lien « À propos » reste accessible. La bannière à trois zones n'est plus l'accueil après connexion.
 - Le fond de circuit fourni reste fixe derrière toutes les pages. Les surfaces du contenu l'assombrissent légèrement pour maintenir la lisibilité sans masquer l'image.
 - Le choix FR/EN par drapeaux se fait dans l'en-tête des pages intérieures ; aucun sélecteur de langue ne s'interpose après la bannière.
 - Le même shell (logo, sélection ACC/ACE, navigation, profil) reste identifiable après l'entrée. ACC privilégie le rouge de compétition et des repères de chronométrage ; ACE emploie des surfaces acier, un contraste plus froid et le même rouge de marque pour les actions importantes. On évite deux jeux de composants à maintenir.
@@ -14,7 +15,8 @@
 ## Arborescence cible
 
 ```text
-/                            Bannière ACC / À propos / ACE
+/                            Entrée Steam bilingue
+/{lang}/                     Mon paddock après connexion, cartes ACC / ACE
 /acc/ et /ace/               Redirection des anciens liens vers /fr/{game}/
 /{lang}/about.html           Page À propos (contenu à venir)
 /{lang}/{game}/              Accueil de la ligue (lang = fr ou en)
@@ -33,8 +35,8 @@ Les pages FR et EN sont générées. Les routes « cible future » nécessitent 
 
 | Personne | Entrée | Actions attendues | État actuel |
 | --- | --- | --- | --- |
-| Nouveau visiteur | Bannière → ACC, À propos ou ACE | Découvrir la ligue, voir les courses puis s'inscrire | Accès direct en français ; changement de langue dans l'en-tête ; inscription ACC sur SimGrid quand un événement public fournit le lien |
-| Pilote connecté | Même compte Steam → sélecteur de jeu dans le header | Garder pseudo et avatar, comparer classement et chronos ACC/ACE, consulter l'historique global | Identité partagée et synchronisation de session à intégrer ; la connexion de l'ancien site reste sur son domaine |
+| Nouveau visiteur | Entrée bilingue → connexion Steam | Ouvrir le nouveau paddock, choisir ACC ou ACE et créer son profil | L'entrée exige une session avant les pages intérieures ; le retour Steam réel reste à valider avec un compte |
+| Pilote connecté | « Mon paddock » → ACC ou ACE | Garder pseudo et avatar, comparer classement et chronos ACC/ACE, consulter l'historique global | Identité Steam commune sur le nouveau site ; données sportives ACE et historique global à intégrer |
 | Spectateur | Course → fiche événement | Repérer le prochain stream, ouvrir diffusion et replay liés à l'événement | Pages événements et flux de diffusion à ajouter lorsque leurs URLs fiables existent |
 
 ## Composants réutilisables
@@ -55,7 +57,7 @@ Les pages FR et EN sont générées. Les routes « cible future » nécessitent 
 2. **ACC :** conserver les tables et fonctions existantes (`events`, `results`, `driver_ratings`, ingestion, classements). Les exposer derrière un contrat de lecture avec `game=acc` sans réécrire immédiatement leurs données ni changer les scores World GT. Le `game` texte existant dans `events` ne suffit pas à isoler tout le modèle de course.
 3. **ACE :** créer, dans une migration revue séparément, des tables `ace_circuits`, `ace_cars`, `ace_events`, `ace_results`, `ace_laps`, `ace_ingestion_batches`, `ace_ratings` (ou un schéma privé `ace`). Les tables contenant un pilote référencent `public.drivers(id)`. Ajouter `season_id`/catégorie et les contraintes d'unicité nécessaires aux imports idempotents. Choisir préfixes ou schéma après audit des droits Data API, RLS et fonctions existantes.
 4. **API publique :** lecture filtrée par `game`, saison et visibilité. Ne jamais exposer de résultat privé dans les chronos ou profils. CORS doit autoriser le domaine définitif en plus de l'ancien site ; l'origine GitHub Pages du même compte fonctionne déjà pour les fonctions publiques ACC, mais cela doit être vérifié en navigation réelle.
-5. **Compte :** le retour OpenID Steam de l'ancien site cible aujourd'hui `profil-pilote.html` sur `siteUrl()`. La migration de session doit être testée sur le nouveau domaine avant toute bascule ; un lien vers l'ancien profil n'est pas une authentification transversale.
+5. **Compte :** la fonction Steam existante accepte `/atxracing/fr/acc/profile.html` comme chemin de retour, mais refusait `/atxracing/` et renvoyait alors vers l'ancien profil. Le nouveau bouton emploie le chemin autorisé ; la page de profil transfère le code à l'entrée, qui échange le code puis ouvre « Mon paddock ». Ce parcours est testé avec une réponse de session simulée ; une connexion Steam complète doit encore être validée par le titulaire du compte.
 
 **Sécurité :** garder les privilèges d'import côté serveur/Collector, jamais de clé `service_role` dans JS public. RLS explicite pour chaque nouvelle table exposée. Les rôles de modération restent sur la couche commune, avec périmètre par jeu si nécessaire.
 
@@ -67,7 +69,7 @@ Le Collector ACC en production continue de surveiller son dossier actuel. Défin
 
 | Étape | Résultat vérifiable | Dépendance |
 | --- | --- | --- |
-| 1. Portail et design | Bannière à trois zones, fond fixe, langues dans l'en-tête, shell responsive et contrôle des liens | Livré dans ce dépôt |
+| 1. Portail et design | Entrée Steam bilingue, accueil « Mon paddock » à deux cartes, fond fixe, langues dans l'en-tête et menu d'icônes | Livré dans ce dépôt ; validation Steam réelle encore nécessaire |
 | 2. ACC sans rupture | Portage fidèle courses/classements/records/profil depuis l'ancien dépôt ; tests des points et confidentialité ; Steam sur le nouveau domaine | Accès API et configuration du domaine |
 | 3. ACE données | Format serveur confirmé, migration Supabase et RLS, adaptateur Collector, jeux de données d'essai | Serveur ACE et exemples de résultats |
 | 4. Fiches & diffusion | Fiches événement, règlement, inscription, URLs live/replay gérées | Données et canaux Twitch/YouTube décidés |
@@ -77,4 +79,4 @@ Le prompt mentionne Open Lobby, alors que sa suppression du site ACC a été dé
 
 ## Hébergement et domaine
 
-Le générateur utilise `/atxracing/` par défaut pour GitHub Pages et copie les pages et assets générés à la racine du dépôt, qui est la source Pages actuellement configurée (`main / (root)`). Un domaine personnalisé à la racine se construit avec `ATX_BASE_PATH=/ python3 build.py`. Conserver un seul site statique et une seule origine canonique évite la fragmentation de session et de SEO. Vérifier DNS, HTTPS, URL Steam de retour, CORS, Search Console, sitemap et redirections avant de remplacer l'ancien site. Le Site privé actuel reste une prévisualisation distincte ; la publication GitHub Pages dépend de l'activation des Pages sur le nouveau dépôt.
+Le générateur utilise `/atxracing/` par défaut pour GitHub Pages et copie les pages et assets générés à la racine du dépôt, qui est la source Pages actuellement configurée (`main / (root)`). Un domaine personnalisé à la racine se construit avec `ATX_BASE_PATH=/ python3 build.py`. Conserver un seul site statique et une seule origine canonique évite la fragmentation de session et de SEO. Vérifier le retour Steam réel, DNS, HTTPS, CORS, Search Console, sitemap et redirections avant de remplacer l'ancien site. GitHub Pages est actif pour ce dépôt.

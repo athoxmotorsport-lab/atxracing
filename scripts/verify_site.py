@@ -34,15 +34,16 @@ entry=page('index.html')
 assert not any(t in ('header','footer') for t,_ in entry)
 assert not any(t=='img' and 'logo' in a.get('src','') for t,a in entry)
 assert not any(t=='a' and 'gateway-link' in a.get('class','') for t,a in entry)
-assert any(t=='a' and 'auth-steam' in a.get('href','') for t,a in entry)
+assert any(t=='a' and f'return_path={BASE}fr/acc/profile.html' in a.get('href','') for t,a in entry)
 assert any(t=='script' and a.get('src')==BASE+'assets/entry.min.js' for t,a in entry)
 for path,lang in (('fr/index.html','fr'),('en/index.html','en')):
  tags=page(path)
  assert any(t=='header' for t,_ in tags) and any(t=='footer' for t,_ in tags)
  assert len([1 for t,a in tags if t=='nav' and a.get('class')=='header-languages'])==1
  assert len([1 for t,a in tags if t=='nav' and a.get('class')=='side-dock'])==1
- assert [a['href'] for t,a in tags if t=='a' and 'gateway-link' in a.get('class','')]==[BASE+f'{lang}/acc/',BASE+f'{lang}/about.html',BASE+f'{lang}/ace/']
- assert any(t=='img' and a.get('src')==BASE+'assets/landing-banner.jpg' for t,a in tags)
+ assert [a['href'] for t,a in tags if t=='a' and a.get('class')=='paddock-game']==[BASE+f'{lang}/acc/',BASE+f'{lang}/ace/']
+ assert [a['src'] for t,a in tags if t=='img' and a.get('src','').endswith('-banner.webp')]==[BASE+'assets/acc-banner.webp',BASE+'assets/ace-banner.webp']
+ assert any(t=='strong' and 'data-driver-name' in a for t,a in tags)
 for game in ('acc','ace'):
  tags=page(f'{game}/index.html')
  assert not any(t in ('header','footer') for t,_ in tags)
@@ -94,4 +95,4 @@ for language in ('fr','en'):
   assert BASE+'assets/events.min.js' in (ROOT/language/'acc'/f'{section}.html').read_text()
 for language in ('de','es','it'):
  assert not (ROOT/language).exists(), 'Only FR and EN should be published'
-print('Verified 65 pages, logo-free Steam entrance, side dock, fixed artwork, FR/EN pages, ACC profile and race administration')
+print('Verified 65 pages, Steam callback to new site, bilingual entrance, signed-in paddock, fixed artwork and FR/EN pages')
