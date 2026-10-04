@@ -17,6 +17,8 @@ CSS=re.sub(r'\s*([{}:;,>])\s*',r'\1',CSS).strip()
 (R/'assets/ranking.min.js').write_text((Path(__file__).parent/'src/ranking.js').read_text())
 (R/'assets/circuit-images.min.js').write_text((Path(__file__).parent/'src/circuit-images.js').read_text())
 (R/'assets/account.min.js').write_text((Path(__file__).parent/'src/account.js').read_text())
+(R/'assets/entry.min.js').write_text((Path(__file__).parent/'src/entry.js').read_text())
+(R/'assets/gate.min.js').write_text((Path(__file__).parent/'src/gate.js').read_text())
 (R/'assets/events.min.js').write_text((Path(__file__).parent/'src/events.js').read_text())
 (R/'assets/admin.min.js').write_text((Path(__file__).parent/'src/admin.js').read_text())
 def write(path,html):
@@ -30,17 +32,37 @@ T={
 'es':dict(select='Elige tu liga',acc='Carreras GT3 en Assetto Corsa Competizione',ace='La nueva escena de Assetto Corsa EVO',enter='Explorar la liga',courses='Carreras',ranking='Clasificaciones',records='Mejores vueltas',profile='Perfil de piloto',welcome='Dos juegos. Una comunidad.',choose='Elegir liga',acc_intro='Consulta las próximas carreras, los resultados y los pilotos de la liga ACC.',ace_intro='El espacio ACE está en preparación. Las carreras y clasificaciones aparecerán cuando se publiquen datos de ACE.',events_desc='Las próximas carreras de la liga.',ranking_desc='Puntos y rendimiento de pilotos por categoría.',records_desc='Las vueltas válidas más rápidas por circuito y coche.',profile_desc='Perfiles públicos de pilotos con estadísticas y resultados.',soon='Los datos de ACE aparecerán cuando el collector y la base de datos estén listos.',back='Todas las ligas',category='Categoría',circuit='Circuito',legacy='Sitio ACC actual')}
 T={lang:T[lang] for lang in ('fr','en')}
 language_names={'fr':'Français','en':'English'}
+
+DOCK_ICONS={
+ 'home':'<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',
+ 'courses':'<path d="M5 21V4m0 1c5-3 9 3 14 0v10c-5 3-9-3-14 0"/>',
+ 'calendar':'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 10h18m-13 4h3m2 0h3m-8 4h3"/>',
+ 'ranking':'<path d="M4 21h16M6 21v-7h4v7m0 0V9h4v12m0 0v-5h4v5M8 4l1 2 2 .3-1.5 1.5.4 2.2L8 9l-1.9 1 .4-2.2L5 6.3 7 6z"/>',
+ 'records':'<circle cx="12" cy="13" r="8"/><path d="M12 13l3-3m-3-9v4m-3-4h6M18 5l2 2"/>',
+ 'archives':'<rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v11h14V9m-9 5h4"/>',
+ 'rules':'<path d="M7 3h8l4 4v14H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zM15 3v5h5M9 13h6m-6 4h6"/>',
+ 'profile':'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'
+}
+
+def dock(lang,game,section,t):
+ items=[('home','Accueil' if lang=='fr' else 'Home',f'/{lang}/')]+[(s,t[s],f'/{lang}/{game or "acc"}/{s}.html') for s in ('courses','calendar','ranking','records','archives','rules','profile')]
+ links=[]
+ for name,label,url in items:
+  icon=f'<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">{DOCK_ICONS[name]}</svg>'
+  current=' aria-current="page"' if section==name else ''
+  links.append(f'<a href="{url}" aria-label="{escape(label)}" title="{escape(label)}"{current}>{icon}<span>{escape(label)}</span></a>')
+ return '<nav class="side-dock" aria-label="Navigation">'+''.join(links)+'</nav>'
 def selector(game):
  out=f'<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="refresh" content="0;url={BASE}fr/{game}/"><title>{game.upper()} · ATXRACING</title><link rel="canonical" href="/fr/{game}/"></head><body><main><p><a href="/fr/{game}/">{game.upper()} →</a></p></main></body></html>'
  write(R/game/'index.html',out)
 def page(lang,game,section):
  t={**T[lang], **EXTRA[lang], **{key:value[0] for key,value in FORMATS[lang].items()},'privacy':PRIVACY[lang]['title']}; v={**COPY[lang], **RANKING_UI[lang], **EXTRA[lang], **{key+'_lead':value[1] for key,value in FORMATS[lang].items()},'privacy_lead':PRIVACY[lang]['lead']}; t['course']=t['courses'];v['course_lead']=v['courses_lead'];t['about']='À propos' if lang=='fr' else 'About';t['admin']='Administration des courses' if lang=='fr' else 'Race administration';v['admin_lead']='Importez une page SimGrid, préparez chaque manche, vérifiez puis publiez.' if lang=='fr' else 'Import a SimGrid page, prepare each round, review and publish.';title=t.get(section,t['choose']); root='/' if not game else f'/{lang}/{game}/'
  root=f'/{lang}/{game or "acc"}/'
- nav='<nav class="primary-nav" aria-label="Navigation">'+''.join(f'<a href="{root}{sec}.html" '+('aria-current="page"' if section==sec else '')+f'>{t[sec]}</a>' for sec in ['courses','calendar','ranking','records','archives','rules','profile'])+'</nav>'
+ nav=dock(lang,game,section,t)
  switch=f'<nav class="game-switch" aria-label="Jeu / Game"><a href="/{lang}/acc/" '+('aria-current="true"' if game=='acc' else '')+f'>ACC</a><a href="/{lang}/ace/" '+('aria-current="true"' if game=='ace' else '')+'>ACE</a></nav>'
  languages='<nav class="header-languages" aria-label="Langue / Language">'+''.join(f'<a href="/{l}/{game+"/" if game else ""}{"" if section in ("league","home") else section+".html"}" hreflang="{l}" '+('aria-current="page"' if l==lang else '')+f' lang="{l}" aria-label="{escape(language_names[l])}" title="{escape(language_names[l])}"><img src="/assets/flag-{l}.svg" alt=""></a>' for l in T)+'</nav>'
- steam=f'<a class="steam-connect" data-steam-link href="https://twjpjzalyvbsdpbzhqln.supabase.co/functions/v1/auth-steam?return_path={BASE}{lang}/{game or "acc"}/profile.html" aria-label="Steam"><span class="steam-mark" aria-hidden="true">●</span><span data-steam-label>{"Connexion Steam" if lang=="fr" else "Sign in with Steam"}</span></a>'
- head=f'<!doctype html><html lang="{lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#050505"><meta name="atx-base" content="{BASE}"><meta name="description" content="ATXRACING · ACC & ACE"><title>{escape(title)} · ATXRACING</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&amp;family=Inter:wght@400;500;600;700;800&amp;family=Rajdhani:wght@600;700&amp;display=swap" rel="stylesheet"><link rel="stylesheet" href="/assets/site.min.css"></head><body data-game="{game}" data-page="{section}"><header class="topbar"><div class="wrap top-inner"><a class="brand" href="/" aria-label="ATXRACING"><img src="/assets/logo.webp" alt="ATXRACING"></a>{switch}{nav}{languages}{steam}</div></header>'
+ steam=f'<a class="steam-connect" data-steam-link href="/{lang}/{game or "acc"}/profile.html" aria-label="Steam"><span class="steam-mark" aria-hidden="true">●</span><span data-steam-label>{"Connexion Steam" if lang=="fr" else "Sign in with Steam"}</span></a>'
+ head=f'<!doctype html><html lang="{lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#050505"><meta name="atx-base" content="{BASE}"><meta name="description" content="ATXRACING · ACC & ACE"><title>{escape(title)} · ATXRACING</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&amp;family=Inter:wght@400;500;600;700;800&amp;family=Rajdhani:wght@600;700&amp;display=swap" rel="stylesheet"><link rel="stylesheet" href="/assets/site.min.css"></head><body class="site-locked" data-game="{game}" data-page="{section}"><header class="topbar"><div class="wrap top-inner"><a class="brand" href="/" aria-label="ATXRACING"><img src="/assets/logo.webp" alt="ATXRACING"></a>{switch}{languages}{steam}</div></header>{nav}'
  footer=f'<footer class="footer"><div class="wrap"><span>© 2026 ATXRACING</span><span><a href="https://discord.com/invite/dgyJJYTSsD">Discord</a> · <a href="https://www.thesimgrid.com/communities/atxracing">SimGrid</a> · <a href="/{lang}/{game or "acc"}/privacy.html">{escape(t["privacy"])}</a></span>{languages.replace("header-languages","footer-languages")}</div></footer>'
  if section=='home':
   # The supplied image contains the three visual targets. Each stays keyboard-accessible.
@@ -84,14 +106,15 @@ def page(lang,game,section):
     if section not in ('ranking','rules','privacy','worldgt','daily-race','ballade','admin'):main+='<div id="results" aria-live="polite"><p class="loading">…</p></div>'
   main+=f'<p class="return-link"><a href="/{lang}/">← {escape(t["back"])}</a></p></main>'
   body=main
- out=head+body+footer+('<script src="/assets/circuit-images.min.js" defer></script>' if section=='records' and game=='acc' else '')+('<script src="/assets/site.min.js" defer></script>' if game=='acc' and section in ('courses','records','profile') else '')+('<script src="/assets/ranking.min.js" defer></script>' if section=='ranking' and game=='acc' else '')+('<script src="/assets/events.min.js" defer></script>' if game=='acc' and section in ('calendar','archives','event','course','worldgt','daily-race','ballade') else '')+('<script src="/assets/admin.min.js" defer></script>' if section=='admin' else '')+('<script src="/assets/account.min.js" defer></script>' if game else '')+'</body></html>'
+ out=head+body+footer+'<script src="/assets/gate.min.js" defer></script>'+('<script src="/assets/circuit-images.min.js" defer></script>' if section=='records' and game=='acc' else '')+('<script src="/assets/site.min.js" defer></script>' if game=='acc' and section in ('courses','records','profile') else '')+('<script src="/assets/ranking.min.js" defer></script>' if section=='ranking' and game=='acc' else '')+('<script src="/assets/events.min.js" defer></script>' if game=='acc' and section in ('calendar','archives','event','course','worldgt','daily-race','ballade') else '')+('<script src="/assets/admin.min.js" defer></script>' if section=='admin' else '')+('<script src="/assets/account.min.js" defer></script>' if game else '')+'</body></html>'
  path=R/lang/(game or '')/('index.html' if section in ('home','league') else section+'.html');write(path,out)
 for l in T:
  page(l,'','home')
  page(l,'','about')
  for g in ('acc','ace'):
   for s in ('league','courses','worldgt','daily-race','ballade','calendar','ranking','records','archives','event','course','rules','privacy','profile')+(('admin',) if g=='acc' else ()):page(l,g,s)
-(R/'index.html').write_text((R/'fr/index.html').read_text())
+entry='''<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#090b10"><meta name="atx-base" content="'''+BASE+'''"><meta name="description" content="Rejoignez le paddock ATXRACING avec Steam"><title>Bienvenue dans le paddock · ATXRACING</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Rajdhani:wght@600;700&amp;display=swap" rel="stylesheet"><link rel="stylesheet" href="/assets/site.min.css"></head><body data-page="entry"><main class="entry"><div class="entry-content"><p class="entry-kicker">UN COMPTE. VOTRE PLACE SUR LA GRILLE.</p><h1>LE PADDOCK<br>VOUS <em>ATTEND.</em></h1><p class="entry-lead">Connectez-vous avec Steam pour accéder aux courses et créer votre profil pilote.</p><a class="entry-connect" href="https://twjpjzalyvbsdpbzhqln.supabase.co/functions/v1/auth-steam?return_path='''+BASE+'''" aria-label="Se connecter avec Steam"><span class="entry-steam-icon" aria-hidden="true">●</span>Se connecter avec Steam <span aria-hidden="true">↗</span></a><p class="entry-status" role="status" data-entry-status></p></div><p class="entry-games">COMPETIZIONE <span aria-hidden="true">│</span> ASSETTO CORSA EVO</p></main><script src="/assets/entry.min.js" defer></script></body></html>'''
+write(R/'index.html',entry)
 for g in ('acc','ace'):selector(g)
 
 # GitHub Pages for this repository is configured to publish main / (root).

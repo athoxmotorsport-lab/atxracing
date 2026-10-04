@@ -30,10 +30,17 @@ for generated in ROOT.rglob('*'):
  if generated.is_file():
   mirrored=ROOT.parent/generated.relative_to(ROOT)
   assert mirrored.is_file() and mirrored.read_bytes()==generated.read_bytes(),f'missing or stale Pages root file: {mirrored}'
-for path,lang in (('index.html','fr'),('fr/index.html','fr'),('en/index.html','en')):
+entry=page('index.html')
+assert not any(t in ('header','footer') for t,_ in entry)
+assert not any(t=='img' and 'logo' in a.get('src','') for t,a in entry)
+assert not any(t=='a' and 'gateway-link' in a.get('class','') for t,a in entry)
+assert any(t=='a' and 'auth-steam' in a.get('href','') for t,a in entry)
+assert any(t=='script' and a.get('src')==BASE+'assets/entry.min.js' for t,a in entry)
+for path,lang in (('fr/index.html','fr'),('en/index.html','en')):
  tags=page(path)
  assert any(t=='header' for t,_ in tags) and any(t=='footer' for t,_ in tags)
  assert len([1 for t,a in tags if t=='nav' and a.get('class')=='header-languages'])==1
+ assert len([1 for t,a in tags if t=='nav' and a.get('class')=='side-dock'])==1
  assert [a['href'] for t,a in tags if t=='a' and 'gateway-link' in a.get('class','')]==[BASE+f'{lang}/acc/',BASE+f'{lang}/about.html',BASE+f'{lang}/ace/']
  assert any(t=='img' and a.get('src')==BASE+'assets/landing-banner.jpg' for t,a in tags)
 for game in ('acc','ace'):
@@ -50,6 +57,7 @@ for lang in ('fr','en'):
   for section in ('index.html','courses.html','worldgt.html','daily-race.html','ballade.html','calendar.html','ranking.html','records.html','archives.html','event.html','course.html','rules.html','privacy.html','profile.html'):
    tags=page(f'{lang}/{game}/{section}')
    assert any(t=='nav' and a.get('class')=='game-switch' for t,a in tags)
+   assert any(t=='nav' and a.get('class')=='side-dock' for t,a in tags)
    assert any(t=='img' and a.get('src')==BASE+f'assets/{game}-banner.webp' for t,a in tags)
    assert len([1 for t,a in tags if t=='nav' and a.get('class')=='header-languages'])==1
    assert len([1 for t,a in tags if t=='nav' and a.get('class')=='footer-languages'])==1
@@ -68,6 +76,7 @@ assert (ROOT/'assets/ranking.min.js').is_file()
 for asset in ('account.min.js','events.min.js','circuit-images.min.js'):
  assert (ROOT/'assets'/asset).is_file()
 assert (ROOT/'assets/admin.min.js').is_file()
+assert (ROOT/'assets/entry.min.js').is_file() and (ROOT/'assets/gate.min.js').is_file()
 for language in ('fr','en'):
  ranking=(ROOT/language/'acc/ranking.html').read_text()
  assert all(f'data-view="{view}"' in ranking for view in ('points','circuit','driver','team'))
@@ -85,4 +94,4 @@ for language in ('fr','en'):
   assert BASE+'assets/events.min.js' in (ROOT/language/'acc'/f'{section}.html').read_text()
 for language in ('de','es','it'):
  assert not (ROOT/language).exists(), 'Only FR and EN should be published'
-print('Verified 65 pages, fixed artwork, three-way gateway, FR/EN headers, ACC formats, Steam profile and race administration')
+print('Verified 65 pages, logo-free Steam entrance, side dock, fixed artwork, FR/EN pages, ACC profile and race administration')

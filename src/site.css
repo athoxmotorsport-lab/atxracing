@@ -109,3 +109,31 @@ body[data-game=ace]:not([data-page=home]){--surface:rgba(11,15,20,.83);--raised:
 .about-empty{min-height:45vh;padding:clamp(30px,5vw,72px);border:1px solid var(--line);background:rgba(7,10,14,.79);backdrop-filter:blur(6px)}
 @media(max-width:1120px){.gateway-art{height:calc(100svh - 130px)}}
 @media(max-width:760px){.gateway{gap:16px;padding:16px 0;justify-content:center}.gateway-art{height:clamp(320px,48svh,480px);min-height:0;overflow:hidden}.gateway-art img{height:100%;object-fit:cover;object-position:48% center}.gateway-acc{left:0;width:33.333333%}.gateway-about{left:33.333333%;width:33.333333%}.gateway-ace{left:66.666666%;width:33.333334%}.gateway-mobile-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;width:min(100% - 32px,600px);margin:0 auto}.gateway-mobile-nav a{display:grid;place-items:center;min-height:50px;border:1px solid #ffffff88;background:#080b0edb;color:#fff;font:700 1.12rem Rajdhani,sans-serif;text-align:center;padding:8px}.gateway-mobile-nav a:hover,.gateway-mobile-nav a:focus-visible{border-color:#ff3045;background:#661420}.about-content{min-height:calc(100svh - 270px)}}
+
+/* Steam-first entrance, without the site logo or navigation chrome. */
+body[data-page=entry]{overflow-x:hidden}
+body[data-page=entry]::before{background:linear-gradient(180deg,rgba(2,5,10,.55),rgba(2,4,8,.64) 48%,rgba(2,3,7,.88)),url('site-background.jpg') center center/cover no-repeat}
+.entry{min-height:100svh;display:grid;place-items:center;position:relative;text-align:center;padding:72px 24px 100px}
+.entry-content{width:min(100%,650px);margin:auto}
+.entry-kicker{color:#ff6d70;font:700 clamp(.72rem,1vw,.88rem) Inter,sans-serif;letter-spacing:.32em;margin:0 0 22px}
+.entry h1{font:700 clamp(3.5rem,8.5vw,8rem)/.82 Rajdhani,sans-serif;letter-spacing:-.045em;margin:0;color:#fff;text-shadow:0 8px 30px #0009}
+.entry h1 em{font-style:normal;color:#ed233b}
+.entry-lead{max-width:470px;margin:32px auto 24px;color:#e5e5e8;font-size:clamp(1rem,1.5vw,1.18rem);line-height:1.55;text-shadow:0 2px 9px #000}
+.entry-connect{display:inline-flex;align-items:center;justify-content:center;gap:14px;min-height:58px;padding:12px 24px;background:#e11d35;border:1px solid #ff5c69;border-radius:4px;box-shadow:0 12px 36px #0008;color:#fff;font:700 1.1rem Rajdhani,sans-serif;transition:transform .2s,background .2s,box-shadow .2s}
+.entry-connect:hover,.entry-connect:focus-visible{transform:translateY(-3px);background:#f02c45;box-shadow:0 16px 42px #000a}
+.entry-steam-icon{display:grid;place-items:center;width:25px;height:25px;border-radius:50%;color:#e11d35;background:#fff;font-size:1rem}
+.entry-status{min-height:1.6em;margin:14px 0 0;color:#f7d7da;font-size:.86rem}
+.entry-games{position:absolute;bottom:clamp(25px,5vh,60px);left:0;right:0;margin:0;color:#fff;font:700 .85rem Rajdhani,sans-serif;letter-spacing:.22em;text-shadow:0 2px 10px #000}
+.entry-games span{color:#f13b4d;margin:0 14px}
+@media(max-width:600px){.entry{padding:55px 20px 90px}.entry h1{font-size:clamp(3.15rem,14vw,5rem)}.entry-kicker{letter-spacing:.19em}.entry-games{font-size:.69rem;letter-spacing:.1em}.entry-games span{margin:0 5px}}
+
+/* A compact visual navigation after sign-in. */
+body.site-locked>.topbar,body.site-locked>.side-dock,body.site-locked>main,body.site-locked>.footer{visibility:hidden}
+.side-dock{position:fixed;top:50%;left:18px;z-index:25;transform:translateY(-50%);display:flex;flex-direction:column;gap:5px;padding:9px;border:1px solid #ffffff30;border-radius:16px;background:rgba(5,8,12,.87);box-shadow:0 18px 45px #0009;backdrop-filter:blur(18px)}
+.side-dock a{position:relative;display:grid;place-items:center;width:48px;height:48px;border:1px solid transparent;border-radius:10px;color:#bfc6cf;transition:color .18s,background .18s,transform .18s}
+.side-dock a:hover,.side-dock a:focus-visible,.side-dock a[aria-current=page]{color:#fff;background:#b51d32;transform:translateX(3px)}
+.side-dock svg{width:25px;height:25px;flex:none}
+.side-dock a span{position:absolute;top:50%;left:calc(100% + 12px);transform:translate(-5px,-50%);padding:7px 12px;background:#10151df0;border:1px solid #ffffff40;border-radius:5px;box-shadow:0 8px 24px #000b;color:white;font:700 .95rem Rajdhani,sans-serif;white-space:nowrap;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s,transform .18s}
+.side-dock a:hover span,.side-dock a:focus-visible span{opacity:1;visibility:visible;transform:translate(0,-50%)}
+@media(min-width:1000px){body:not([data-page=entry]) .content{padding-left:78px}}
+@media(max-width:850px){.side-dock{top:auto;bottom:0;left:0;right:0;transform:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(2,54px);gap:2px;border-radius:12px 12px 0 0;padding:5px 7px max(5px,env(safe-area-inset-bottom))}.side-dock a{width:100%;height:54px;display:flex;flex-direction:column;gap:2px;transform:none!important}.side-dock svg{width:22px;height:22px}.side-dock a span{position:static;display:block;transform:none!important;opacity:1;visibility:visible;padding:0;border:0;background:none;box-shadow:none;font-size:.65rem;line-height:1;max-width:80px;overflow:hidden;text-overflow:ellipsis}.side-dock a:hover span,.side-dock a:focus-visible span{transform:none}.footer{padding-bottom:135px}}

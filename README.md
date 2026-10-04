@@ -1,8 +1,10 @@
 # ATXRACING · ACC + ACE
 
-Portail statique ACC / ACE, en français et en anglais. La bannière d’accueil mène directement à ACC, À propos ou ACE ; le français est la langue d’entrée par défaut. Les drapeaux français et britannique permettent de changer de langue dans l’en-tête et le pied de page des pages intérieures. La photo de circuit fournie reste fixe derrière le contenu du site.
+Portail statique ACC / ACE, en français et en anglais. La première page présente la connexion Steam sur la photo de circuit fournie, sans logo, en-tête ni pied de page. Après connexion, la bannière mène à ACC, À propos ou ACE. Les pages intérieures disposent d'un menu latéral à icônes et de drapeaux français et britannique dans l'en-tête. La photo reste fixe derrière le contenu.
 
-- Source : `build.py`, `content.py`, `src/site.css`, `src/site.js`, `src/ranking.js`, `src/circuit-images.js`, `src/events.js`, `src/account.js`, `src/admin.js`, `media/`, `docs/refonte-multijeu.md`.
+La porte d'entrée vérifie la session Steam existante côté navigateur. GitHub Pages restant un hébergement statique, ce contrôle guide la navigation mais ne protège pas les pages ou données publiques contre un accès direct hors navigateur ; les données privées restent protégées par les fonctions Supabase.
+
+- Source : `build.py`, `content.py`, `src/site.css`, `src/entry.js`, `src/gate.js`, `src/site.js`, `src/ranking.js`, `src/circuit-images.js`, `src/events.js`, `src/account.js`, `src/admin.js`, `media/`, `docs/refonte-multijeu.md`.
 - Sortie GitHub Pages : `dist/` et miroir généré à la racine (Pages est configuré sur `main / (root)`, chemins `/atxracing/`). Exécuter `python3 build.py`, puis `node --check dist/assets/site.min.js` et `python3 scripts/verify_site.py`.
 - Domaine personnalisé à la racine : `ATX_BASE_PATH=/ python3 build.py` ; revenir au préfixe GitHub Pages avec `python3 build.py`.
 - Les pages ACC utilisent les fonctions publiques du projet Supabase existant. Le compte Steam et le profil pilote sont partagés entre ACC et ACE grâce aux fonctions Auth du même projet. Les courses et classements ACE attendent encore un collecteur et leurs propres tables.
