@@ -66,7 +66,7 @@ for lang in ('fr','en'):
    assert not any(t=='div' and a.get('class')=='wrap languages' for t,a in tags)
 css=(ROOT/'assets/site.min.css').read_text()
 assert "url('site-background.jpg')" in css and 'position:fixed' in css
-for image in ('site-background.jpg','landing-banner.jpg'):
+for image in ('site-background.jpg','landing-banner.jpg','driver-levels-cutout.png'):
  assert (ROOT/'assets'/image).is_file()
 assert '.league-overview{height:480px;' in css
 assert 'font-family:Rajdhani' in css

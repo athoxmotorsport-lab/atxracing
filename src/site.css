@@ -48,9 +48,22 @@ body[data-page=profile] .page-masthead{display:block;min-height:0;background:non
 body[data-page=profile] .masthead-copy{padding:8px 0 24px}
 body[data-page=profile] .masthead-art{display:none}
 body[data-page=profile] .masthead-copy h1{font-size:clamp(2.8rem,5vw,4.8rem)}
-.driver-levels{margin:0;border:1px solid var(--line);background:#08090b;overflow:hidden}
-.driver-levels img{display:block;width:100%;height:auto;max-height:470px;object-fit:contain;background:#030303}
-.driver-levels figcaption{padding:12px 20px;font-size:.8rem;color:#bfc0c3;border-top:1px solid var(--line)}
+.driver-levels{--level-progress:0%;margin:0;background:transparent;overflow:hidden}
+.driver-levels-art{position:relative}
+.driver-levels-art::before{content:"";position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse 83% 72% at 50% 50%,rgba(2,4,10,.63),rgba(2,4,10,.42) 55%,transparent 100%);pointer-events:none}
+.driver-levels-art img{position:relative;z-index:1;display:block;width:100%;height:auto}
+.driver-levels-base{filter:grayscale(1) brightness(.53);opacity:.7}
+.driver-levels-reveal{position:absolute;z-index:2;inset:0;clip-path:inset(0 calc(100% - var(--level-progress)) 0 0);transition:clip-path 1.5s cubic-bezier(.2,.75,.2,1)}
+.driver-levels-reveal img{width:100%;height:100%;object-fit:fill}
+.driver-levels figcaption{padding:14px 0 0;color:#f0f0f2;text-shadow:0 2px 8px #000}
+.driver-levels-caption{display:flex;justify-content:space-between;gap:15px;align-items:baseline;font:700 clamp(.9rem,1.3vw,1.1rem) Rajdhani,sans-serif;text-transform:uppercase;letter-spacing:.06em}
+.driver-levels-current{color:#ff7886}
+.driver-levels-track{display:block;height:9px;margin:8px 0 10px;border:1px solid #ffffff80;border-radius:99px;background:#05060982;overflow:hidden}
+.driver-levels-fill{display:block;width:var(--level-progress);height:100%;background:linear-gradient(90deg,#d46b43 0%,#4b9ff0 27%,#e9233f 53%,#e9b94f 76%,#a460ff 100%);box-shadow:0 0 18px #ff4c6c;transition:width 1.5s cubic-bezier(.2,.75,.2,1)}
+.driver-levels-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;color:#c4c8d0;font:700 clamp(.65rem,1vw,.85rem) Rajdhani,sans-serif;letter-spacing:.1em;text-align:center}
+.driver-levels-steps span:first-child{text-align:left}.driver-levels-steps span:last-child{text-align:right}
+.driver-levels-steps .is-reached{color:#fff;text-shadow:0 0 9px #ff506a}
+@media(prefers-reduced-motion:reduce){.driver-levels-reveal,.driver-levels-fill{transition:none}}
 .profile-note{color:#bfc0c5;font-size:.92rem;line-height:1.65;max-width:760px}
 .profile-state{color:#bfc0c5;font-size:.85rem;letter-spacing:.04em}
 .account-avatar{position:relative}.account-avatar img{position:absolute;inset:0}
@@ -88,7 +101,6 @@ body[data-page=profile] .masthead-copy h1{font-size:clamp(2.8rem,5vw,4.8rem)}
 html{background:#050505}
 body{background:transparent;isolation:isolate;min-height:100vh}
 body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(2,4,8,.43),rgba(2,4,8,.59)),url('site-background.jpg') center center/cover no-repeat}
-body[data-page=home]::before{background-image:url('site-background.jpg')}
 body:not([data-page=home]){--surface:rgba(8,11,15,.82);--raised:rgba(17,20,25,.88)}
 body[data-game=ace]:not([data-page=home]){--surface:rgba(11,15,20,.83);--raised:rgba(21,26,33,.89)}
 .league-overview,.page-masthead,.format-card,.status-panel,.rule-card,.event-tile,.race-overview,.account-card,.admin-panel,.privacy-sections article{background:rgba(7,10,14,.84);backdrop-filter:blur(6px)}
@@ -157,6 +169,15 @@ body[data-page=entry]::before{background:linear-gradient(180deg,rgba(2,5,10,.55)
 .paddock-game-copy strong{color:#fff;font:700 clamp(3.3rem,6vw,5.3rem)/.85 Rajdhani,sans-serif}
 .paddock-game-action{margin-top:8px;color:#fff;font:700 1rem Inter,sans-serif}
 @media(max-width:760px){.paddock-home{padding-top:30px;padding-bottom:155px}.paddock-intro{margin-bottom:27px}.paddock-games{grid-template-columns:1fr;max-width:520px;gap:16px}.paddock-game{height:clamp(280px,78vw,410px)}.paddock-game-copy{inset:auto 20px 20px}}
+
+/* The signed-in header is one centered, balanced navigation group. */
+.top-inner{justify-content:center}
+.top-inner .header-languages,.top-inner .steam-connect{margin-left:0}
+.topbar{background:rgba(5,7,10,.82)}
+body[data-page=profile] .account-card,body[data-page=profile] .account-editor,body[data-page=profile] .account-history{background:rgba(5,8,13,.45);backdrop-filter:blur(7px)}
+body[data-page=profile] .masthead-copy{text-shadow:0 3px 14px #000}
+@media(max-width:550px){.top-inner{display:grid;grid-template-columns:auto auto auto;justify-content:center;align-items:center;gap:8px;padding:8px 0}.top-inner .brand img{width:64px;height:38px}.top-inner .game-switch{padding:2px}.top-inner .game-switch a{padding:5px 7px}.top-inner .steam-connect{max-width:125px;padding:6px;overflow:hidden}.top-inner .header-languages{grid-column:1/-1;grid-row:2;order:0;width:auto;justify-content:center;padding:5px 0 0;border:0;border-top:1px solid var(--line)}}
+@media(max-width:360px){.top-inner{gap:5px}.top-inner .brand img{width:52px}.top-inner .game-switch a{padding:5px}.top-inner .steam-connect{max-width:108px}}
 
 /* A compact visual navigation after sign-in. */
 body.site-locked>.topbar,body.site-locked>.side-dock,body.site-locked>main,body.site-locked>.footer{visibility:hidden}

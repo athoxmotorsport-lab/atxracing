@@ -19,6 +19,36 @@
  const token=()=>storage.get(key),authHeaders=()=>({Authorization:'Bearer '+token(),'Content-Type':'application/json'});
  async function request(path,options={}){const response=await fetch(endpoint+path,{...options,signal:AbortSignal.timeout(15000)});const data=await response.json().catch(()=>({}));if(!response.ok){const error=new Error(data.error||'request_failed');error.status=response.status;throw error;}return data;}
  const params=new URLSearchParams(location.search),page=document.body.dataset.page,preserved=new URLSearchParams();
+ const levelsUi=lang==='fr'?{current:'Niveau ACC publié',pending:'Niveau en attente de résultats',unavailable:'Niveau momentanément indisponible',ace:'Niveaux ACE à venir'}:{current:'Published ACC level',pending:'Level awaiting results',unavailable:'Level temporarily unavailable',ace:'ACE levels coming soon'};
+ const levelNames=['ROOKIE','CHALLENGER','PRO','ELITE','ALIEN'];
+ let currentLevel=0;
+ function syncPaceCard(){
+  if(game!=='acc'||!currentLevel)return;
+  const card=root?.querySelector('.driver-metrics article:first-child');if(!card)return;
+  card.querySelector('h3').textContent=levelNames[currentLevel-1];
+  card.querySelector('p').textContent=lang==='fr'?'Niveau ACC issu du classement publié.':'ACC level from the published standings.';
+ }
+ function setLevel(stage,message){
+  const figure=document.querySelector('[data-driver-levels]');if(!figure)return;
+  const value=Math.max(0,Math.min(5,stage));
+  currentLevel=value;
+  figure.style.setProperty('--level-progress',value*20+'%');
+  figure.querySelector('[data-level-status]').textContent=message;
+  figure.querySelector('[data-level-current]').textContent=value?levelNames[value-1]:'—';
+  const meter=figure.querySelector('[role=progressbar]');meter.setAttribute('aria-valuenow',String(value));meter.setAttribute('aria-valuetext',value?levelNames[value-1]:message);
+  figure.querySelectorAll('.driver-levels-steps span').forEach((item,index)=>item.classList.toggle('is-reached',index<value));
+  syncPaceCard();
+ }
+ async function renderLevel(driverId){
+  if(page!=='profile')return;
+  if(game!=='acc'){setLevel(0,levelsUi.ace);return;}
+  try{
+   const data=await request('public-leaderboard?category=ALL');
+   const row=(data.drivers||[]).find(item=>item.driver_id===driverId);
+   const stage=({rookie:1,challenger:2,pro:3,elite:4,alien:5})[String(row?.performance_class||'').toLowerCase()]||0;
+   setLevel(stage,stage?levelsUi.current:levelsUi.pending);
+  }catch{setLevel(0,levelsUi.unavailable);}
+ }
  if(['event','course'].includes(page)&&/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(params.get('slug')||params.get('event')||''))preserved.set('slug',params.get('slug')||params.get('event'));
  if(page==='profile'&&/^[0-9a-f-]{36}$/i.test(params.get('driver')||''))preserved.set('driver',params.get('driver'));
  if(['calendar','ranking'].includes(page)&&['WGT','DR','BA'].includes(params.get('type')?.toUpperCase()))preserved.set('type',params.get('type').toUpperCase());
@@ -47,7 +77,7 @@
  function owner(driver,message){if(!root)return;root.replaceChildren();document.querySelectorAll('#public-directory,#results').forEach(e=>e.hidden=true);
   const card=node('section','account-card'),hero=node('div','account-hero'),name=node('div');name.append(node('span','eyebrow',ui.welcome+' / '+game.toUpperCase()),node('h2','',driver.display_name),node('p','',driver.team_name||ui.noTeam));hero.append(avatar(driver),name);card.append(hero,node('p','profile-state',driver.profile_confirmed_at?ui.regular:ui.incomplete));if(message)card.append(node('p','form-status',message));
   const actions=node('div','account-actions');actions.append(button(driver.profile_confirmed_at?ui.edit:ui.finish,()=>editor(driver),'action'),link(ui.nextRace,base+lang+'/'+game+'/courses.html'));if(game==='acc')actions.append(link(ui.public,profileUrl(driver.id)));if(driver.roles?.includes('admin'))actions.append(link(lang==='fr'?'Administration des courses':'Race administration',base+lang+'/acc/admin.html'));
-  actions.append(button(ui.logout,async()=>{try{await request('auth-logout',{method:'POST',headers:authHeaders()});}catch{root.append(node('p','account-error',ui.loadError));return;}storage.remove(key);clearDraft(driver.id);location.href=profileUrl();}));card.append(actions);root.append(card,sporting(driver));personalLaps(driver);if(!driver.profile_confirmed_at||readDraft(driver.id))editor(driver,false);
+  actions.append(button(ui.logout,async()=>{try{await request('auth-logout',{method:'POST',headers:authHeaders()});}catch{root.append(node('p','account-error',ui.loadError));return;}storage.remove(key);clearDraft(driver.id);location.href=profileUrl();}));card.append(actions);root.append(card,sporting(driver));syncPaceCard();personalLaps(driver);if(!driver.profile_confirmed_at||readDraft(driver.id))editor(driver,false);
  }
  function editor(driver,focus=true){
   root.querySelector('#profile-editor')?.remove();const saved=readDraft(driver.id)||{};
@@ -75,7 +105,7 @@
  async function boot(){const fragment=new URLSearchParams(location.hash.slice(1)),code=fragment.get('steam_code'),failed=fragment.get('steam')==='error'||params.get('steam')==='error';if(code){history.replaceState(null,'',location.pathname+location.search);try{const data=await request('auth-session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code})});if(!storage.set(key,data.access_token))throw Error('storage');}catch{guest(ui.authError);return;}}
   if(params.has('driver')&&game==='ace'){root?.replaceChildren(node('p','profile-note',ui.unavailable));document.querySelector('#results')?.remove();}
   if(!token()){if(!params.has('driver'))guest(failed?ui.authError:null);return;}if(root&&!params.has('driver'))root.replaceChildren(node('p','',ui.loading));
-  try{const session=await request('auth-session',{headers:authHeaders()});heading(session.driver);if(root&&!params.has('driver')){const own=await request('driver-profile',{headers:authHeaders()});owner({...session.driver,...own.driver});}}
+  try{const session=await request('auth-session',{headers:authHeaders()});heading(session.driver);renderLevel(params.get('driver')||session.driver.id);if(root&&!params.has('driver')){const own=await request('driver-profile',{headers:authHeaders()});owner({...session.driver,...own.driver});}}
   catch(error){if(error.status===401){storage.remove(key);if(!params.has('driver'))guest(ui.authError);}else if(root&&!params.has('driver'))root.replaceChildren(node('p','account-error',ui.loadError),button(ui.retry,boot));}
  }
  boot();

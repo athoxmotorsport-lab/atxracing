@@ -6,7 +6,7 @@ import shutil
 from content import COPY, RANKING_UI, EXTRA, RULES, PENALTIES, FORMATS, PRIVACY
 R=Path(__file__).parent/'dist'
 BASE=environ.get('ATX_BASE_PATH','/atxracing/').rstrip('/')+'/'
-for image in ('site-background.jpg','landing-banner.jpg'):
+for image in ('site-background.jpg','landing-banner.jpg','driver-levels-cutout.png'):
  shutil.copy2(Path(__file__).parent/'media'/image,R/'assets'/image)
 CSS=(Path(__file__).parent/'src/site.css').read_text()
 CSS=re.sub(r'/\*.*?\*/','',CSS,flags=re.S)
@@ -84,8 +84,9 @@ def page(lang,game,section):
     main+='<section id="admin-app" class="admin-app" aria-live="polite"></section>'
    if section=='profile':
     intro='Votre identité. Votre rythme. Votre prochaine course.' if lang=='fr' else 'Your identity. Your pace. Your next race.'
-    legend='Les cinq niveaux de rythme · attribution en cours de définition' if lang=='fr' else 'The five pace levels · assessment rules being defined'
-    main+=f'<figure class="driver-levels"><img src="/assets/driver-levels.png" alt="Rookie · Challenger · Pro · Elite · Alien" width="1774" height="887"><figcaption>{legend}</figcaption></figure><section id="account-app" class="account-app" aria-live="polite"><p>{intro}</p></section><noscript><p>{"Activez JavaScript pour vous connecter et modifier votre profil." if lang=="fr" else "Enable JavaScript to sign in and edit your profile."}</p></noscript>'
+    level_wait='Niveau en attente de résultats' if lang=='fr' else 'Level awaiting results'
+    level_label='Progression du pilote' if lang=='fr' else 'Driver progression'
+    main+=f'<figure class="driver-levels" data-driver-levels><div class="driver-levels-art"><img class="driver-levels-base" src="/assets/driver-levels-cutout.png" alt="" width="1774" height="887"><div class="driver-levels-reveal" aria-hidden="true"><img src="/assets/driver-levels-cutout.png" alt="" width="1774" height="887"></div></div><figcaption><div class="driver-levels-caption"><span data-level-status>{level_wait}</span><span class="driver-levels-current" data-level-current>—</span></div><span class="driver-levels-track" role="progressbar" aria-label="{level_label}" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0" aria-valuetext="{level_wait}"><span class="driver-levels-fill"></span></span><span class="driver-levels-steps" aria-hidden="true"><span>ROOKIE</span><span>CHALLENGER</span><span>PRO</span><span>ELITE</span><span>ALIEN</span></span></figcaption></figure><section id="account-app" class="account-app" aria-live="polite"><p>{intro}</p></section><noscript><p>{"Activez JavaScript pour vous connecter et modifier votre profil." if lang=="fr" else "Enable JavaScript to sign in and edit your profile."}</p></noscript>'
    if section=='privacy':main+='<div class="privacy-sections">'+''.join(f'<article><span class="meta">{str(i).zfill(2)}</span><h2>{escape(heading)}</h2><p>{escape(copy)}</p></article>' for i,(heading,copy) in enumerate(PRIVACY[lang]['parts'],1))+'</div><p><a class="pill" href="mailto:athoxmotorsport@gmail.com">athoxmotorsport@gmail.com</a></p>'
    elif game=='ace' and section!='profile': main+=f'<section class="status-panel"><span class="eyebrow">ACE / {escape(v["published"])}</span><h2>{escape(v["league_ace"])}</h2><p>{escape(v["ace_pending"])}</p><a class="pill" href="/{lang}/acc/">{escape(v["back_acc"])} ↗</a></section>'
    else:

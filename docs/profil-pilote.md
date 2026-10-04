@@ -8,7 +8,7 @@
 - Le formulaire est prérempli depuis le compte, puis depuis son éventuel brouillon local.
 - Seuls le pseudo et le nom public sont requis. L'équipe vide s'affiche « Sans équipe » / « No team ».
 - Les préférences sont communes au compte ; les historiques sportifs restent propres au jeu.
-- Aucune attribution de niveau, de Safe, de régularité ou de récompense n'est déclenchée.
+- La jauge ACC affiche le niveau `performance_class` déjà publié dans le classement général. Elle ne calcule pas de nouveau classement. Sans niveau publié, elle reste vide. Le niveau ACE, le Safe, la régularité et les récompenses restent à définir.
 
 ## Serveur
 
@@ -34,4 +34,4 @@ La connexion interactive réelle doit être faite par le détenteur du compte St
 
 ## Décisions toujours ouvertes
 
-Rendu de l'illustration pour chaque niveau, seuils de rythme, formule de régularité et Safe, barèmes et récompenses. L'image complète apparaît comme légende des niveaux sans niveau attribué ; cette présentation peut être ajustée après validation.
+Seuils et attribution du niveau Challenger (absent du classement actuel), formule de régularité et Safe, barèmes et récompenses. Les cinq pilotes sont détourés au-dessus du fond fixe ; la jauge révèle les niveaux de gauche à droite selon la classe ACC publiée.
