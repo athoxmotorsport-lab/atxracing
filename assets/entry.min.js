@@ -19,21 +19,21 @@
  async function start(){
   if(code){
    history.replaceState(null,'',location.pathname+location.search);
-   status.textContent='Connexion Steam en cours…';
+   status.textContent='Connexion Steam en cours… / Signing in with Steam…';
    try{
     const data=await session({method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code})});
     if(!data.access_token||!saveToken(data.access_token))throw Error('storage');
     location.replace(destination);
-   }catch{status.textContent='La connexion Steam a échoué. Réessayez.';}
+   }catch{status.textContent='La connexion Steam a échoué. Réessayez. / Steam sign-in failed. Please try again.';}
    return;
   }
   const token=getToken();
   if(token){
-   status.textContent='Ouverture de votre espace…';
+   status.textContent='Ouverture de votre espace… / Opening your space…';
    try{await session({headers:{Authorization:'Bearer '+token}});location.replace(destination);return;}
    catch{clearToken();status.textContent='';}
   }
-  if(new URLSearchParams(location.search).get('steam')==='error'||params.get('steam')==='error')status.textContent='La connexion Steam a échoué. Réessayez.';
+  if(new URLSearchParams(location.search).get('steam')==='error'||params.get('steam')==='error')status.textContent='La connexion Steam a échoué. Réessayez. / Steam sign-in failed. Please try again.';
  }
  start();
 })();

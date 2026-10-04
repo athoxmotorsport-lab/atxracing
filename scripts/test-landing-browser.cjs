@@ -25,6 +25,14 @@ let browser;
  await page.goto(origin+'/atxracing/');
  assert.equal(await page.locator('header,footer,.brand,img').count(),0);
  assert.equal(await page.locator('.entry-connect').count(),1);
+ assert.equal(await page.locator('.entry-french').getAttribute('lang'),'fr');
+ assert.equal(await page.locator('.entry-english').getAttribute('lang'),'en');
+ assert.deepEqual(await page.locator('.entry-english > *').allTextContents(),[
+  'Sign in with Steam to access races and create your driver profile.',
+  'THE PADDOCK AWAITS YOU.',
+  'ONE ACCOUNT. YOUR PLACE ON THE GRID.'
+ ]);
+ assert.match(await page.locator('.entry-connect').innerText(),/Se connecter avec Steam\s+Sign in with Steam/);
  assert((await page.locator('.entry-connect').getAttribute('href')).includes('auth-steam?return_path=/atxracing/'));
  await page.screenshot({path:path.join(output,'steam-entry-desktop.png'),fullPage:true});
  await page.setViewportSize({width:390,height:844});

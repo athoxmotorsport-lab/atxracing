@@ -113,19 +113,25 @@ body[data-game=ace]:not([data-page=home]){--surface:rgba(11,15,20,.83);--raised:
 /* Steam-first entrance, without the site logo or navigation chrome. */
 body[data-page=entry]{overflow-x:hidden}
 body[data-page=entry]::before{background:linear-gradient(180deg,rgba(2,5,10,.55),rgba(2,4,8,.64) 48%,rgba(2,3,7,.88)),url('site-background.jpg') center center/cover no-repeat}
-.entry{min-height:100svh;display:grid;place-items:center;position:relative;text-align:center;padding:72px 24px 100px}
-.entry-content{width:min(100%,650px);margin:auto}
+.entry{min-height:100svh;display:grid;place-items:center;position:relative;text-align:center;padding:40px 24px 85px}
+.entry-content{width:min(100%,850px);margin:auto;transform:translateY(-12px)}
 .entry-kicker{color:#ff6d70;font:700 clamp(.72rem,1vw,.88rem) Inter,sans-serif;letter-spacing:.32em;margin:0 0 22px}
-.entry h1{font:700 clamp(3.5rem,8.5vw,8rem)/.82 Rajdhani,sans-serif;letter-spacing:-.045em;margin:0;color:#fff;text-shadow:0 8px 30px #0009}
+.entry h1{font:700 clamp(3.5rem,6vw,6rem)/.88 Rajdhani,sans-serif;letter-spacing:-.045em;margin:0;color:#fff;text-shadow:0 8px 30px #0009}
 .entry h1 em{font-style:normal;color:#ed233b}
 .entry-lead{max-width:470px;margin:32px auto 24px;color:#e5e5e8;font-size:clamp(1rem,1.5vw,1.18rem);line-height:1.55;text-shadow:0 2px 9px #000}
-.entry-connect{display:inline-flex;align-items:center;justify-content:center;gap:14px;min-height:58px;padding:12px 24px;background:#e11d35;border:1px solid #ff5c69;border-radius:4px;box-shadow:0 12px 36px #0008;color:#fff;font:700 1.1rem Rajdhani,sans-serif;transition:transform .2s,background .2s,box-shadow .2s}
+.entry-connect{display:inline-flex;align-items:center;justify-content:center;gap:14px;min-height:66px;padding:10px 24px;background:#e11d35;border:1px solid #ff5c69;border-radius:4px;box-shadow:0 12px 36px #0008;color:#fff;font:700 1.1rem Rajdhani,sans-serif;line-height:1.1;transition:transform .2s,background .2s,box-shadow .2s}
+.entry-connect small{display:block;margin-top:5px;font:600 .74rem Inter,sans-serif}
 .entry-connect:hover,.entry-connect:focus-visible{transform:translateY(-3px);background:#f02c45;box-shadow:0 16px 42px #000a}
 .entry-steam-icon{display:grid;place-items:center;width:25px;height:25px;border-radius:50%;color:#e11d35;background:#fff;font-size:1rem}
-.entry-status{min-height:1.6em;margin:14px 0 0;color:#f7d7da;font-size:.86rem}
+.entry-english{margin:25px auto 0;color:#e8e8ed;text-shadow:0 2px 9px #000}
+.entry-english-lead{max-width:470px;margin:0 auto 16px;font-size:clamp(.9rem,1.3vw,1rem);line-height:1.45}
+.entry-english h2{margin:0;color:#fff;font:700 clamp(2rem,3.5vw,3.2rem)/.95 Rajdhani,sans-serif;letter-spacing:-.025em}
+.entry-english h2 em{font-style:normal;color:#ed233b}
+.entry-english-kicker{margin:16px 0 0;color:#ff8a8d;font:700 clamp(.68rem,.9vw,.82rem) Inter,sans-serif;letter-spacing:.2em}
+.entry-status{min-height:1.6em;margin:12px 0 0;color:#f7d7da;font-size:.86rem}
 .entry-games{position:absolute;bottom:clamp(25px,5vh,60px);left:0;right:0;margin:0;color:#fff;font:700 .85rem Rajdhani,sans-serif;letter-spacing:.22em;text-shadow:0 2px 10px #000}
 .entry-games span{color:#f13b4d;margin:0 14px}
-@media(max-width:600px){.entry{padding:55px 20px 90px}.entry h1{font-size:clamp(3.15rem,14vw,5rem)}.entry-kicker{letter-spacing:.19em}.entry-games{font-size:.69rem;letter-spacing:.1em}.entry-games span{margin:0 5px}}
+@media(max-width:600px){.entry{padding:48px 20px 85px}.entry-content{transform:none}.entry h1{font-size:clamp(3.15rem,14vw,5rem)}.entry-kicker{letter-spacing:.19em}.entry-lead{margin:24px auto 20px}.entry-english{margin-top:22px}.entry-english h2{font-size:clamp(2rem,9vw,3rem)}.entry-games{font-size:.69rem;letter-spacing:.1em}.entry-games span{margin:0 5px}}
 
 /* A compact visual navigation after sign-in. */
 body.site-locked>.topbar,body.site-locked>.side-dock,body.site-locked>main,body.site-locked>.footer{visibility:hidden}
