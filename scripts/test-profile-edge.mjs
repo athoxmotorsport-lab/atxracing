@@ -4,7 +4,7 @@ let handler;
 globalThis.Deno={env:{get:name=>({SESSION_SECRET:'unit-test-secret',ATX_SITE_URL:'https://example.test',SUPABASE_URL:'https://database.test',SUPABASE_SERVICE_ROLE_KEY:'unit-test-service-key'})[name]},serve:fn=>{handler=fn;}};
 await import('../supabase/functions/driver-profile/index.ts');
 const token='a'.repeat(43),headers={Origin:'https://example.test',Authorization:'Bearer '+token,'Content-Type':'application/json'};
-const payload={nickname:'Pilot',displayName:'Public Pilot',teamName:'',carNumber:'',preferredGt3:'',gamesPlayed:['acc'],gamesToDiscover:['ace'],driver_id:'attacker-chosen-id'};
+const payload={nickname:'Pilot',displayName:'Public Pilot',teamName:'',carNumber:'',preferredGt3:'Porsche 992 GT3 R',favoriteCircuits:['spa','monza'],preferredRaceFormat:'sprint_60',gamesPlayed:['acc'],gamesToDiscover:['ace'],driver_id:'attacker-chosen-id'};
 const originalFetch=globalThis.fetch;
 test('custom authentication rejects missing, expired and revoked sessions before any profile query',async()=>{
  let calls=0;globalThis.fetch=async()=>{calls++;return Response.json([]);};
@@ -22,11 +22,19 @@ test('POST targets the verified session owner and strips attacker-controlled col
   assert(url.endsWith('/rpc/save_driver_profile'));sent=JSON.parse(options.body);return Response.json({id:'verified-owner',nickname:'Pilot'});
  };
  const response=await handler(new Request('https://edge.test',{method:'POST',headers,body:JSON.stringify(payload)}));
- assert.equal(response.status,200);assert.equal(sent.p_driver_id,'verified-owner');assert.equal('driver_id' in sent.p_profile,false);
+ assert.equal(response.status,200);assert.equal(sent.p_driver_id,'verified-owner');assert.equal('driver_id' in sent.p_profile,false);assert.deepEqual(sent.p_profile.favorite_circuits,['spa','monza']);
 });
-test('GET merges private preferences only for the session owner',async()=>{
- globalThis.fetch=async url=>url.includes('auth_sessions?')?Response.json([{driver_id:'verified-owner'}]):Response.json([{id:'verified-owner',driver_profile_preferences:{nickname:'Private nickname'}}]);
- const response=await handler(new Request('https://edge.test',{headers}));assert.deepEqual(await response.json(),{driver:{id:'verified-owner',nickname:'Private nickname'}});
+test('GET merges private preferences, Safe and official honours only for the session owner',async()=>{
+ globalThis.fetch=async url=>{
+  if(url.includes('auth_sessions?'))return Response.json([{driver_id:'verified-owner'}]);
+  if(url.includes('/drivers?'))return Response.json([{id:'verified-owner',driver_profile_preferences:{nickname:'Private nickname',favorite_circuits:['spa']}}]);
+  if(url.includes('/driver_ratings?'))return Response.json([{safety_class:'gold',safety_score:84}]);
+  if(url.includes('/event_honours?'))return Response.json([{event_id:'visible',award_type:'fast_driver'},{event_id:'hidden',award_type:'gentleman_driver'}]);
+  if(url.includes('/events?'))return Response.json([{id:'visible'}]);
+  if(url.includes('/results?'))return Response.json([{event_id:'visible',finish_position:2,status:'classified'}]);
+  throw Error('unexpected request');
+ };
+ const response=await handler(new Request('https://edge.test',{headers}));assert.deepEqual(await response.json(),{driver:{id:'verified-owner',nickname:'Private nickname',favorite_circuits:['spa'],rating:{safety_class:'gold',safety_score:84},awards:[{event_id:'visible',award_type:'fast_driver',finish_position:2,finish_status:'classified'}]}});
 });
 test('invalid input never reaches the write RPC',async()=>{
  let calls=0;globalThis.fetch=async()=>{calls++;return Response.json([{driver_id:'verified-owner'}]);};
