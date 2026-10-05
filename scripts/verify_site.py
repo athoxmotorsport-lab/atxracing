@@ -72,6 +72,8 @@ css=(ROOT/'assets/site.min.css').read_text()
 assert "url('site-background.jpg')" in css and 'position:fixed' in css
 for image in ('site-background.jpg','landing-banner.jpg','driver-levels-cutout.png'):
  assert (ROOT/'assets'/image).is_file()
+for image in ('circuits/red-bull-ring.jpg','events/monza-2026-09-09.jpg','events/nurburgring-gp-2026-09-11.webp'):
+ assert (ROOT/'assets'/image).is_file()
 assert '.league-overview{height:480px;' in css
 assert 'font-family:Rajdhani' in css
 assert 'value="OL"' not in (ROOT/'fr/acc/ranking.html').read_text()

@@ -11,6 +11,10 @@ for image in ('site-background.jpg','landing-banner.jpg','driver-levels-cutout.p
 (R/'assets'/'gt3').mkdir(parents=True,exist_ok=True)
 for photo in (Path(__file__).parent/'media'/'gt3').glob('*.jpg'):
  shutil.copy2(photo,R/'assets'/'gt3'/photo.name)
+for folder in ('circuits','events'):
+ (R/'assets'/folder).mkdir(parents=True,exist_ok=True)
+ for photo in (Path(__file__).parent/'media'/folder).iterdir():
+  if photo.is_file():shutil.copy2(photo,R/'assets'/folder/photo.name)
 CSS=(Path(__file__).parent/'src/site.css').read_text()
 CSS=re.sub(r'/\*.*?\*/','',CSS,flags=re.S)
 CSS=re.sub(r'\s+',' ',CSS)
@@ -116,7 +120,7 @@ def page(lang,game,section):
     if section=='profile' and game=='acc':main+='<div id="results" aria-live="polite"></div>'
   main+=f'<p class="return-link"><a href="/{lang}/">← {escape(t["back"])}</a></p></main>'
   body=main
- out=head+body+footer+'<script src="/assets/gate.min.js" defer></script>'+('<script src="/assets/insignia.min.js" defer></script>' if section=='profile' and game=='acc' else '')+('<script src="/assets/circuit-images.min.js" defer></script>' if game=='acc' and section in ('profile','records') else '')+('<script src="/assets/profile-media.min.js" defer></script>' if section=='profile' and game=='acc' else '')+('<script src="/assets/site.min.js" defer></script>' if game=='acc' and section in ('courses','records','profile','pilots') else '')+('<script src="/assets/ranking.min.js" defer></script>' if section=='ranking' and game=='acc' else '')+('<script src="/assets/events.min.js" defer></script>' if game=='acc' and section in ('calendar','archives','event','course','worldgt','daily-race','ballade') else '')+('<script src="/assets/admin.min.js" defer></script>' if section=='admin' else '')+('<script src="/assets/account.min.js" defer></script>' if game else '')+'</body></html>'
+ out=head+body+footer+'<script src="/assets/gate.min.js" defer></script>'+('<script src="/assets/insignia.min.js" defer></script>' if section=='profile' and game=='acc' else '')+('<script src="/assets/circuit-images.min.js" defer></script>' if game=='acc' and section in ('profile','records','calendar','archives','event','course','worldgt','daily-race','ballade') else '')+('<script src="/assets/profile-media.min.js" defer></script>' if section=='profile' and game=='acc' else '')+('<script src="/assets/site.min.js" defer></script>' if game=='acc' and section in ('courses','records','profile','pilots') else '')+('<script src="/assets/ranking.min.js" defer></script>' if section=='ranking' and game=='acc' else '')+('<script src="/assets/events.min.js" defer></script>' if game=='acc' and section in ('calendar','archives','event','course','worldgt','daily-race','ballade') else '')+('<script src="/assets/admin.min.js" defer></script>' if section=='admin' else '')+('<script src="/assets/account.min.js" defer></script>' if game else '')+'</body></html>'
  path=R/lang/(game or '')/('index.html' if section in ('home','league') else section+'.html');write(path,out)
 for l in T:
  page(l,'','home')
