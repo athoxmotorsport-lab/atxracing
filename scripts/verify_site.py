@@ -20,7 +20,7 @@ def local_path(url):
  if candidate.is_dir():candidate=candidate/'index.html'
  return candidate
 
-assert len(list(ROOT.rglob('*.html')))==67
+assert len(list(ROOT.rglob('*.html')))==71
 for path in ROOT.rglob('*.html'):
  for tag,attrs in page(path.relative_to(ROOT)):
   for key in ('href','src'):
@@ -36,6 +36,7 @@ assert not any(t=='img' and 'logo' in a.get('src','') for t,a in entry)
 assert not any(t=='a' and 'gateway-link' in a.get('class','') for t,a in entry)
 assert any(t=='a' and f'return_path={BASE}fr/acc/profile.html' in a.get('href','') for t,a in entry)
 assert any(t=='script' and a.get('src')==BASE+'assets/entry.min.js' for t,a in entry)
+assert not any(t=='script' and a.get('src')==BASE+'assets/community.min.js' for t,a in entry)
 for path,lang in (('fr/index.html','fr'),('en/index.html','en')):
  tags=page(path)
  assert any(t=='header' for t,_ in tags) and any(t=='footer' for t,_ in tags)
@@ -52,6 +53,7 @@ for game in ('acc','ace'):
 for lang in ('fr','en'):
  about=page(f'{lang}/about.html')
  assert any(t=='h1' for t,_ in about)
+ assert any(t=='script' and a.get('src')==BASE+'assets/community.min.js' for t,a in about)
  assert len([1 for t,a in about if t=='nav' and a.get('class')=='header-languages'])==1
  assert [a['href'] for t,a in about if t=='a' and a.get('hreflang') in ('fr','en')]==[BASE+f'{language}/about.html' for language in ('fr','en')]*2
  profile=page(f'{lang}/acc/profile.html')
@@ -59,13 +61,14 @@ for lang in ('fr','en'):
  assert not any(a.get('id')=='driver-search' for _,a in profile)
  assert any(a.get('id')=='driver-search' for _,a in pilots)
  for game in ('acc','ace'):
-  for section in ('index.html','courses.html','worldgt.html','daily-race.html','ballade.html','calendar.html','ranking.html','records.html','archives.html','event.html','course.html','rules.html','privacy.html','profile.html'):
+  for section in ('index.html','courses.html','worldgt.html','daily-race.html','ballade.html','calendar.html','ranking.html','records.html','archives.html','event.html','course.html','rules.html','privacy.html','profile.html','messages.html'):
    tags=page(f'{lang}/{game}/{section}')
    assert any(t=='nav' and a.get('class')=='game-switch' for t,a in tags)
    assert any(t=='nav' and a.get('class')=='side-dock' for t,a in tags)
    assert any(t=='img' and a.get('src')==BASE+f'assets/{game}-banner.webp' for t,a in tags)
    assert len([1 for t,a in tags if t=='nav' and a.get('class')=='header-languages'])==1
    assert len([1 for t,a in tags if t=='nav' and a.get('class')=='footer-languages'])==1
+   assert any(t=='script' and a.get('src')==BASE+'assets/community.min.js' for t,a in tags)
    assert [a['href'] for t,a in tags if t=='a' and a.get('hreflang') in ('fr','en')]==[BASE+f'{language}/{game}/{"" if section=="index.html" else section}' for language in ('fr','en')]*2
    assert not any(t=='div' and a.get('class')=='wrap languages' for t,a in tags)
 css=(ROOT/'assets/site.min.css').read_text()
@@ -80,7 +83,7 @@ assert 'value="OL"' not in (ROOT/'fr/acc/ranking.html').read_text()
 assert not list((ROOT/'assets').glob('site.js')) and not list((ROOT/'assets').glob('site.css'))
 assert (ROOT/'assets/site.min.js').is_file() and (ROOT/'assets/site.min.css').is_file()
 assert (ROOT/'assets/ranking.min.js').is_file()
-for asset in ('account.min.js','insignia.min.js','events.min.js','circuit-images.min.js'):
+for asset in ('account.min.js','insignia.min.js','events.min.js','circuit-images.min.js','community.min.js','messages.min.js'):
  assert (ROOT/'assets'/asset).is_file()
 assert (ROOT/'assets/admin.min.js').is_file()
 assert (ROOT/'assets/entry.min.js').is_file() and (ROOT/'assets/gate.min.js').is_file()
@@ -94,6 +97,9 @@ for language in ('fr','en'):
  profile=(ROOT/language/'acc/profile.html').read_text()
  assert 'id="account-app"' in profile and BASE+'assets/account.min.js' in profile
  assert BASE+'assets/insignia.min.js' in profile
+ for game in ('acc','ace'):
+  messages=(ROOT/language/game/'messages.html').read_text()
+  assert 'id="messages-app"' in messages and BASE+'assets/messages.min.js' in messages
  admin=(ROOT/language/'acc/admin.html').read_text()
  assert 'id="admin-app"' in admin and BASE+'assets/admin.min.js' in admin
  for section in ('calendar','archives','event','course'):
@@ -103,4 +109,4 @@ for language in ('fr','en'):
   assert BASE+'assets/events.min.js' in (ROOT/language/'acc'/f'{section}.html').read_text()
 for language in ('de','es','it'):
  assert not (ROOT/language).exists(), 'Only FR and EN should be published'
-print('Verified 67 pages, Steam callback to new site, bilingual entrance, signed-in paddock, fixed artwork and FR/EN pages')
+print('Verified 71 pages, Steam callback to new site, bilingual entrance, signed-in paddock, fixed artwork and FR/EN pages')

@@ -9,7 +9,7 @@ Avant de supprimer l'ancien dépôt :
 1. Vérifier la liste des migrations appliquées sur le projet Supabase et la comparer à `supabase/migrations/`.
 2. Vérifier les versions déployées des fonctions, puis tester le parcours Steam, l'import ACC, le collecteur, les classements, les notifications et l'administration depuis le nouveau site.
 3. Changer le repli de `auth-steam` (`OLD_PROFILE`) : il mène encore à `/atx-racing/profil-pilote.html` pour les connexions sans `return_path`. Le nouveau site transmet déjà son propre `return_path`.
-4. Modifier les liens de notifications Discord générés par le déclencheur introduit dans `20260920120000_discord_cloud_notifications.sql` ; ils pointent encore vers `/atx-racing/`. Cela nécessite une nouvelle migration, sans modifier l'ancienne migration historique.
+4. Les liens des futures notifications Discord ont été redirigés vers `/atxracing/fr/acc/` par la migration `20261005194354_route_discord_notifications_to_atxracing.sql`, appliquée le 5 octobre 2026. Vérifier la prochaine annonce réelle ; les anciens messages Discord ne sont pas modifiés.
 5. Vérifier que les automatisations et intégrations externes du collecteur ACC n'utilisent pas de fichiers hébergés par l'ancien dépôt. Le point d'entrée Supabase `ingest-acc-results` reste disponible indépendamment du dépôt GitHub.
 6. Vérifier les liens vers l'ancien site dans la documentation et la navigation, puis supprimer l'ancien dépôt seulement après ces contrôles.
 

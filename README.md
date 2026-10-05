@@ -9,7 +9,7 @@ La porte d'entrée vérifie la session Steam existante côté navigateur. GitHub
 - Domaine personnalisé à la racine : `ATX_BASE_PATH=/ python3 build.py` ; revenir au préfixe GitHub Pages avec `python3 build.py`.
 - Les pages ACC utilisent les fonctions publiques du projet Supabase existant. Le compte Steam et le profil pilote sont partagés entre ACC et ACE grâce aux fonctions Auth du même projet. Les courses et classements ACE attendent encore un collecteur et leurs propres tables.
 
-Les sources Supabase encore propres à l'ancien dépôt ACC ont été conservées ici, sans redéploiement ni modification de la base. Le contrôle à effectuer avant la suppression de l'ancien dépôt est décrit dans [docs/transition-ancien-depot.md](docs/transition-ancien-depot.md).
+Les sources Supabase encore propres à l'ancien dépôt ACC ont été conservées ici. Les migrations propres aux notifications et aux messages privés du nouveau site ont été appliquées ; elles sont décrites dans [docs/transition-ancien-depot.md](docs/transition-ancien-depot.md) et [docs/messages-prives.md](docs/messages-prives.md). Le contrôle à effectuer avant la suppression de l'ancien dépôt reste nécessaire.
 
 Le workflow vérifie le site généré et son miroir à la racine. Les tests `scripts/test-assets.mjs` de l'ancien dépôt restent associés à ses 14 pages et ne doivent pas être copiés tels quels ici.
 
@@ -26,6 +26,10 @@ Le backend ajouté est documenté dans [docs/profil-pilote.md](docs/profil-pilot
 Le panel ACC FR/EN permet de lire un championnat SimGrid avec le jeton de communauté configuré côté serveur, préparer chaque manche en brouillon privé, puis publier une course après vérification. Sans jeton ou en cas de refus, la saisie manuelle reste disponible et l'échec est explicite. Voir [docs/admin-simgrid.md](docs/admin-simgrid.md). Les formats officiels sont vérifiés à la publication ; l'import seul ne publie jamais.
 
 L'état vérifié et les points encore ouverts sont suivis dans [docs/etat-du-projet.md](docs/etat-du-projet.md).
+
+Les pages intérieures affichent les notifications publiques de course, résultats et records dans une cloche de l'en-tête. Le rappel de course du jour reprend le comportement de l'ancien site. Le panneau Discord à droite charge le widget officiel seulement quand on l'ouvre ; il indique les membres en ligne et propose l'accès au serveur. Ce widget ne fournit pas de messagerie privée entre pilotes.
+
+L'enveloppe de l'en-tête ouvre les messages privés entre pilotes Steam. La messagerie est commune à ACC et ACE, avec recherche de profils publics, compteur de messages non lus et blocage. Les messages restent réservés aux participants ; ils ne sont pas chiffrés de bout en bout. Un essai réel avec deux comptes Steam est encore nécessaire.
 
 Vérifications supplémentaires (Node 22.18+ / 24) :
 
