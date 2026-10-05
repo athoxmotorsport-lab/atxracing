@@ -1,3 +1,45 @@
+[functions.auth-steam]
+verify_jwt = false
+
+[functions.auth-session]
+verify_jwt = false
+
+[functions.auth-logout]
+verify_jwt = false
+
+[functions.ingest-acc-results]
+verify_jwt = false
+
+[functions.public-event]
+verify_jwt = false
+
+[functions.manage-events]
+verify_jwt = false
+
+[functions.public-leaderboard]
+verify_jwt = false
+
+[functions.manage-profile]
+verify_jwt = false
+
+[functions.public-driver]
+verify_jwt = false
+
+[functions.public-driver-sectors]
+verify_jwt = false
+
+[functions.public-driver-identities]
+verify_jwt = false
+
+[functions.public-gtworld]
+verify_jwt = false
+
+[functions.manage-gtworld]
+verify_jwt = false
+
+[functions.upload-driver-avatar]
+verify_jwt = false
+
 [functions.driver-profile]
 # Existing opaque Steam sessions are authenticated inside the function.
 verify_jwt = false

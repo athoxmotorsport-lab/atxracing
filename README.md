@@ -9,6 +9,8 @@ La porte d'entrée vérifie la session Steam existante côté navigateur. GitHub
 - Domaine personnalisé à la racine : `ATX_BASE_PATH=/ python3 build.py` ; revenir au préfixe GitHub Pages avec `python3 build.py`.
 - Les pages ACC utilisent les fonctions publiques du projet Supabase existant. Le compte Steam et le profil pilote sont partagés entre ACC et ACE grâce aux fonctions Auth du même projet. Les courses et classements ACE attendent encore un collecteur et leurs propres tables.
 
+Les sources Supabase encore propres à l'ancien dépôt ACC ont été conservées ici, sans redéploiement ni modification de la base. Le contrôle à effectuer avant la suppression de l'ancien dépôt est décrit dans [docs/transition-ancien-depot.md](docs/transition-ancien-depot.md).
+
 Le workflow vérifie le site généré et son miroir à la racine. Les tests `scripts/test-assets.mjs` de l'ancien dépôt restent associés à ses 14 pages et ne doivent pas être copiés tels quels ici.
 
 ## Profil pilote
