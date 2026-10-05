@@ -17,6 +17,7 @@ CSS=re.sub(r'\s*([{}:;,>])\s*',r'\1',CSS).strip()
 (R/'assets/ranking.min.js').write_text((Path(__file__).parent/'src/ranking.js').read_text())
 (R/'assets/circuit-images.min.js').write_text((Path(__file__).parent/'src/circuit-images.js').read_text())
 (R/'assets/account.min.js').write_text((Path(__file__).parent/'src/account.js').read_text())
+(R/'assets/insignia.min.js').write_text((Path(__file__).parent/'src/insignia.js').read_text())
 (R/'assets/entry.min.js').write_text((Path(__file__).parent/'src/entry.js').read_text())
 (R/'assets/gate.min.js').write_text((Path(__file__).parent/'src/gate.js').read_text())
 (R/'assets/events.min.js').write_text((Path(__file__).parent/'src/events.js').read_text())
@@ -110,7 +111,7 @@ def page(lang,game,section):
     if section not in ('ranking','rules','privacy','worldgt','daily-race','ballade','admin'):main+='<div id="results" aria-live="polite"><p class="loading">…</p></div>'
   main+=f'<p class="return-link"><a href="/{lang}/">← {escape(t["back"])}</a></p></main>'
   body=main
- out=head+body+footer+'<script src="/assets/gate.min.js" defer></script>'+('<script src="/assets/circuit-images.min.js" defer></script>' if section=='records' and game=='acc' else '')+('<script src="/assets/site.min.js" defer></script>' if game=='acc' and section in ('courses','records','profile') else '')+('<script src="/assets/ranking.min.js" defer></script>' if section=='ranking' and game=='acc' else '')+('<script src="/assets/events.min.js" defer></script>' if game=='acc' and section in ('calendar','archives','event','course','worldgt','daily-race','ballade') else '')+('<script src="/assets/admin.min.js" defer></script>' if section=='admin' else '')+('<script src="/assets/account.min.js" defer></script>' if game else '')+'</body></html>'
+ out=head+body+footer+'<script src="/assets/gate.min.js" defer></script>'+('<script src="/assets/insignia.min.js" defer></script>' if section=='profile' and game=='acc' else '')+('<script src="/assets/circuit-images.min.js" defer></script>' if section=='records' and game=='acc' else '')+('<script src="/assets/site.min.js" defer></script>' if game=='acc' and section in ('courses','records','profile') else '')+('<script src="/assets/ranking.min.js" defer></script>' if section=='ranking' and game=='acc' else '')+('<script src="/assets/events.min.js" defer></script>' if game=='acc' and section in ('calendar','archives','event','course','worldgt','daily-race','ballade') else '')+('<script src="/assets/admin.min.js" defer></script>' if section=='admin' else '')+('<script src="/assets/account.min.js" defer></script>' if game else '')+'</body></html>'
  path=R/lang/(game or '')/('index.html' if section in ('home','league') else section+'.html');write(path,out)
 for l in T:
  page(l,'','home')

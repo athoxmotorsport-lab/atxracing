@@ -42,26 +42,13 @@
  const levelsUi=lang==='fr'?{current:'Niveau ACC publié',pending:'Niveau en attente de résultats',unavailable:'Niveau momentanément indisponible',ace:'Niveaux ACE à venir'}:{current:'Published ACC level',pending:'Level awaiting results',unavailable:'Level temporarily unavailable',ace:'ACE levels coming soon'};
  const levelNames=['ROOKIE','CHALLENGER','PRO','ELITE','ALIEN'];
  let currentLevel=0;
- let currentSafety={score:null,tier:null};
+ let currentInsignia=null;
  function syncPaceCard(){
   if(game!=='acc')return;
-  const blaze=root?.querySelector('.level-blaze');
-  if(blaze){blaze.hidden=!currentLevel;if(currentLevel){blaze.style.setProperty('--portrait-position',(currentLevel-1)*25+'%');blaze.querySelector('strong').textContent=levelNames[currentLevel-1];}}
-  const card=root?.querySelector('.driver-metrics article:first-child');if(!card||!currentLevel)return;
-  card.querySelector('h3').textContent=levelNames[currentLevel-1];
-  card.querySelector('p').textContent=lang==='fr'?'Niveau ACC issu du classement publié.':'ACC level from the published standings.';
+  currentInsignia?.setRank(currentLevel);
  }
  function setSafety(score,tier){
-  const numeric=score==null?null:Number(score);
-  currentSafety={score:Number.isFinite(numeric)?Math.max(0,Math.min(100,numeric)):null,tier:['bronze','silver','gold'].includes(tier)?tier:null};
-  const box=root?.querySelector('.safe-showcase');if(!box)return;
-  const label=currentSafety.tier?({bronze:ui.safeBronze,silver:ui.safeSilver,gold:ui.safeGold})[currentSafety.tier]:currentSafety.score!=null?(lang==='fr'?'EN PROGRESSION':'BUILDING'):'—';
-  box.dataset.tier=currentSafety.tier||'pending';box.style.setProperty('--safe-progress',(currentSafety.score??0)+'%');
-  box.querySelector('[data-safe-tier]').textContent=label;
-  box.querySelector('[data-safe-score]').textContent=currentSafety.score==null?'—':Math.round(currentSafety.score)+'/100';
-  box.querySelector('[data-safe-status]').textContent=currentSafety.score==null?ui.safetyPending:ui.safetyKnown;
-  const meter=box.querySelector('[role=progressbar]');meter.setAttribute('aria-valuenow',String(currentSafety.score??0));meter.setAttribute('aria-valuetext',currentSafety.score==null?ui.safetyPending:label+' · '+Math.round(currentSafety.score)+'/100');
-  const card=root?.querySelector('.driver-metrics article:nth-child(3)');if(card){card.querySelector('h3').textContent=label;card.querySelector('p').textContent=currentSafety.score==null?ui.safetyPending:Math.round(currentSafety.score)+'/100 · '+ui.safetyKnown;}
+  currentInsignia?.setSafety(score,tier);
  }
  function setLevel(stage,message){
   const figure=document.querySelector('[data-driver-levels]');if(!figure)return;
@@ -102,30 +89,8 @@
   [[ui.number,driver.car_number||'—'],[ui.car,driver.preferred_gt3||'—'],[ui.circuits,(driver.favorite_circuits||[]).map(circuitName).join(' · ')||'—'],[ui.format,ui.formatNames[driver.preferred_race_format]||'—']].forEach(([label,value])=>{const item=node('div');item.append(node('small','',label),node('strong','',value));grid.append(item)});
   section.append(grid);return section;
  }
- function safetyShowcase(){
-  const box=node('section','safe-showcase');box.dataset.tier='pending';
-  const mark=node('div','safe-shield');mark.innerHTML='<svg viewBox="0 0 100 116" aria-hidden="true"><path d="M50 5 91 20v39c0 27-19 43-41 52C28 102 9 86 9 59V20Z" fill="none" stroke="currentColor" stroke-width="5"/><path d="m28 58 15 15 30-34" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-  const copy=node('div','safe-copy');copy.append(node('span','eyebrow','SAFE / ATXRACING'),node('strong','', '—'),node('p','',ui.safetyPending));copy.querySelector('strong').dataset.safeTier='';copy.querySelector('p').dataset.safeStatus='';
-  const score=node('strong','safe-score','—');score.dataset.safeScore='';
-  const track=node('span','safe-track');track.setAttribute('role','progressbar');track.setAttribute('aria-label','Safe');track.setAttribute('aria-valuemin','0');track.setAttribute('aria-valuemax','100');track.setAttribute('aria-valuenow','0');track.setAttribute('aria-valuetext',ui.safetyPending);track.append(node('i'));
-  const milestones=node('div','safe-milestones');['0',ui.safeBronze+' 39',ui.safeSilver+' 60',ui.safeGold+' 80','100'].forEach(x=>milestones.append(node('span','',x)));
-  box.append(mark,copy,score,track,milestones);return box;
- }
- function honours(awards=[]){
-  if(game!=='acc')return node('div');
-  const section=node('section','driver-honours');section.append(node('span','eyebrow',ui.honours));
-  const grid=node('div','driver-honours-grid');
-  [['fast_driver',ui.fast,'fast'],['gentleman_driver',ui.gentleman,'gentleman']].forEach(([type,title,kind])=>{
-   const rows=awards.filter(item=>item.award_type===type);const card=node('article','honour-card honour-'+kind);
-   const head=node('div','honour-head');const icon=node('span','honour-icon');icon.innerHTML=kind==='fast'?'<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M37 3 11 36h19l-5 25 29-37H35Z" fill="currentColor"/></svg>':'<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 10 51 17v18c0 12-8 20-19 25-11-5-19-13-19-25V17Z" fill="none" stroke="currentColor" stroke-width="4"/><path d="m22 34 7 7 14-16" fill="none" stroke="currentColor" stroke-width="4"/></svg>';
-   head.append(icon,node('div','honour-title',title),node('strong','honour-count',String(rows.length)));card.append(head,node('p','honour-count-label',ui.times));
-   if(!rows.length)card.append(node('p','profile-note',ui.noHonours));
-   else{const list=node('ul','honour-results');rows.forEach(row=>{const item=node('li'),title=row.circuit_name||'—';const date=row.starts_at?new Intl.DateTimeFormat(lang,{dateStyle:'medium',timeZone:'Europe/Brussels'}).format(new Date(row.starts_at)):'';const destination=base+lang+'/acc/event.html?slug='+encodeURIComponent(row.event_slug||'');item.append(row.event_slug?link(title,destination,'honour-race'):node('strong','',title),node('span','',date));const result=Number(row.finish_position)>0?' · P'+row.finish_position:'';const detail=(kind==='fast'?lap(row.best_lap_ms):`${row.clean_laps??0} ${ui.clean.toLowerCase()} · ${row.penalty_count??0} ${ui.penalties.toLowerCase()}`)+result;item.append(node('small','',detail));list.append(item)});card.append(list)}grid.append(card);
-  });section.append(grid);return section;
- }
- function sporting(driver){const section=node('section','driver-sport'),grid=node('div','driver-metrics');[[ui.pace,ui.evaluation,ui.paceHelp],[ui.consistency,ui.pending,ui.consistencyHelp],[ui.safe,ui.pending,ui.safeHelp]].forEach(([name,value,help])=>{const card=node('article');card.append(node('span','eyebrow',name),node('h3','',value),node('p','',help));grid.append(card);});section.append(grid);
+ function sporting(driver){const section=node('section','driver-sport');
   if(game==='ace'){section.append(node('p','profile-note',ui.ace));return section;}
-  section.append(safetyShowcase());
   const stats=node('div','account-stats');[[ui.races,'races'],[ui.wins,'wins'],[ui.podiums,'podiums'],[ui.points,'points']].forEach(([name,k])=>{const box=node('div');box.append(node('b','',driver.stats?.[k]??'—'),node('small','',name));stats.append(box);});section.append(stats);
   const history=node('section','account-history');history.append(node('h2','',ui.history));const results=driver.results||[];if(!results.length)history.append(node('p','',ui.empty));else{const list=node('div','account-result-list');results.slice(0,30).forEach(r=>{const event=Array.isArray(r.event)?r.event[0]:r.event||{};const row=node('div');row.append(node('strong','',event['title_'+lang]||event.title_fr||event.circuit_name||'—'),node('span','',r.car_model_name||'—'),node('b','',lap(r.best_lap_ms)));list.append(row);});history.append(list);}section.append(history);return section;
  }
@@ -139,9 +104,14 @@
  function readDraft(id){try{const d=JSON.parse(localStorage.getItem(draftKey(id)));return d&&typeof d==='object'?d:null;}catch{return null;}}
  function clearDraft(id){try{localStorage.removeItem(draftKey(id));}catch{}}
  function owner(driver,message){if(!root)return;root.replaceChildren();document.querySelectorAll('#public-directory,#results').forEach(e=>e.hidden=true);
-  const card=node('section','account-card'),hero=node('div','account-hero'),name=node('div');name.append(node('span','eyebrow',ui.welcome+' / '+game.toUpperCase()),node('h2','',driver.display_name),node('p','',driver.team_name||ui.noTeam));hero.append(avatar(driver),name);if(game==='acc'){const blaze=node('div','level-blaze');blaze.hidden=true;blaze.append(node('span','level-blaze-portrait'),node('strong',''));hero.append(blaze)}card.append(hero,node('p','profile-state',driver.profile_confirmed_at?ui.regular:ui.incomplete));if(message)card.append(node('p','form-status',message));
+  const card=node('section','account-card'),hero=node('div','account-hero'),name=node('div');
+  name.append(node('span','eyebrow',ui.welcome+' / '+game.toUpperCase()),node('h2','',driver.display_name),node('p','',driver.team_name||ui.noTeam));hero.append(avatar(driver),name);
+  currentInsignia=game==='acc'?ATXInsignia.create({lang,stage:currentLevel,score:driver.rating?.safety_score,tier:driver.rating?.safety_class,awards:driver.awards||[],results:driver.results||[],eventBase:base+lang+'/acc/event.html?slug='}):null;
+  if(currentInsignia)hero.append(currentInsignia.rail);
+  card.append(hero);if(currentInsignia)card.append(currentInsignia.panel);
+  card.append(node('p','profile-state',driver.profile_confirmed_at?ui.regular:ui.incomplete));if(message)card.append(node('p','form-status',message));
   const actions=node('div','account-actions');actions.append(button(driver.profile_confirmed_at?ui.edit:ui.finish,()=>editor(driver),'action'),link(ui.nextRace,base+lang+'/'+game+'/courses.html'));if(game==='acc')actions.append(link(ui.public,profileUrl(driver.id)));if(driver.roles?.includes('admin'))actions.append(link(lang==='fr'?'Administration des courses':'Race administration',base+lang+'/acc/admin.html'));
-  actions.append(button(ui.logout,async()=>{try{await request('auth-logout',{method:'POST',headers:authHeaders()});}catch{root.append(node('p','account-error',ui.loadError));return;}storage.remove(key);clearDraft(driver.id);location.href=profileUrl();}));card.append(actions);root.append(card,preferencesCard(driver),sporting(driver),honours(driver.awards));syncPaceCard();setSafety(driver.rating?.safety_score,driver.rating?.safety_class);personalLaps(driver);if(!driver.profile_confirmed_at||readDraft(driver.id))editor(driver,false);
+  actions.append(button(ui.logout,async()=>{try{await request('auth-logout',{method:'POST',headers:authHeaders()});}catch{root.append(node('p','account-error',ui.loadError));return;}storage.remove(key);clearDraft(driver.id);location.href=profileUrl();}));card.append(actions);root.append(card,preferencesCard(driver),sporting(driver));syncPaceCard();setSafety(driver.rating?.safety_score,driver.rating?.safety_class);personalLaps(driver);if(!driver.profile_confirmed_at||readDraft(driver.id))editor(driver,false);
  }
  function editor(driver,focus=true){
   root.querySelector('#profile-editor')?.remove();const saved=readDraft(driver.id)||{};

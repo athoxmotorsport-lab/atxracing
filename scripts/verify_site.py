@@ -74,7 +74,7 @@ assert 'value="OL"' not in (ROOT/'fr/acc/ranking.html').read_text()
 assert not list((ROOT/'assets').glob('site.js')) and not list((ROOT/'assets').glob('site.css'))
 assert (ROOT/'assets/site.min.js').is_file() and (ROOT/'assets/site.min.css').is_file()
 assert (ROOT/'assets/ranking.min.js').is_file()
-for asset in ('account.min.js','events.min.js','circuit-images.min.js'):
+for asset in ('account.min.js','insignia.min.js','events.min.js','circuit-images.min.js'):
  assert (ROOT/'assets'/asset).is_file()
 assert (ROOT/'assets/admin.min.js').is_file()
 assert (ROOT/'assets/entry.min.js').is_file() and (ROOT/'assets/gate.min.js').is_file()
@@ -87,6 +87,7 @@ for language in ('fr','en'):
  assert 'id="circuit-grid"' in records and BASE+'assets/circuit-images.min.js' in records
  profile=(ROOT/language/'acc/profile.html').read_text()
  assert 'id="account-app"' in profile and BASE+'assets/account.min.js' in profile
+ assert BASE+'assets/insignia.min.js' in profile
  admin=(ROOT/language/'acc/admin.html').read_text()
  assert 'id="admin-app"' in admin and BASE+'assets/admin.min.js' in admin
  for section in ('calendar','archives','event','course'):

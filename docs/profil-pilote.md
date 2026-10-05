@@ -8,9 +8,9 @@
 - Le formulaire est prérempli depuis le compte, puis depuis son éventuel brouillon local.
 - Seuls le pseudo et le nom public sont requis. L'équipe vide s'affiche « Sans équipe » / « No team ».
 - Les préférences sont communes au compte ; les historiques sportifs restent propres au jeu.
-- La jauge ACC affiche le niveau `performance_class` déjà publié dans le classement général. Le profil montre aussi uniquement le personnage du rang courant.
+- La jauge ACC affiche le niveau `performance_class` déjà publié dans le classement général. Dans l’en-tête, seul le personnage du rang courant apparaît, sans répéter son nom à côté.
 - Le Safe utilise la note `safety_score` et la classe `safety_class` déjà calculées dans `driver_ratings` (bronze à partir de 39, argent à partir de 60, or à partir de 80). Sans note, la jauge reste vide.
-- Fast Driver et Gentleman Driver proviennent de la vue officielle `event_honours`. Fast Driver utilise le meilleur temps enregistré dans `results` pour chaque course ; Gentleman Driver classe les pénalités, puis les tours valides et la série de tours propres. Le profil affiche le nombre de distinctions, le circuit, la date, le temps ou les indicateurs de conduite, et la position d'arrivée lorsqu'elle est publiée.
+- Fast Driver et Gentleman Driver proviennent de la vue officielle `event_honours`. Fast Driver utilise le meilleur temps enregistré dans `results` pour chaque course ; Gentleman Driver classe les pénalités, puis les tours valides et la série de tours propres. Les emblèmes Safe, Fast Driver et Gentleman Driver sont dans l’en-tête du profil, à côté du personnage de niveau. Un « ? » signale une note ou une distinction absente. Un clic ouvre dans cet en-tête la jauge Safe ou le détail des courses (circuit, date, temps ou conduite, position d’arrivée publiée).
 - Le niveau ACE et la régularité restent à définir. Aucun niveau ni récompense n'est attribué par le navigateur.
 
 ## Serveur
