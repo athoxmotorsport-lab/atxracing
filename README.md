@@ -1,6 +1,6 @@
 # ATXRACING · ACC + ACE
 
-Portail statique ACC / ACE, en français et en anglais. La première page présente la connexion Steam sur la photo de circuit fournie, sans logo, en-tête ni pied de page. Après connexion, la bannière mène à ACC, À propos ou ACE. Les pages intérieures disposent d'un menu latéral à icônes et de drapeaux français et britannique dans l'en-tête. La photo reste fixe derrière le contenu.
+Portail statique ACC / ACE, en français et en anglais. La première page présente la connexion Steam sur la photo de circuit fournie, sans logo, en-tête ni pied de page. Après connexion, « Mon paddock » propose ACC et ACE ; la page À propos est accessible depuis la navigation. Les pages intérieures disposent d'un menu latéral à icônes et de drapeaux français et britannique dans l'en-tête. La photo reste fixe derrière le contenu.
 
 La porte d'entrée vérifie la session Steam existante côté navigateur. GitHub Pages restant un hébergement statique, ce contrôle guide la navigation mais ne protège pas les pages ou données publiques contre un accès direct hors navigateur ; les données privées restent protégées par les fonctions Supabase.
 
@@ -17,13 +17,15 @@ Le workflow vérifie le site généré et son miroir à la racine. Les tests `sc
 
 Connexion Steam existante, puis trois étapes : identité (pseudo et nom public), préférences (équipe, numéro, GT3, ACC/ACE pratiqués ou à découvrir), confirmation. Les préférences sont facultatives pour permettre l'inscription d'un débutant. Les initiales servent d'avatar en l'absence de photo. Un brouillon local par compte survit aux changements de langue et de jeu ; l'enregistrement confirmé passe par `driver-profile`.
 
-Le profil ACC conserve son historique. ACE ne présente pas les statistiques ACC comme les siennes. L’illustration fournie représente les cinq niveaux ; elle n’est pas une jauge de complétion. Aucun nouveau seuil ni calcul Safe n’est défini : rythme « En évaluation », régularité et Safe en attente de règles validées, sur les profils privés et publics.
+Le profil ACC conserve son historique. ACE ne présente pas les statistiques ACC comme les siennes. L’illustration fournie représente les cinq niveaux, avec le niveau ACC publié affiché dans l’en-tête. La note Safe et les distinctions proviennent des données sportives publiées ; la régularité et le seuil Challenger restent à définir.
 
 Le backend ajouté est documenté dans [docs/profil-pilote.md](docs/profil-pilote.md). Il utilise les sessions Steam existantes et une table de préférences privée, sans changer le collecteur, les résultats ou les identités Steam.
 
 ## Administration des courses
 
-Le panel ACC FR/EN permet de lire un championnat SimGrid, préparer chaque manche en brouillon privé, puis publier une course après vérification. La lecture peut être bloquée par SimGrid ; la saisie manuelle reste disponible et l'échec est explicite. Voir [docs/admin-simgrid.md](docs/admin-simgrid.md). Les formats officiels sont vérifiés à la publication ; l'import seul ne publie jamais.
+Le panel ACC FR/EN permet de lire un championnat SimGrid avec le jeton de communauté configuré côté serveur, préparer chaque manche en brouillon privé, puis publier une course après vérification. Sans jeton ou en cas de refus, la saisie manuelle reste disponible et l'échec est explicite. Voir [docs/admin-simgrid.md](docs/admin-simgrid.md). Les formats officiels sont vérifiés à la publication ; l'import seul ne publie jamais.
+
+L'état vérifié et les points encore ouverts sont suivis dans [docs/etat-du-projet.md](docs/etat-du-projet.md).
 
 Vérifications supplémentaires (Node 22.18+ / 24) :
 

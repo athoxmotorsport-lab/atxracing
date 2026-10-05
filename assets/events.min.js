@@ -16,9 +16,15 @@
  const lap=ms=>ms>0?`${Math.floor(ms/60000)}:${String(Math.floor(ms/1000)%60).padStart(2,'0')}.${String(ms%1000).padStart(3,'0')}`:'—';
  const external=raw=>{try{const parsed=new URL(raw);return parsed.protocol==='https:'?parsed.href:null}catch{return null}};
  const localImage=raw=>typeof raw==='string'&&/^\/assets\/(?:events|circuits)\/[a-z0-9-]+\.(?:jpg|jpeg|png|webp)$/i.test(raw)?base+raw.slice(1):null;
- const fallbackCircuit=event=>{const catalog=typeof ATX_CIRCUITS==='object'?ATX_CIRCUITS:{};const key=String(event.circuit_name||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');const aliases={barcelone:'barcelona',brands_hach:'brands_hatch',nurburgring_gp:'nurburgring',redbull_ring:'red_bull_ring'};return catalog[aliases[key]||key]?.image||null};
- const archivePoster=event=>event.slug==='2026-09-11-nurburgring-gp-gring-gp-203915-01375e5d'?base+'assets/events/nurburgring-gp-2026-09-11.webp':null;
- function poster(event,cls){const sources=[external(event.image_url)||localImage(event.image_url),archivePoster(event),fallbackCircuit(event)].filter(Boolean);if(!sources.length)return null;const photo=el('img',cls);photo.src=sources.shift();photo.alt='';photo.loading='lazy';photo.onerror=()=>{if(sources.length)photo.src=sources.shift();else photo.remove()};return photo}
+ // Results imported from ACC sometimes have a separate event row without the poster
+ // of the race created in Event Management. These links are to those exact posters.
+ const archivedRacePosters={
+  '2026-09-13-barcelona-arcelona-163144-4dc583b9':'barcelona-2026-09-13.jpg',
+  '2026-09-20-kyalami-kyalami-174121-eeae70d0':'kyalami-2026-09-20.jpg',
+  '2026-09-11-nurburgring-gp-gring-gp-203915-01375e5d':'nurburgring-gp-2026-09-11.webp'
+ };
+ const archivePoster=event=>archivedRacePosters[event.slug]?base+'assets/events/'+archivedRacePosters[event.slug]:null;
+ function poster(event,cls){const sources=[external(event.image_url)||localImage(event.image_url),archivePoster(event)].filter(Boolean);if(!sources.length)return null;const photo=el('img',cls);photo.src=sources.shift();photo.alt='';photo.loading='lazy';photo.onerror=()=>{if(sources.length)photo.src=sources.shift();else photo.remove()};return photo}
  const type=e=>{if(e.competition_code)return {DR:'DR',BATX:'BA',WGT:'WGT'}[e.competition_code]||null;const s=[e.server_name,e.title_fr,e.title_en,e.event_type].join(' ').toUpperCase();return /\bBATX\b|BALLADE\s+ATX/.test(s)?'BA':/\bWGT\b|WORLD\s?GT|ENDURANCE|SPRINT/.test(s)?'WGT':/\bDR\b|DAILY[_ ]?RACE/.test(s)?'DR':null};
  const href=e=>base+lang+'/acc/course.html?slug='+encodeURIComponent(e.slug);
  const name=e=>e['title_'+lang]||e.title_en||e.title_fr||e.circuit_name||'ATXRACING';
@@ -50,7 +56,7 @@
  }
  async function load(){root.replaceChildren(el('p','loading',dictionary.loading));try{
   if(page==='event'||page==='course'){const slug=new URLSearchParams(location.search).get('slug')||new URLSearchParams(location.search).get('event');if(!slug||!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)){root.replaceChildren(el('p','empty',dictionary.empty));return}const response=await fetch(url+'?slug='+encodeURIComponent(slug));if(!response.ok)throw Error(response.status);eventDetail(await response.json());return}
-  const response=await fetch(url);if(!response.ok)throw Error(response.status);const data=await response.json();const items=page==='archives'?(data.archives||[]):(data.events||[]);let active=({worldgt:'WGT','daily-race':'DR',ballade:'BA'})[page]||new URLSearchParams(location.search).get('type')?.toUpperCase()||'ALL';const nav=document.querySelector('.event-categories');function render(){const filtered=items.filter(e=>active==='ALL'||type(e)===active);const grid=el('div','event-grid');filtered.forEach(e=>grid.append(tile(e)));root.replaceChildren(filtered.length?grid:el('p','empty',dictionary.empty));nav?.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.category===active)))}nav?.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{active=b.dataset.category;const query=new URLSearchParams(location.search);active==='ALL'?query.delete('type'):query.set('type',active);history.replaceState(null,'',location.pathname+(query.size?'?'+query:''));render()}));render()
+  const response=await fetch(url);if(!response.ok)throw Error(response.status);const data=await response.json();const items=page==='archives'?(data.archives||[]).filter(e=>e.image_url||archivePoster(e)):(data.events||[]);let active=({worldgt:'WGT','daily-race':'DR',ballade:'BA'})[page]||new URLSearchParams(location.search).get('type')?.toUpperCase()||'ALL';const nav=document.querySelector('.event-categories');function render(){const filtered=items.filter(e=>active==='ALL'||type(e)===active);const grid=el('div','event-grid');filtered.forEach(e=>grid.append(tile(e)));root.replaceChildren(filtered.length?grid:el('p','empty',dictionary.empty));nav?.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.category===active)))}nav?.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{active=b.dataset.category;const query=new URLSearchParams(location.search);active==='ALL'?query.delete('type'):query.set('type',active);history.replaceState(null,'',location.pathname+(query.size?'?'+query:''));render()}));render()
  }catch{root.replaceChildren(el('p','empty',dictionary.error))}}
  load();
 })();

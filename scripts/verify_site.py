@@ -72,7 +72,7 @@ css=(ROOT/'assets/site.min.css').read_text()
 assert "url('site-background.jpg')" in css and 'position:fixed' in css
 for image in ('site-background.jpg','landing-banner.jpg','driver-levels-cutout.png'):
  assert (ROOT/'assets'/image).is_file()
-for image in ('circuits/red-bull-ring.jpg','events/monza-2026-09-09.jpg','events/nurburgring-gp-2026-09-11.webp'):
+for image in ('circuits/red-bull-ring.jpg','events/monza-2026-09-09.jpg','events/nurburgring-gp-2026-09-11.webp','events/barcelona-2026-09-13.jpg','events/kyalami-2026-09-20.jpg'):
  assert (ROOT/'assets'/image).is_file()
 assert '.league-overview{height:480px;' in css
 assert 'font-family:Rajdhani' in css
@@ -98,6 +98,7 @@ for language in ('fr','en'):
  assert 'id="admin-app"' in admin and BASE+'assets/admin.min.js' in admin
  for section in ('calendar','archives','event','course'):
   assert BASE+'assets/events.min.js' in (ROOT/language/'acc'/f'{section}.html').read_text()
+  assert BASE+'assets/circuit-images.min.js' not in (ROOT/language/'acc'/f'{section}.html').read_text()
  for section in ('worldgt','daily-race','ballade'):
   assert BASE+'assets/events.min.js' in (ROOT/language/'acc'/f'{section}.html').read_text()
 for language in ('de','es','it'):
