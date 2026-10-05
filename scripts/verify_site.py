@@ -20,7 +20,7 @@ def local_path(url):
  if candidate.is_dir():candidate=candidate/'index.html'
  return candidate
 
-assert len(list(ROOT.rglob('*.html')))==65
+assert len(list(ROOT.rglob('*.html')))==67
 for path in ROOT.rglob('*.html'):
  for tag,attrs in page(path.relative_to(ROOT)):
   for key in ('href','src'):
@@ -54,6 +54,10 @@ for lang in ('fr','en'):
  assert any(t=='h1' for t,_ in about)
  assert len([1 for t,a in about if t=='nav' and a.get('class')=='header-languages'])==1
  assert [a['href'] for t,a in about if t=='a' and a.get('hreflang') in ('fr','en')]==[BASE+f'{language}/about.html' for language in ('fr','en')]*2
+ profile=page(f'{lang}/acc/profile.html')
+ pilots=page(f'{lang}/acc/pilots.html')
+ assert not any(a.get('id')=='driver-search' for _,a in profile)
+ assert any(a.get('id')=='driver-search' for _,a in pilots)
  for game in ('acc','ace'):
   for section in ('index.html','courses.html','worldgt.html','daily-race.html','ballade.html','calendar.html','ranking.html','records.html','archives.html','event.html','course.html','rules.html','privacy.html','profile.html'):
    tags=page(f'{lang}/{game}/{section}')
@@ -96,4 +100,4 @@ for language in ('fr','en'):
   assert BASE+'assets/events.min.js' in (ROOT/language/'acc'/f'{section}.html').read_text()
 for language in ('de','es','it'):
  assert not (ROOT/language).exists(), 'Only FR and EN should be published'
-print('Verified 65 pages, Steam callback to new site, bilingual entrance, signed-in paddock, fixed artwork and FR/EN pages')
+print('Verified 67 pages, Steam callback to new site, bilingual entrance, signed-in paddock, fixed artwork and FR/EN pages')
