@@ -47,16 +47,18 @@ Deno.serve(async request => {
       const rows = await rest(path);
       if (!rows.length) return reply({ error: 'not_found' }, 404);
       const { driver_profile_preferences: preferences, ...driver } = rows[0];
+      const selected = Array.isArray(preferences) ? preferences[0] : preferences;
       const id = encodeURIComponent(sessions[0].driver_id);
-      const [ratings, honours, visibleEvents, results] = await Promise.all([
+      const [ratings, honours, visibleEvents, results, carPhotos] = await Promise.all([
         rest('driver_ratings?select=performance_class,performance_score,safety_class,safety_score,algorithm_version&driver_id=eq.' + id + '&circuit_key=eq.overall&limit=1'),
         rest('event_honours?select=event_id,award_type,best_lap_ms,penalty_count,clean_laps,event_slug,circuit_name,starts_at&driver_id=eq.' + id + '&order=starts_at.desc'),
         rest('events?select=id&is_public=eq.true&status=neq.draft'),
         rest('results?select=event_id,finish_position,status&driver_id=eq.' + id),
+        selected?.preferred_gt3 ? rest('gt3_car_catalog?select=model_name,image_url,source_url,credit&model_name=eq.' + encodeURIComponent(selected.preferred_gt3) + '&limit=1') : Promise.resolve([]),
       ]);
       const visibleIds = new Set(visibleEvents.map((event: { id: string }) => event.id));
       const finishByEvent = new Map(results.map((result: { event_id: string; finish_position: number | null; status: string }) => [result.event_id, result]));
-      return reply({ driver: { ...driver, ...(Array.isArray(preferences) ? preferences[0] : preferences),
+      return reply({ driver: { ...driver, ...selected, car_photo: carPhotos[0] ?? null,
         rating: ratings[0] ?? null, awards: honours.filter((honour: { event_id: string }) => visibleIds.has(honour.event_id))
           .map((honour: { event_id: string }) => ({ ...honour, finish_position: finishByEvent.get(honour.event_id)?.finish_position ?? null,
             finish_status: finishByEvent.get(honour.event_id)?.status ?? null })) } });

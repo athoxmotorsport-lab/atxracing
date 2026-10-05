@@ -1,4 +1,4 @@
-import { parseSimgrid, simgridUrl } from './simgrid.mjs';
+import { mapSimgridChampionship, simgridUrl } from './simgrid.mjs';
 
 const encoder=new TextEncoder();
 const required=(name:string)=>{const value=Deno.env.get(name);if(!value)throw Error('configuration');return value;};
@@ -13,13 +13,13 @@ function validateDraft(raw:any){if(!raw||typeof raw!=='object'||Array.isArray(ra
  if(format&&competition&&!(format===competition||(competition==='WGT'&&format.startsWith('WGT_'))))throw Error('invalid_format');
  const numeric=(key,max)=>{if(raw[key]==null||raw[key]==='')return null;const number=Number(raw[key]);if(!Number.isInteger(number)||number<0||number>max)throw Error('invalid_'+key);return number;};
  const instant=key=>{const value=clean(raw[key],36);if(!value)return '';const date=new Date(value);if(!Number.isFinite(date.getTime())||!/\d{4}-\d\d-\d\dT/.test(value))throw Error('invalid_'+key);return date.toISOString();};
- const source=clean(raw.simgridUrl,180),image=clean(raw.imageUrl,500);if(source&&simgridUrl(source)!==source)throw Error('invalid_simgrid_url');
+ const source=clean(raw.simgridUrl,180),image=clean(raw.imageUrl,500);const canonicalSource=source?simgridUrl(source):'';
  if(image){let url;try{url=new URL(image);}catch{throw Error('invalid_image_url');}if(url.protocol!=='https:'||url.username||url.password)throw Error('invalid_image_url');}
  const circuit=clean(raw.circuit,64),circuitKey=circuit.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'').slice(0,64);
  const sourceKey=clean(raw.sourceKey,80);if(sourceKey&&!/^\d+:(?:\d+|round-\d+)$/.test(sourceKey))throw Error('invalid_source_key');
  const draft={sourceKey,titleFr:clean(raw.titleFr,96),titleEn:clean(raw.titleEn,96),descriptionFr:clean(raw.descriptionFr,4000),descriptionEn:clean(raw.descriptionEn,4000),circuit,circuitKey,
   startsAt:instant('startsAt'),serverOpensAt:instant('serverOpensAt'),practiceMinutes:numeric('practiceMinutes',1440),qualifyingMinutes:numeric('qualifyingMinutes',1440),raceMinutes:numeric('raceMinutes',1440),
-  maxDrivers:numeric('maxDrivers',100),registered:numeric('registered',1000),carClass:clean(raw.carClass,32),imageUrl:image,simgridUrl:source,competition,format,
+  maxDrivers:numeric('maxDrivers',100),registered:numeric('registered',1000),carClass:clean(raw.carClass,32),imageUrl:image,simgridUrl:canonicalSource,competition,format,
   raceUrl:clean(raw.raceUrl,180),roundNumber:numeric('roundNumber',200)};
  if(draft.startsAt&&draft.serverOpensAt&&Date.parse(draft.serverOpensAt)>Date.parse(draft.startsAt))throw Error('invalid_serverOpensAt');
  return {...draft,schedule:draft.startsAt?schedule(draft):[]};
@@ -27,7 +27,7 @@ function validateDraft(raw:any){if(!raw||typeof raw!=='object'||Array.isArray(ra
 function ready(d:any){const preset={DR:[60,15,60],BATX:[60,15,90],WGT_SPRINT:[60,15,60]}[d.format];return Boolean(d.competition&&d.format&&d.titleFr&&d.titleEn&&d.descriptionFr&&d.descriptionEn&&d.circuit&&d.circuitKey&&d.startsAt&&d.raceMinutes&&d.maxDrivers&&d.imageUrl&&d.simgridUrl&&
  (!preset||[d.practiceMinutes,d.qualifyingMinutes,d.raceMinutes].every((value,index)=>value===preset[index])));}
 function schedule(d:any){const fmt=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Brussels',hour:'2-digit',minute:'2-digit',hourCycle:'h23'});let at=Date.parse(d.startsAt);const items=[];for(const [key,fr,en,minutes] of [['practice_1','Essais libres','Free practice',d.practiceMinutes],['qualifying','Qualifications','Qualifying',d.qualifyingMinutes],['race','Course','Race',d.raceMinutes]]){if(minutes==null||minutes===0)continue;const start=fmt.format(at);at+=minutes*60000;items.push({key,labelFr:fr,labelEn:en,start,end:fmt.format(at)});}return items;}
-async function simgridPage(url:string){const response=await fetch(url,{redirect:'error',headers:{Accept:'text/html'},signal:AbortSignal.timeout(12000)});if(response.status===403||response.status===429||response.headers.get('cf-mitigated'))throw Error('simgrid_access_blocked');if(!response.ok||!response.headers.get('content-type')?.includes('text/html'))throw Error('simgrid_unavailable');const size=Number(response.headers.get('content-length')||0);if(size>2_000_000)throw Error('simgrid_unreadable');const html=await response.text();if(html.length>2_000_000)throw Error('simgrid_unreadable');return html;}
+async function simgridApi(id:string,source:string){const token=Deno.env.get('SIMGRID_API_TOKEN');if(!token)throw Error('simgrid_token_required');const response=await fetch('https://www.thesimgrid.com/api/v1/championships/'+id,{headers:{Accept:'application/json',Authorization:'Bearer '+token},signal:AbortSignal.timeout(12000)});if(response.status===401||response.status===403)throw Error('simgrid_token_invalid');if(response.status===404)throw Error('simgrid_unavailable');if(!response.ok)throw Error('simgrid_unavailable');return mapSimgridChampionship(await response.json(),id,source);}
 
 Deno.serve(async request=>{const headers=new Headers({'Content-Type':'application/json','Cache-Control':'no-store','Vary':'Origin','Access-Control-Allow-Methods':'GET, POST, PATCH, OPTIONS','Access-Control-Allow-Headers':'authorization, content-type'});const reply=(data:unknown,status=200)=>new Response(JSON.stringify(data),{status,headers});
  try{const origin=new URL(required('ATX_SITE_URL')).origin;headers.set('Access-Control-Allow-Origin',origin);if(request.headers.get('origin')&&request.headers.get('origin')!==origin)return reply({error:'origin_not_allowed'},403);if(request.method==='OPTIONS')return reply({ok:true});if(!['GET','POST','PATCH'].includes(request.method))return reply({error:'method_not_allowed'},405);
@@ -35,7 +35,7 @@ Deno.serve(async request=>{const headers=new Headers({'Content-Type':'applicatio
   if(request.method==='GET'){const drafts=await rest('atx_event_drafts?select=id,source_key,draft,status,event_id,published_slug,created_at,updated_at&order=created_at.desc&limit=100');return reply({drafts});}
   const raw=await request.text();if(raw.length>65_536)return reply({error:'payload_too_large'},413);let body;try{body=JSON.parse(raw);}catch{return reply({error:'invalid_json'},400);}const action=body?.action;
   if(action==='import'&&request.method==='POST'){
-   const url=simgridUrl(body.url);const [info,races]=await Promise.all([simgridPage(url),simgridPage(url+'/races')]);return reply(parseSimgrid(info,races,url));
+   const url=simgridUrl(body.url);return reply(await simgridApi(url.match(/\d+$/)![0],url));
   }
   if(action==='save'&&['POST','PATCH'].includes(request.method)){
    const draft=validateDraft(body.draft),id=clean(body.id,36);let rows;
@@ -49,5 +49,5 @@ Deno.serve(async request=>{const headers=new Headers({'Content-Type':'applicatio
    const result=await rest('rpc/publish_atx_event_draft',{method:'POST',body:JSON.stringify({p_draft_id:id})});return reply({event:result});
   }
   return reply({error:'invalid_action'},400);
- }catch(error){const message=error instanceof Error?error.message:'unavailable';const known=['invalid_simgrid_url','invalid_image_url','invalid_format','invalid_draft','invalid_source_key','simgrid_unreadable','simgrid_no_rounds','simgrid_unavailable','simgrid_access_blocked'];if(message==='unauthorized')return reply({error:message},401);if(message==='forbidden')return reply({error:message},403);if(known.includes(message)||message.startsWith('invalid_'))return reply({error:message},message==='simgrid_access_blocked'?503:400);return reply({error:'service_unavailable'},503);}
+ }catch(error){const message=error instanceof Error?error.message:'unavailable';const known=['invalid_simgrid_url','invalid_image_url','invalid_format','invalid_draft','invalid_source_key','simgrid_unreadable','simgrid_no_rounds','simgrid_unavailable','simgrid_access_blocked','simgrid_token_required','simgrid_token_invalid'];if(message==='unauthorized')return reply({error:message},401);if(message==='forbidden')return reply({error:message},403);if(known.includes(message)||message.startsWith('invalid_'))return reply({error:message},['simgrid_access_blocked','simgrid_token_required','simgrid_token_invalid'].includes(message)?503:400);return reply({error:'service_unavailable'},503);}
 });

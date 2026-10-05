@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {parseSimgrid,simgridUrl} from '../supabase/functions/atx-event-admin/simgrid.mjs';
+import {mapSimgridChampionship,parseSimgrid,simgridUrl} from '../supabase/functions/atx-event-admin/simgrid.mjs';
 
 const url='https://www.thesimgrid.com/championships/27666';
 const info=`<meta property="og:url" content="${url}"><meta property="og:image" content="https://cdn.thesimgrid.com/poster.png"><h1 class="event-title">DAILY RACE LAGUNA SECA</h1><div class="badge-counter"><span>8</span><span>28</span></div><div class="schedule-card"><time datetime="2026-10-01T18:45:00Z"></time><div class="schedule-track">Laguna Seca</div><strong>1h15m</strong><span>p1</span><strong>15m</strong><span>q1</span><strong>1h</strong><span>r1</span></div><div class="schedule-card"><time datetime="2026-10-02T18:45:00Z"></time><div class="schedule-track">Spa</div><strong>1h</strong><span>p1</span><strong>15m</strong><span>q1</span><strong>1h</strong><span>r1</span></div>`;
@@ -8,6 +8,7 @@ const races=`<button class="race-card" data-race-panel-url="/championships/27666
 
 test('canonical SimGrid links prevent arbitrary server fetches',()=>{
  assert.equal(simgridUrl(url+'/'),url);
+ assert.equal(simgridUrl('https://thesimgrid.com/events/27666'),'https://www.thesimgrid.com/events/27666');
  for(const candidate of ['http://www.thesimgrid.com/championships/1','https://evil.test/championships/1','https://www.thesimgrid.com@evil.test/championships/1','https://www.thesimgrid.com/championships/1/races'])assert.throws(()=>simgridUrl(candidate),/invalid_simgrid_url/);
 });
 test('one championship becomes separate reviewable rounds without guessed format',()=>{
@@ -21,6 +22,14 @@ test('one championship becomes separate reviewable rounds without guessed format
 test('blocked and unrelated pages are rejected',()=>{
  assert.throws(()=>parseSimgrid('Just a moment',races,url),/simgrid_access_blocked/);
  assert.throws(()=>parseSimgrid('<h1 class="event-title">Fake</h1><meta property="og:url" content="https://elsewhere.test">',races,url),/simgrid_unreadable/);
+});
+test('official SimGrid API pre-fills verified round fields and leaves unknown fields editable',()=>{
+ const result=mapSimgridChampionship({id:27666,name:'ATX Daily Race',capacity:28,spots_taken:8,image:'https://cdn.thesimgrid.com/poster.png',races:[{id:269256,display_name:'Round 1',starts_at:'2026-10-01T18:45:00Z',track:{name:'Laguna Seca'}},{id:269257,display_name:'Round 2',starts_at:'2026-10-02T18:45:00Z',track:{name:'Spa'}}]},'27666');
+ assert.equal(result.rounds.length,2);
+ assert.deepEqual(result.rounds.map(r=>r.sourceKey),['27666:269256','27666:269257']);
+ assert.equal(result.rounds[0].circuit,'Laguna Seca');assert.equal(result.rounds[0].maxDrivers,28);
+ assert.equal(result.rounds[0].practiceMinutes,null);assert.equal(result.rounds[0].competition,'');
+ assert.throws(()=>mapSimgridChampionship({id:1,races:[]},'27666'),/simgrid_unreadable/);
 });
 
 let handler;

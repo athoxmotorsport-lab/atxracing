@@ -19,7 +19,7 @@ let browser;
   const request=route.request(),name=new URL(request.url()).pathname.split('/').pop();let result={},status=200;
   if(name==='atx-event-admin'){
    if(request.method()==='GET')result={drafts};
-   else{const body=request.postDataJSON();if(body.action==='import'){imported++;status=503;result={error:'simgrid_access_blocked'};}
+   else{const body=request.postDataJSON();if(body.action==='import'){imported++;status=503;result={error:'simgrid_token_required'};}
     else if(body.action==='save'){const record={id:'00000000-0000-4000-8000-000000000001',draft:{...body.draft,circuitKey:'laguna_seca',schedule:[]},status:'draft'};drafts=[record];result={draft:record};status=201;}
     else if(body.action==='publish'){published++;result={event:{slug:'atx-test'}};}
    }
@@ -30,7 +30,7 @@ let browser;
  await page.goto(origin+'/atxracing/fr/acc/admin.html');await page.getByRole('heading',{name:'Importer depuis SimGrid'}).waitFor();
  assert.equal(await page.locator('.header-languages a').count(),2);
  await page.getByLabel('Lien du championnat SimGrid').fill('https://www.thesimgrid.com/championships/27666');
- await page.getByRole('button',{name:'Lire la page publique'}).click();await page.getByText(/SimGrid bloque actuellement/).waitFor();assert.equal(imported,1);
+ await page.getByRole('button',{name:'Lire la page publique'}).click();await page.getByText(/jeton API de votre communauté/).waitFor();assert.equal(imported,1);
  await page.getByRole('button',{name:'Nouveau brouillon manuel'}).first().click();
  await page.getByLabel('Titre français').fill('DR Laguna Seca');await page.getByLabel('Titre anglais').fill('Laguna Seca DR');
  await page.getByLabel('Description française').fill('Course test');await page.getByLabel('Description anglaise').fill('Test race');
@@ -46,5 +46,5 @@ let browser;
  await page.getByLabel('Titre français').fill('DR Laguna Seca');await page.getByRole('button',{name:'Publier la course'}).click();
  await page.getByText('Course publiée dans le calendrier.').waitFor();assert.equal(published,1);
  assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'mobile overflow');assert.deepEqual(errors,[]);
- console.log('Admin browser checks passed: blocked SimGrid, manual draft, private save, stale edit guard, publish and mobile.');
+ console.log('Admin browser checks passed: missing SimGrid API token, editable draft, private save, stale edit guard, publish and mobile.');
 })().catch(error=>{console.error(error);process.exitCode=1;}).finally(async()=>{await browser?.close();server.close();});

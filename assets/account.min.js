@@ -83,6 +83,9 @@
  function heading(driver){if(!header)return;header.href=profileUrl();header.classList.add('is-connected');header.replaceChildren(avatar(driver),node('span','steam-account-name',driver.display_name||ui.mine));header.setAttribute('aria-label',ui.mine);}
  function guest(message){if(!root)return;root.replaceChildren();const card=node('div','account-guest');card.append(node('span','eyebrow','STEAM / ATXRACING'),node('h2','',ui.title),node('p','',ui.intro),node('p','profile-note',ui.identityHelp));if(message)card.append(node('p','account-error',message));card.append(link(ui.login,loginHref,'account-button'));root.append(card);}
  const lap=ms=>ms>0?`${Math.floor(ms/60000)}:${String(Math.floor(ms/1000)%60).padStart(2,'0')}.${String(ms%1000).padStart(3,'0')}`:'—';
+ const media=typeof ATX_PROFILE_MEDIA==='object'?ATX_PROFILE_MEDIA:null;
+ function carPortrait(name,record){const photo=record?.image_url?{image:record.image_url,credit:record.credit,source:record.source_url}:media?.photos[name];if(!photo)return null;const figure=node('figure','driver-car-photo');const img=node('img');img.src=photo.image;img.alt=name;img.loading='lazy';img.onerror=()=>figure.remove();figure.append(img,node('figcaption','',name));const credit=link(photo.credit,photo.source,'photo-credit');credit.target='_blank';credit.rel='noopener noreferrer';figure.append(credit);return figure;}
+ function lapCards(items){const list=node('div','profile-lap-grid');items.forEach(r=>{const card=node('article','profile-lap-card'),image=media?.circuitPhoto(r.circuit_key,r.circuit_name);if(image){const img=node('img','profile-lap-photo');img.src=image;img.alt='';img.loading='lazy';img.onerror=()=>img.remove();card.append(img);}const info=node('div','profile-lap-info');info.append(node('strong','',r.circuit_name||'—'),node('span','',media?.sessionName(r.best_lap_session_type,lang)||r.best_lap_session_type||'—'),node('b','',lap(r.best_lap_ms)));card.append(info);list.append(card)});return list;}
  function preferencesCard(driver){
   const section=node('section','driver-preferences');section.append(node('span','eyebrow',ui.preferences));
   const grid=node('div','driver-preferences-grid');
@@ -92,21 +95,22 @@
  function sporting(driver){const section=node('section','driver-sport');
   if(game==='ace'){section.append(node('p','profile-note',ui.ace));return section;}
   const stats=node('div','account-stats');[[ui.races,'races'],[ui.wins,'wins'],[ui.podiums,'podiums'],[ui.points,'points']].forEach(([name,k])=>{const box=node('div');box.append(node('b','',driver.stats?.[k]??'—'),node('small','',name));stats.append(box);});section.append(stats);
-  const history=node('section','account-history');history.append(node('h2','',ui.history));const results=driver.results||[];if(!results.length)history.append(node('p','',ui.empty));else{const list=node('div','account-result-list');results.slice(0,30).forEach(r=>{const event=Array.isArray(r.event)?r.event[0]:r.event||{};const row=node('div');row.append(node('strong','',event['title_'+lang]||event.title_fr||event.circuit_name||'—'),node('span','',r.car_model_name||'—'),node('b','',lap(r.best_lap_ms)));list.append(row);});history.append(list);}section.append(history);return section;
+  const history=node('section','account-history');history.append(node('h2','',ui.history));const results=(driver.results||[]).filter(r=>media?.competition(r));if(!results.length)history.append(node('p','',ui.empty));else{const list=node('div','profile-race-grid');results.slice(0,30).forEach(r=>{const event=media.event(r),row=node('article','profile-race-card'),image=media.circuitPhoto(event.circuit_key,event.circuit_name);if(image){const img=node('img','profile-race-photo');img.src=image;img.alt='';img.loading='lazy';img.onerror=()=>img.remove();row.append(img)}const detail=node('div','profile-race-info');detail.append(node('strong','',event['title_'+lang]||event.title_fr||event.circuit_name||'—'),node('span','',`${event.circuit_name||'—'} · ${r.car_model_name||'—'}`),node('b','',`${r.finish_position?'P'+r.finish_position+' · ':''}${lap(r.best_lap_ms)}`));row.append(detail);list.append(row);});history.append(list);}section.append(history);return section;
  }
  function personalLaps(driver){
   if(game!=='acc')return;
   const box=node('section','account-history');box.append(node('h2','',lang==='fr'?'Meilleurs tours ACC':'ACC best laps'));
   const content=node('p','profile-note',ui.loading);box.append(content);root.append(box);
-  request('public-driver-sectors').then(data=>{if(!box.isConnected)return;const laps=(data.sectors||[]).filter(r=>r.driver_id===driver.id&&r.best_lap_ms>0);if(!laps.length){content.textContent=lang==='fr'?'Aucun tour disponible.':'No laps available.';return;}const list=node('div','account-result-list');laps.forEach(r=>{const row=node('div');row.append(node('strong','',r.circuit_name||'—'),node('span','',r.best_lap_session_type||'—'),node('b','',lap(r.best_lap_ms)));list.append(row);});content.replaceWith(list);}).catch(()=>{content.textContent=lang==='fr'?'Chronos momentanément indisponibles.':'Lap times are temporarily unavailable.';});
+  request('public-driver-sectors').then(data=>{if(!box.isConnected)return;const laps=(data.sectors||[]).filter(r=>r.driver_id===driver.id&&r.best_lap_ms>0);if(!laps.length){content.textContent=lang==='fr'?'Aucun tour disponible.':'No laps available.';return;}content.replaceWith(lapCards(laps));}).catch(()=>{content.textContent=lang==='fr'?'Chronos momentanément indisponibles.':'Lap times are temporarily unavailable.';});
  }
  const draftKey=id=>'atx-profile-draft-v1-'+id;
  function readDraft(id){try{const d=JSON.parse(localStorage.getItem(draftKey(id)));return d&&typeof d==='object'?d:null;}catch{return null;}}
  function clearDraft(id){try{localStorage.removeItem(draftKey(id));}catch{}}
- function owner(driver,message){if(!root)return;root.replaceChildren();document.querySelectorAll('#public-directory,#results').forEach(e=>e.hidden=true);
+ function owner(driver,message){if(!root)return;root.replaceChildren();document.querySelectorAll('#public-directory,#results').forEach(e=>e.hidden=false);
   const card=node('section','account-card'),hero=node('div','account-hero'),name=node('div');
   name.append(node('span','eyebrow',ui.welcome+' / '+game.toUpperCase()),node('h2','',driver.display_name),node('p','',driver.team_name||ui.noTeam));hero.append(avatar(driver),name);
   currentInsignia=game==='acc'?ATXInsignia.create({lang,stage:currentLevel,score:driver.rating?.safety_score,tier:driver.rating?.safety_class,awards:driver.awards||[],results:driver.results||[],eventBase:base+lang+'/acc/event.html?slug='}):null;
+  const favoriteCar=carPortrait(driver.preferred_gt3,driver.car_photo);if(favoriteCar)hero.append(favoriteCar);
   if(currentInsignia)hero.append(currentInsignia.rail);
   card.append(hero);if(currentInsignia)card.append(currentInsignia.panel);
   card.append(node('p','profile-state',driver.profile_confirmed_at?ui.regular:ui.incomplete));if(message)card.append(node('p','form-status',message));

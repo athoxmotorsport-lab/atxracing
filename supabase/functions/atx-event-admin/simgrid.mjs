@@ -5,8 +5,23 @@ const meta = (html,property) => {const tags=html.match(/<meta\b[^>]*>/gi)||[];re
 const duration = text => {const h=Number(text.match(/(\d+)h/i)?.[1]||0),m=Number(text.match(/(\d+)m/i)?.[1]||0);return h*60+m||null;};
 export function simgridUrl(input){
  let url;try{url=new URL(input);}catch{throw Error('invalid_simgrid_url');}
- if(url.protocol!=='https:'||url.hostname!=='www.thesimgrid.com'||url.port||url.username||url.password||!/^\/championships\/\d+\/?$/.test(url.pathname))throw Error('invalid_simgrid_url');
- return `https://www.thesimgrid.com/championships/${url.pathname.match(/\d+/)[0]}`;
+ if(url.protocol!=='https:'||!['www.thesimgrid.com','thesimgrid.com'].includes(url.hostname)||url.port||url.username||url.password||url.search||url.hash||!/^\/(championships|events)\/\d+\/?$/.test(url.pathname))throw Error('invalid_simgrid_url');
+ return `https://www.thesimgrid.com/${url.pathname.match(/^\/(championships|events)/)[1]}/${url.pathname.match(/\d+/)[0]}`;
+}
+export function mapSimgridChampionship(data,id,sourceUrl=`https://www.thesimgrid.com/championships/${id}`){
+ if(String(data?.id)!==String(id)||!Array.isArray(data?.races))throw Error('simgrid_unreadable');
+ const clean=(value,max)=>typeof value==='string'?value.trim().slice(0,max):'';
+ const source=simgridUrl(sourceUrl);
+ const rounds=data.races.filter(race=>Number.isInteger(race.id)&&Number.isFinite(Date.parse(race.starts_at))&&!race.hot_lap).map((race,index)=>({
+  sourceKey:`${id}:${race.id}`,titleFr:clean(race.display_name||race.race_name||data.name,96),titleEn:clean(race.display_name||race.race_name||data.name,96),
+  circuit:clean(race.track?.name,64),startsAt:race.starts_at,serverOpensAt:race.starts_at,
+  practiceMinutes:null,qualifyingMinutes:null,raceMinutes:null,
+  maxDrivers:Number.isInteger(data.capacity)?data.capacity:null,registered:Number.isInteger(data.spots_taken)?data.spots_taken:null,
+  carClass:'',imageUrl:typeof data.image==='string'&&data.image.startsWith('https://')?data.image:'',simgridUrl:source,raceUrl:source,
+  descriptionFr:'',descriptionEn:'',competition:'',format:'',roundNumber:index+1
+ }));
+ if(!rounds.length)throw Error('simgrid_no_rounds');
+ return {championshipTitle:clean(data.name,96),rounds,warnings:['review_all_fields','choose_format','review_official_start','descriptions_not_available']};
 }
 export function parseSimgrid(infoHtml,racesHtml,url){
  if(/Just a moment|cf-mitigated|challenge-platform|Attention Required/i.test(infoHtml+' '+racesHtml))throw Error('simgrid_access_blocked');
