@@ -5,11 +5,12 @@ const assert=require('node:assert/strict');
  const root=path.resolve(__dirname,'../dist');
  const server=http.createServer((req,res)=>{let name=decodeURIComponent(req.url.split('?')[0]).replace(/^\/atxracing\//,'');if(!name||name.endsWith('/'))name+='index.html';const file=path.resolve(root,name);if(!file.startsWith(root+path.sep)){res.writeHead(403);return res.end()}try{const content=fs.readFileSync(file);res.setHeader('Content-Type',({'html':'text/html','js':'text/javascript','css':'text/css','jpg':'image/jpeg','webp':'image/webp'})[file.split('.').pop()]||'application/octet-stream');res.end(content)}catch{res.writeHead(404);res.end()}});
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const origin='http://127.0.0.1:'+server.address().port;
- const browser=await chromium.launch({headless:true,executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe'});
+ const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH||'C:/Program Files/Google/Chrome/Application/chrome.exe'});
  try{
   const context=await browser.newContext({viewport:{width:1440,height:900}});
   await context.addInitScript(()=>sessionStorage.setItem('atx-racing-session','test'));
-  await context.route('**/functions/v1/auth-session',route=>route.fulfill({status:200,headers:{'Access-Control-Allow-Origin':origin},contentType:'application/json',body:JSON.stringify({driver:{display_name:'Test'}})}));
+ await context.route('**/functions/v1/auth-session',route=>route.fulfill({status:200,headers:{'Access-Control-Allow-Origin':origin},contentType:'application/json',body:JSON.stringify({driver:{display_name:'Test'}})}));
+ await context.route('**/functions/v1/driver-profile',route=>route.fulfill({status:200,headers:{'Access-Control-Allow-Origin':origin},contentType:'application/json',body:JSON.stringify({driver:{display_name:'Test',profile_confirmed_at:'2026-10-06T00:00:00Z'}})}));
   await context.route('**/functions/v1/driver-messages**',route=>route.fulfill({status:200,headers:{'Access-Control-Allow-Origin':origin},contentType:'application/json',body:JSON.stringify({conversations:[],unread:2})}));
   const notices=[{id:'a',type:'results_published',title_fr:'Résultat',title_en:'Result',message_fr:'Course publiée',message_en:'Race published',related_link:'course.html?event=sample-race'},{id:'b',type:'circuit_record',title_fr:'Record',title_en:'Record',message_fr:'Record du circuit',message_en:'Track record',related_link:'classement.html#circuit'}];
   await context.route('**/functions/v1/public-event',route=>route.fulfill({status:200,headers:{'Access-Control-Allow-Origin':origin},contentType:'application/json',body:JSON.stringify({notifications:notices,today:[],events:[],archives:[]})}));

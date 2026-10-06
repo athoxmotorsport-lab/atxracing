@@ -11,12 +11,23 @@
  let token;
  try{token=sessionStorage.getItem(key);}catch{}
  if(!token){location.replace(base);return;}
- fetch('https://twjpjzalyvbsdpbzhqln.supabase.co/functions/v1/auth-session',{
+ const api='https://twjpjzalyvbsdpbzhqln.supabase.co/functions/v1/';
+ fetch(api+'auth-session',{
   headers:{Authorization:'Bearer '+token},signal:AbortSignal.timeout(15000)
  }).then(response=>{
   if(!response.ok)throw Error('session');
   return response.json();
- }).then(session=>{
+ }).then(async session=>{
+  if(document.body.dataset.page!=='profile'){
+   const response=await fetch(api+'driver-profile',{headers:{Authorization:'Bearer '+token},signal:AbortSignal.timeout(15000)});
+   if(!response.ok)throw Error('profile');
+   const profile=await response.json();
+   if(!profile.driver?.profile_confirmed_at){
+    const lang=document.documentElement.lang==='en'?'en':'fr';
+    location.replace(base+lang+'/acc/profile.html?onboarding=1');
+    return;
+   }
+  }
   const label=document.querySelector('[data-steam-label]');
   if(label)label.textContent=document.documentElement.lang==='en'?'Driver profile':'Profil pilote';
   const name=document.querySelector('[data-driver-name]');

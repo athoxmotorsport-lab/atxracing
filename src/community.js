@@ -7,7 +7,7 @@
  const base=document.querySelector('meta[name="atx-base"]')?.content||'/atxracing/';
  const text=(fr,en)=>lang==='fr'?fr:en;
  const api='https://twjpjzalyvbsdpbzhqln.supabase.co/functions/v1/public-event';
- const header=document.querySelector('.top-inner');
+ const header=document.querySelector('.header-tools')||document.querySelector('.top-inner');
  const seenKey='atxracing-notifications-seen-v1';
  const dismissedKey='atxracing-race-reminders-v1';
  const read=(storage,key)=>{try{return JSON.parse(storage.getItem(key)||'{}')}catch{return {}}};

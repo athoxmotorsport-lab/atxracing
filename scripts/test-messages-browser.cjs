@@ -13,6 +13,7 @@ const assert=require('node:assert/strict');
   const context=await browser.newContext({viewport:{width:1365,height:900}});
   await context.addInitScript(()=>sessionStorage.setItem('atx-racing-session','test-token'));
   await context.route('**/functions/v1/auth-session',route=>route.fulfill({status:200,headers:{'Access-Control-Allow-Origin':origin},contentType:'application/json',body:JSON.stringify({driver:{id:me,display_name:'Test'}})}));
+  await context.route('**/functions/v1/driver-profile',route=>route.fulfill({status:200,headers:{'Access-Control-Allow-Origin':origin},contentType:'application/json',body:JSON.stringify({driver:{id:me,display_name:'Test',profile_confirmed_at:'2026-10-06T00:00:00Z'}})}));
   await context.route('**/functions/v1/public-event',route=>route.fulfill({status:200,headers:{'Access-Control-Allow-Origin':origin},contentType:'application/json',body:JSON.stringify({notifications:[],today:[],events:[]})}));
   await context.route('**/functions/v1/driver-messages**',async route=>{
    const request=route.request(),url=new URL(request.url());let body={},status=200;
@@ -28,8 +29,8 @@ const assert=require('node:assert/strict');
   await page.locator('.messages-text').fill('Bonjour pilote');await page.locator('.messages-send').click();
   await page.waitForFunction(()=>document.querySelector('.messages-bubble')?.textContent.includes('Bonjour pilote'));
   assert.equal(messages.length,1);assert.equal(messages[0].recipient_id,peer);
-  await page.locator('.messages-block').click();assert.equal(blocked,true);assert.equal(await page.locator('.messages-text').isDisabled(),true);
-  await page.locator('.messages-block').click();assert.equal(blocked,false);
+  await page.locator('.messages-block').click();await page.locator('.messages-text').waitFor({state:'attached'});await page.waitForFunction(()=>document.querySelector('.messages-text')?.disabled);assert.equal(blocked,true);
+  await page.locator('.messages-block').click();await page.waitForFunction(()=>!document.querySelector('.messages-text')?.disabled);assert.equal(blocked,false);
   await page.setViewportSize({width:390,height:844});assert.equal(await page.locator('.messages-conversation').isVisible(),true);
   await page.goto(origin+'/atxracing/en/ace/messages.html');await page.locator('.messages-search').waitFor();assert.equal(await page.locator('.messages-search-label').innerText(),'Find a driver');
   console.log('Private messages FR/EN, send, block/unblock and mobile layout: OK');

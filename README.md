@@ -21,6 +21,8 @@ Le profil ACC conserve son historique. ACE ne présente pas les statistiques ACC
 
 Le backend ajouté est documenté dans [docs/profil-pilote.md](docs/profil-pilote.md). Il utilise les sessions Steam existantes et une table de préférences privée, sans changer le collecteur, les résultats ou les identités Steam.
 
+La GT3 préférée apparaît avec une création ATXRACING détourée dans le profil personnel et la carte publique. Les 17 visuels optimisés sont stockés dans `media/gt3/` puis copiés vers `assets/gt3/` par le build ; la migration `20261006100000_atxracing_gt3_artwork.sql` remplace les anciennes photographies externes du catalogue.
+
 ## Administration des courses
 
 Le panel ACC FR/EN permet de lire un championnat SimGrid avec le jeton de communauté configuré côté serveur, préparer chaque manche en brouillon privé, puis publier une course après vérification. Sans jeton ou en cas de refus, la saisie manuelle reste disponible et l'échec est explicite. Voir [docs/admin-simgrid.md](docs/admin-simgrid.md). Les formats officiels sont vérifiés à la publication ; l'import seul ne publie jamais.

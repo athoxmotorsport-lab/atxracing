@@ -34,7 +34,7 @@ test('GET merges private preferences, Safe and official honours only for the ses
   if(url.includes('/results?'))return Response.json([{event_id:'visible',finish_position:2,status:'classified'}]);
   throw Error('unexpected request');
  };
- const response=await handler(new Request('https://edge.test',{headers}));assert.deepEqual(await response.json(),{driver:{id:'verified-owner',nickname:'Private nickname',favorite_circuits:['spa'],rating:{safety_class:'gold',safety_score:84},awards:[{event_id:'visible',award_type:'fast_driver',finish_position:2,finish_status:'classified'}]}});
+ const response=await handler(new Request('https://edge.test',{headers}));assert.deepEqual(await response.json(),{driver:{id:'verified-owner',nickname:'Private nickname',favorite_circuits:['spa'],car_photo:null,rating:{safety_class:'gold',safety_score:84},awards:[{event_id:'visible',award_type:'fast_driver',finish_position:2,finish_status:'classified'}]}});
 });
 test('invalid input never reaches the write RPC',async()=>{
  let calls=0;globalThis.fetch=async()=>{calls++;return Response.json([{driver_id:'verified-owner'}]);};

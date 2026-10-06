@@ -24,6 +24,7 @@ let browser;
     else if(body.action==='publish'){published++;result={event:{slug:'atx-test'}};}
    }
   }else if(name==='auth-session')result={driver:{id:'00000000-0000-4000-8000-000000000001',display_name:'Admin Test',roles:['admin']},access_token:'test-token'};
+  else if(name==='driver-profile')result={driver:{id:'00000000-0000-4000-8000-000000000001',display_name:'Admin Test',profile_confirmed_at:'2026-10-06T00:00:00Z'}};
   await route.fulfill({status,contentType:'application/json',body:JSON.stringify(result)});
  });
  const page=await context.newPage(),errors=[];page.on('pageerror',error=>errors.push(error.message));
@@ -38,7 +39,7 @@ let browser;
  await page.getByLabel(/Essais libres/).fill('60');await page.getByLabel(/Qualifications/).fill('15');await page.getByLabel(/Course · minutes/).fill('60');
  await page.getByLabel('Places totales').fill('28');await page.getByLabel(/Affiche/).fill('https://cdn.thesimgrid.com/test.png');
  await page.getByLabel('Lien d’inscription SimGrid').fill('https://www.thesimgrid.com/championships/27666');
- await page.getByLabel('Compétition').selectOption('DR');await page.getByLabel('Format').selectOption('DR');
+ await page.locator('select[name="competition"]').selectOption('DR');await page.getByLabel('Format').selectOption('DR');
  await page.getByRole('button',{name:'Enregistrer le brouillon'}).click();await page.getByText('Brouillon enregistré. Il reste invisible pour les pilotes.').waitFor();
  assert.equal(published,0);assert.equal(drafts.length,1);assert.equal(await page.getByRole('button',{name:'Publier la course'}).count(),1);
  await page.getByLabel('Titre français').fill('DR Laguna Seca modifiée');await page.getByRole('button',{name:'Publier la course'}).click();
