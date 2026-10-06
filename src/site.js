@@ -13,12 +13,27 @@ const $=(s)=>document.querySelector(s);const lang=document.documentElement.lang;
   const visual=typeof ATX_CIRCUITS==='object'?ATX_CIRCUITS:{};
   const keys=[...Object.keys(titles),...indexed.keys()].filter((key,index,all)=>all.indexOf(key)===index);
   grid.replaceChildren();
-  function select(key){
+  function select(key,scroll=false){
    grid.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.key===key)));
    const c=indexed.get(key),best=c?.drivers?.[0];
    spot.replaceChildren();
-   if(c){spot.append(node('span','meta',c.circuit_name),node('strong','',lap(c.reference_lap_ms)),node('span','',c.reference_driver||'—'))}
-   root.replaceChildren(c?.drivers?.length?table(['#',labels.driver,labels.car,labels.lap,labels.date],c.drivers.map((d,i)=>[i+1,profileLink(d),d.car_model_name||'—',lap(d.best_lap_ms),date(d.achieved_at)])):node('p','empty',fallback));
+   const title=node('h2','',titles[key]||c?.circuit_name||key.replaceAll('_',' '));title.tabIndex=-1;
+   spot.append(node('span','meta',lang==='fr'?'CHRONOS DES PILOTES':'DRIVER LAP TIMES'),title,node('p','',lang==='fr'?'Meilleur tour enregistré par pilote · du plus rapide au plus lent':'Best recorded lap per driver · fastest first'));
+   const list=node('ol','circuit-lap-list');
+   (c?.drivers||[]).forEach((d,i)=>{
+    const row=node('li','circuit-lap-row'),known=(payload.drivers||[]).find(x=>x.driver_id===d.driver_id),tier=d.profile_id?String(known?.performance_class||'').toLowerCase():'';
+    if(['rookie','challenger','pro','elite','alien'].includes(tier))row.dataset.level=tier;
+    row.append(node('span','circuit-lap-position',String(i+1).padStart(2,'0')));
+    const identity=node('div','circuit-lap-driver');identity.append(profileLink(d));
+    if(row.dataset.level)identity.append(node('small','circuit-lap-level',tier.toUpperCase()));
+    row.append(identity);
+    const car=node('div','circuit-lap-car'),art=gt3Artwork[d.car_model_name];
+    if(art){const img=node('img');img.src=siteBase+'assets/gt3/'+art;img.alt=d.car_model_name;img.title=d.car_model_name;img.loading='lazy';img.onerror=()=>car.replaceChildren(node('span','',d.car_model_name));car.append(img)}else car.append(node('span','',d.car_model_name||'—'));
+    row.append(car);
+    const timing=node('div','circuit-lap-timing');timing.append(node('strong','',lap(d.best_lap_ms)),node('small','',i===0?(lang==='fr'?'MEILLEUR TEMPS':'FASTEST LAP'):'+'+((d.best_lap_ms-best.best_lap_ms)/1000).toFixed(3)+' s'));row.append(timing,node('span','circuit-lap-date',date(d.achieved_at)));list.append(row);
+   });
+   root.replaceChildren(list.children.length?list:node('p','empty',fallback));
+   if(scroll){title.focus({preventScroll:true});spot.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'})}
   }
   keys.forEach(key=>{
    const c=indexed.get(key),v=visual[key],card=node('button','record-card');card.type='button';card.dataset.key=key;ATX_CIRCUIT_FRAME(card,key);
@@ -26,7 +41,7 @@ const $=(s)=>document.querySelector(s);const lang=document.documentElement.lang;
    if(v?.image){const photo=node('img');photo.src=v.image;photo.alt='';photo.loading='lazy';photo.referrerPolicy='no-referrer';photo.onerror=()=>photo.remove();media.append(photo)}
    if(v?.country)media.append(node('span','record-country',v.country));
    const body=node('span','record-copy');body.append(node('strong','',titles[key]||c?.circuit_name||key.replaceAll('_',' ')),node('small','',c?.reference_driver||''),node('b','',c?.reference_lap_ms?lap(c.reference_lap_ms):fallback));
-   card.append(media,body);card.onclick=()=>select(key);grid.append(card)
+   card.append(media,body);card.onclick=()=>select(key,true);grid.append(card)
   });
   root.replaceChildren();select(keys.find(k=>indexed.get(k)?.drivers?.length)||keys[0]);
  }catch{grid.replaceChildren();spot.replaceChildren();status(labels.offline)}
