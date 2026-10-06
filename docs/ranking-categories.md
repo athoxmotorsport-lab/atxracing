@@ -21,6 +21,11 @@ disponibles, chaque pilote comptant une fois, même après plusieurs courses WGT
 Les points WGT restent attribués une fois par équipage et par événement.
 Les statistiques des membres sont celles de la catégorie sélectionnée.
 
+Le barème commun aux pilotes, équipes et circuits comporte cinq niveaux :
+Alien <102 %, Elite de 102 à <104 %, Pro de 104 à <106 %, Challenger de 106 à
+<108 %, Rookie à partir de 108 %. Les légendes et objectifs sont affichés en FR/EN.
+Les profils sans indice restent en évaluation ; aucune performance n'est inventée.
+
 La migration `20261006180000_add_atx_series.sql` élargit les contraintes et la fonction
 de publication des brouillons sans effacer de données. Elle conserve BATX pour les
 archives et les brouillons existants. Un nouveau brouillon ne propose plus BATX.

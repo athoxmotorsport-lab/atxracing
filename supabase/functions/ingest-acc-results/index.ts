@@ -143,10 +143,11 @@ const normalizeSteamId = (value?: string | null): string => {
   return match?.[1] ?? "";
 };
 
-const performanceClass = (score: number): "alien" | "elite" | "pro" | "rookie" => {
+const performanceClass = (score: number): "alien" | "elite" | "pro" | "challenger" | "rookie" => {
   if (score < 102) return "alien";
   if (score < 104) return "elite";
   if (score < 106) return "pro";
+  if (score < 108) return "challenger";
   return "rookie";
 };
 
@@ -513,7 +514,7 @@ const ingest = async (payload: ImportPayload, rawJson: string) => {
             performance_score: score,
             safety_class: safetyClass(safeScore),
             safety_score: safeScore,
-            algorithm_version: "acc-v2",
+            algorithm_version: "acc-v3-five-levels",
             calculated_at: new Date().toISOString(),
           };
           const { error } = await supabase.from("driver_ratings").upsert({

@@ -17,11 +17,12 @@ const average = (values: number[]): number | null => values.length
   ? values.reduce((total, value) => total + value, 0) / values.length
   : null;
 
-const performanceClass = (score: number | null): "alien" | "elite" | "pro" | "rookie" | "unranked" => {
+const performanceClass = (score: number | null): "alien" | "elite" | "pro" | "challenger" | "rookie" | "unranked" => {
   if (score === null) return "unranked";
   if (score < 102) return "alien";
   if (score < 104) return "elite";
   if (score < 106) return "pro";
+  if (score < 108) return "challenger";
   return "rookie";
 };
 
