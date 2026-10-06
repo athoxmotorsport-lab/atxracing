@@ -17,7 +17,7 @@
  function local(iso){if(!iso)return '';const p=parts(iso);return `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}`;}
  function utc(value){if(!value)return '';const target=Date.parse(value+'Z');if(!Number.isFinite(target))return '';let guess=target;for(let i=0;i<3;i++){const p=parts(guess);const shown=Date.UTC(+p.year,+p.month-1,+p.day,+p.hour,+p.minute);guess+=target-shown;}return local(new Date(guess).toISOString())===value?new Date(guess).toISOString():'';}
  const date=iso=>iso?new Intl.DateTimeFormat(lang,{timeZone:'Europe/Brussels',dateStyle:'long',timeStyle:'short'}).format(new Date(iso)):'—';
- const formats={DR:['DR'],BATX:['BATX'],WGT:['WGT_SPRINT','WGT_ENDURANCE']};
+ const formats={DR:['DR'],ATXS:['ATXS'],BATX:['BATX'],WGT:['WGT_SPRINT','WGT_ENDURANCE']};
  const preset={DR:[60,15,60],BATX:[60,15,90],WGT_SPRINT:[60,15,60]};
  let drafts=[],media=[],current=null;
  function notice(message,error=false){status.textContent=message;status.classList.toggle('account-error',error);}
@@ -37,7 +37,7 @@
   add('titleFr',t.titleFr,'text',true);add('titleEn',t.titleEn,'text',true);add('descriptionFr',t.descriptionFr,'textarea',true);add('descriptionEn',t.descriptionEn,'textarea',true);add('circuit',t.circuit,'text',true);
   add('startsAt',t.startsAt,'datetime-local',true);add('serverOpensAt',t.serverOpensAt,'datetime-local');form.append(el('p','profile-note',t.dateHint));
   add('practiceMinutes',t.practice,'number');add('qualifyingMinutes',t.qualifying,'number');add('raceMinutes',t.race,'number',true);add('maxDrivers',t.maxDrivers,'number',true);add('registered',t.registered,'number');add('carClass',t.carClass);add('imageUrl',t.image,'url',true);add('simgridUrl',t.register,'url',true);
-  const comp=choice('competition',t.competition,['DR','BATX','WGT']);const format=choice('format',t.format,formats[values.competition]||[]);comp.onchange=()=>{format.replaceChildren();const blank=el('option','',t.choose);blank.value='';format.append(blank);for(const item of formats[comp.value]||[]){const option=el('option','',item.replace('_',' '));option.value=item;format.append(option);}};
+  const comp=choice('competition',t.competition,values.competition==='BATX'?['DR','WGT','ATXS','BATX']:['DR','WGT','ATXS']);const format=choice('format',t.format,formats[values.competition]||[]);comp.onchange=()=>{format.replaceChildren();const blank=el('option','',t.choose);blank.value='';format.append(blank);for(const item of formats[comp.value]||[]){const option=el('option','',item.replace('_',' '));option.value=item;format.append(option);}};
   const preview=el('section','admin-preview');preview.append(el('span','eyebrow',t.preview));const previewText=el('p');preview.append(previewText);const mismatch=el('p','account-error');preview.append(mismatch);
   function gather(){const next={...values};for(const [name,input] of Object.entries(fields)){if(['startsAt','serverOpensAt'].includes(name))next[name]=utc(input.value);else if(['practiceMinutes','qualifyingMinutes','raceMinutes','maxDrivers','registered'].includes(name))next[name]=input.value===''?null:Number(input.value);else next[name]=input.value.trim();}return next;}
   function refresh(){const d=gather();previewText.textContent=[d.titleFr||t.missing,d.circuit||t.missing,date(d.startsAt),d.format||t.missing,(d.registered??'—')+' / '+(d.maxDrivers??'—')+' '+t.count].join(' · ');const expected=preset[d.format];mismatch.textContent=expected&&[d.practiceMinutes,d.qualifyingMinutes,d.raceMinutes].some((v,i)=>v!==expected[i])?t.sourceDiff:'';return d;}

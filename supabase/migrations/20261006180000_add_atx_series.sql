@@ -1,32 +1,10 @@
--- Private, reviewable event drafts. Existing events and collector tables remain intact.
-create table public.atx_event_drafts (
-  id uuid primary key default gen_random_uuid(),
-  created_by uuid not null references public.drivers(id),
-  source_key text unique,
-  draft jsonb not null default '{}'::jsonb check (jsonb_typeof(draft) = 'object'),
-  status text not null default 'draft' check (status in ('draft','published')),
-  event_id uuid unique references public.events(id),
-  published_slug text,
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now(),
-  check ((status='draft' and event_id is null and published_slug is null) or (status='published' and event_id is not null and published_slug is not null))
-);
-create index atx_event_drafts_recent_idx on public.atx_event_drafts(created_at desc);
-create index atx_event_drafts_created_by_idx on public.atx_event_drafts(created_by);
-create unique index events_atx_simgrid_source_unique on public.events(source_event_key)
-  where source_event_key like 'atx-simgrid:%';
-alter table public.events
-  add column if not exists competition_code text check (competition_code in ('DR','BATX','WGT','ATXS')),
-  add column if not exists format_code text check (format_code in ('DR','BATX','WGT_SPRINT','WGT_ENDURANCE','ATXS')),
-  add column if not exists mandatory_stop_count integer check (mandatory_stop_count between 0 and 20),
-  add column if not exists server_opens_at timestamptz,
-  add column if not exists registered_snapshot integer check (registered_snapshot between 0 and 1000);
-alter table public.atx_event_drafts enable row level security;
-revoke all on public.atx_event_drafts from public, anon, authenticated;
-grant select, insert, update on public.atx_event_drafts to service_role;
-
--- Publication of a reviewed draft and its public event is all-or-nothing.
-create function public.publish_atx_event_draft(p_draft_id uuid)
+-- Add ATX Series without deleting or rewriting historical events/results.
+BEGIN;
+ALTER TABLE public.events DROP CONSTRAINT events_competition_code_check;
+ALTER TABLE public.events ADD CONSTRAINT events_competition_code_check CHECK (competition_code IN ('DR','BATX','WGT','ATXS'));
+ALTER TABLE public.events DROP CONSTRAINT events_format_code_check;
+ALTER TABLE public.events ADD CONSTRAINT events_format_code_check CHECK (format_code IN ('DR','BATX','WGT_SPRINT','WGT_ENDURANCE','ATXS'));
+create or replace function public.publish_atx_event_draft(p_draft_id uuid)
 returns jsonb language plpgsql security invoker set search_path = '' as $$
 declare item public.atx_event_drafts%rowtype;
 declare d jsonb;
@@ -96,3 +74,6 @@ begin
 end $$;
 revoke all on function public.publish_atx_event_draft(uuid) from public, anon, authenticated;
 grant execute on function public.publish_atx_event_draft(uuid) to service_role;
+
+COMMIT;
+

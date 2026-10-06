@@ -20,7 +20,7 @@ const ATX_PROFILE_MEDIA=(()=>{
   'Porsche 911 GT3 R':{image:'/atxracing/assets/gt3/17.jpg',credit:'Florian Volk · CC BY 2.0',source:'https://commons.wikimedia.org/wiki/File:-4_Porsche_911_GT3_R_-_Falken_Motorsports_(26267918217).jpg'},
  };
  const event=r=>Array.isArray(r?.event)?r.event[0]:r?.event||{};
- const competition=r=>{const e=event(r),title=(e.title_fr||e.title_en||'').toLowerCase();if(/discord|open\s*lobby|hotlaper|entrainement|entraînement/.test(title))return false;return ['DR','WGT','BATX','BA'].includes(String(e.competition_code||'').toUpperCase())||['daily_race','sprint','championship','endurance'].includes(e.event_type)||/\b(daily\s*race|dr|wgt|ball?ade\s*atx)\b/i.test(title)};
+ const competition=r=>{const e=event(r),title=(e.title_fr||e.title_en||'').toLowerCase();if(/discord|open\s*lobby|hotlaper|entrainement|entraînement/.test(title))return false;return ['DR','WGT','BATX','BA','ATXS'].includes(String(e.competition_code||'').toUpperCase())||['daily_race','sprint','championship','endurance'].includes(e.event_type)||/\b(daily\s*race|dr|wgt|ball?ade\s*atx)\b/i.test(title)};
  const circuitKey=value=>String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');
  const circuitPhoto=(key,name)=>{const all=typeof ATX_CIRCUITS==='object'?ATX_CIRCUITS:{};return all[key]?.image||all[circuitKey(name)]?.image||''};
  const sessionName=(code,lang)=>({FP:lang==='fr'?'Essais libres':'Free practice',Q:lang==='fr'?'Qualifications':'Qualifying',R:lang==='fr'?'Course':'Race'})[String(code||'').toUpperCase()]||code||'—';

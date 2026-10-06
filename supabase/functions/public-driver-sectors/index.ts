@@ -54,7 +54,7 @@ Deno.serve(async (request) => {
       if (event?.is_official === false || event?.is_public !== true || event?.status === "draft") continue;
       const title = `${event?.title_fr ?? ''} ${event?.title_en ?? ''}`.toLowerCase();
       if (/discord|open\s*lobby|hotlaper|entrainement|entraînement/.test(title)) continue;
-      if (!(['DR', 'WGT', 'BATX', 'BA'].includes(String(event?.competition_code ?? '').toUpperCase())
+      if (!(['DR', 'WGT', 'BATX', 'BA', 'ATXS'].includes(String(event?.competition_code ?? '').toUpperCase())
         || ['daily_race', 'sprint', 'championship', 'endurance'].includes(String(event?.event_type ?? ''))
         || /\b(daily\s*race|dr|wgt|ball?ade\s*atx)\b/i.test(title))) continue;
       const driverId = String(row.driver_id ?? "");
@@ -87,4 +87,3 @@ Deno.serve(async (request) => {
     return json({ error: "server_error" }, 500);
   }
 });
-

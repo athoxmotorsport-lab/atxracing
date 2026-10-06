@@ -14,7 +14,7 @@ const isCompetition = (row: { event?: { title_fr?: string; title_en?: string; ev
   const event = row.event ?? {};
   const title = `${event.title_fr ?? ''} ${event.title_en ?? ''}`.toLowerCase();
   if (/discord|open\s*lobby|hotlaper|entrainement|entraînement/.test(title)) return false;
-  return ['DR', 'WGT', 'BATX', 'BA'].includes(String(event.competition_code ?? '').toUpperCase())
+  return ['DR', 'WGT', 'BATX', 'BA', 'ATXS'].includes(String(event.competition_code ?? '').toUpperCase())
     || ['daily_race', 'sprint', 'championship', 'endurance'].includes(event.event_type ?? '')
     || /\b(daily\s*race|dr|wgt|ball?ade\s*atx)\b/i.test(title);
 };

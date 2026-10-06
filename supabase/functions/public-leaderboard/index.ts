@@ -37,7 +37,7 @@ const normaliseSessionType = (value: unknown): "FP" | "Q" | "R" | null => {
   return type === "FP" || type === "Q" || type === "R" ? type : null;
 };
 
-type RaceCategory = "WGT" | "DR" | "BA" | "OL";
+type RaceCategory = "WGT" | "DR" | "ATXS" | "OL";
 type RankingScope = RaceCategory | "ALL";
 type SteamIdentity = {
   driver_id: string;
@@ -161,10 +161,13 @@ const eventRow = (event: unknown): Record<string, unknown> | null => {
 
 const raceCategory = (event: unknown): RaceCategory => {
   const row = eventRow(event);
+  const explicit = String(row?.competition_code ?? "").toUpperCase();
+  if (["WGT", "DR", "ATXS", "OL"].includes(explicit)) return explicit as RaceCategory;
+  if (explicit === "BATX" || explicit === "BA") return "DR";
   const source = [row?.server_name, row?.title_fr, row?.title_en].filter(Boolean).join(" | ");
-  if (/(?:^|[^a-z0-9])BALLADE\s+ATX(?=$|[^a-z0-9])/i.test(source)) return "BA";
-  const code = source.match(/(?:^|[^a-z0-9])(WGT|DR|OL)(?=$|[^a-z0-9])/i)?.[1]?.toUpperCase();
-  if (code === "WGT" || code === "DR" || code === "OL") return code;
+  if (/(?:^|[^a-z0-9])(?:BALL?ADE\s+ATX|BATX|BA)(?=$|[^a-z0-9])/i.test(source)) return "DR";
+  const code = source.match(/(?:^|[^a-z0-9])(ATXS|WGT|DR|OL)(?=$|[^a-z0-9])/i)?.[1]?.toUpperCase();
+  if (code === "WGT" || code === "DR" || code === "ATXS" || code === "OL") return code;
   if (/\b(SPRINT|ENDU|WORLD\s*GT)\b/i.test(source)) return "WGT";
   if (/\bDAILY\s+RACE\b/i.test(source)) return "DR";
   const date = String(row?.starts_at ?? "").slice(0, 10);
@@ -205,7 +208,7 @@ Deno.serve(async (request) => {
   try {
     const supabase = adminClient();
     const requestedCategory = new URL(request.url).searchParams.get("category")?.toUpperCase();
-    const category: RankingScope = requestedCategory === "WGT" || requestedCategory === "BA" || requestedCategory === "OL" || requestedCategory === "ALL" ? requestedCategory : "DR";
+    const category: RankingScope = requestedCategory === "WGT" || requestedCategory === "ATXS" || requestedCategory === "OL" || requestedCategory === "ALL" ? requestedCategory : "DR";
 
     // Circuit rankings are based on imported ACC timing data, not on whether a
     // driver has made their profile public. Privacy only controls profile links.
@@ -233,7 +236,7 @@ Deno.serve(async (request) => {
     const results: Array<Record<string, unknown>> = [];
     for (let from = 0; from < 10000; from += 1000) {
       const { data, error } = await supabase.from("results")
-        .select("driver_id, status, finish_position, points, best_lap_ms, car_model_name, created_at, event:events!inner(id, circuit_key, circuit_name, starts_at, is_public, server_name, title_fr, title_en)")
+        .select("driver_id, status, finish_position, points, best_lap_ms, car_model_name, created_at, event:events!inner(id, circuit_key, circuit_name, starts_at, is_public, server_name, title_fr, title_en, competition_code)")
         .eq("event.is_public", true).order("created_at", { ascending: true }).range(from, from + 999);
       if (error) throw error;
       results.push(...(data ?? []));
@@ -268,7 +271,7 @@ Deno.serve(async (request) => {
     const sessionResults: Array<Record<string, unknown>> = [];
     for (let from = 0; from < 10000; from += 1000) {
       const { data, error } = await supabase.from("acc_session_results")
-        .select("driver_id, best_lap_ms, car_model_name, created_at, session:acc_sessions!inner(session_type, session_date, published_at, created_at, event:events!inner(circuit_key, circuit_name, starts_at, is_public, status, is_official, server_name, title_fr, title_en))")
+        .select("driver_id, best_lap_ms, car_model_name, created_at, session:acc_sessions!inner(session_type, session_date, published_at, created_at, event:events!inner(circuit_key, circuit_name, starts_at, is_public, status, is_official, server_name, title_fr, title_en, competition_code))")
         .order("created_at", { ascending: true }).range(from, from + 999);
       if (error) throw error;
       sessionResults.push(...(data ?? []));
@@ -433,9 +436,9 @@ Deno.serve(async (request) => {
         if (entry.finish_position === 1) team.wins += 1;
         if (entry.finish_position !== null && entry.finish_position <= 3) team.podiums += 1;
         for (const driverId of entry.driver_ids) {
-          team.member_ids.add(driverId);
           const pace = paceByDriver.get(driverId);
-          if (pace !== null && pace !== undefined) team.pace_scores.push(Number(pace));
+          if (!team.member_ids.has(driverId) && pace !== null && pace !== undefined) team.pace_scores.push(Number(pace));
+          team.member_ids.add(driverId);
         }
         teamGroups.set(key, team);
       }
@@ -461,6 +464,15 @@ Deno.serve(async (request) => {
       podiums: team.podiums,
       drivers: team.member_ids.size,
       performance_score: average(team.pace_scores),
+      performance_class: performanceClass(average(team.pace_scores)),
+      members: [...new Set([...team.member_ids, ...(drivers ?? [])
+        .filter(driver => String(driver.team_name ?? "").trim().toLocaleLowerCase("fr") === team.team_name.trim().toLocaleLowerCase("fr"))
+        .map(driver => driver.id)])].map(id => rows.find(driver => driver.driver_id === id) ?? (() => {
+          const driver = (drivers ?? []).find(driver => driver.id === id);
+          return driver ? { driver_id: id, profile_id: publicProfileId(id), display_name: driver.display_name,
+            avatar_url: driver.avatar_url, team_name: driver.team_name, points: 0, races: 0, wins: 0, podiums: 0,
+            performance_class: "unranked", performance_score: null, progression: null, safety_class: null, safety_score: null } : null;
+        })()).filter(Boolean),
     })).sort((first, second) => second.points - first.points || second.wins - first.wins)
       .map((team, index) => ({ rank: index + 1, ...team }));
 

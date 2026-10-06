@@ -91,7 +91,8 @@ assert (ROOT/'sitemap.xml').is_file() and (ROOT/'robots.txt').is_file()
 assert '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' in (ROOT/'sitemap.xml').read_text()
 for language in ('fr','en'):
  ranking=(ROOT/language/'acc/ranking.html').read_text()
- assert all(f'data-view="{view}"' in ranking for view in ('points','circuit','driver','team'))
+ assert all(f'data-view="{view}"' in ranking for view in ('points','team'))
+ assert all(f'data-view="{view}"' not in ranking for view in ('circuit','driver'))
  assert BASE+'assets/ranking.min.js' in ranking
  assert BASE+'assets/site.min.js' not in ranking
  records=(ROOT/language/'acc/records.html').read_text()
