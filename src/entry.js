@@ -14,16 +14,19 @@
  const saveToken=value=>{try{sessionStorage.setItem(key,value);return true;}catch{return false;}};
  const clearToken=()=>{try{sessionStorage.removeItem(key);}catch{}};
  async function session(options){
-  const response=await fetch(api+'auth-session',{...options,signal:AbortSignal.timeout(15000)});
+  const response=await fetch(api+'auth-session'+(options?.method==='POST'?'':'?view=identity'),{...options,signal:AbortSignal.timeout(15000)});
   if(!response.ok)throw Error('session');
   return response.json();
  }
- async function destination(token){
+ async function destination(token,verified){
   status.textContent='Identification du pilote… / Identifying driver…';
   engineer?.removeAttribute('hidden');
-  const response=await fetch(api+'driver-profile',{headers:{Authorization:'Bearer '+token},signal:AbortSignal.timeout(15000)});
-  if(!response.ok)throw Error('profile');
-  const data=await response.json();
+  let data=verified;
+  if(data?.driver?.profile_confirmed_at===undefined){
+   const response=await fetch(api+'driver-profile',{headers:{Authorization:'Bearer '+token},signal:AbortSignal.timeout(15000)});
+   if(!response.ok)throw Error('profile');
+   data=await response.json();
+  }
   status.textContent=data.driver?.profile_confirmed_at?'Profil confirmé. Ouverture du paddock… / Profile confirmed. Opening the paddock…':'Profil à compléter. Votre ingénieur de course vous accompagne… / Complete your profile. Your race engineer will guide you…';
   return data.driver?.profile_confirmed_at?paddock:onboarding;
  }
@@ -43,7 +46,7 @@
   if(token){
    engineer?.removeAttribute('hidden');
    status.textContent='Ouverture de votre espace… / Opening your space…';
-   try{await session({headers:{Authorization:'Bearer '+token}});location.replace(await destination(token));return;}
+   try{const verified=await session({headers:{Authorization:'Bearer '+token}});location.replace(await destination(token,verified));return;}
    catch{clearToken();status.textContent='';}
   }
   if(new URLSearchParams(location.search).get('steam')==='error'||params.get('steam')==='error')status.textContent='La connexion Steam a échoué. Réessayez. / Steam sign-in failed. Please try again.';

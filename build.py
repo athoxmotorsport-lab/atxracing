@@ -7,7 +7,7 @@ from content import COPY, RANKING_UI, EXTRA, RULES, PENALTIES, FORMATS, PRIVACY
 R=Path(__file__).parent/'dist'
 BASE=environ.get('ATX_BASE_PATH','/atxracing/').rstrip('/')+'/'
 SITE_URL=environ.get('ATX_SITE_URL','https://athoxmotorsport-lab.github.io'+BASE).rstrip('/')+'/'
-for image in ('site-background.jpg','landing-banner.jpg','driver-levels-cutout.png'):
+for image in ('site-background.jpg','site-background.webp','landing-banner.jpg','driver-levels-cutout.png'):
  shutil.copy2(Path(__file__).parent/'media'/image,R/'assets'/image)
 (R/'assets'/'gt3').mkdir(parents=True,exist_ok=True)
 for photo in (Path(__file__).parent/'media'/'gt3').glob('*.webp'):
@@ -29,6 +29,7 @@ CSS=re.sub(r'\s*([{}:;,>])\s*',r'\1',CSS).strip()
 (R/'assets/insignia.min.js').write_text((Path(__file__).parent/'src/insignia.js').read_text())
 (R/'assets/entry.min.js').write_text((Path(__file__).parent/'src/entry.js').read_text())
 (R/'assets/gate.min.js').write_text((Path(__file__).parent/'src/gate.js').read_text())
+(R/'assets/public-data.min.js').write_text((Path(__file__).parent/'src/public-data.js').read_text())
 (R/'assets/community.min.js').write_text((Path(__file__).parent/'src/community.js').read_text())
 (R/'assets/messages.min.js').write_text((Path(__file__).parent/'src/messages.js').read_text())
 (R/'assets/events.min.js').write_text((Path(__file__).parent/'src/events.js').read_text())
@@ -144,7 +145,7 @@ def page(lang,game,section):
     if section=='profile' and game=='acc':main+='<div id="results" aria-live="polite"></div>'
   main+=f'<p class="return-link"><a href="/{lang}/">← {escape(t["back"])}</a></p></main>'
   body=main
- out=head+body+footer+'<script src="/assets/gate.min.js" defer></script><script src="/assets/community.min.js" defer></script>'+('<script src="/assets/insignia.min.js" defer></script>' if section=='profile' and game=='acc' else '')+('<script src="/assets/circuit-images.min.js" defer></script>' if game=='acc' and section in ('profile','records','circuits') else '')+('<script src="/assets/profile-media.min.js" defer></script>' if section=='profile' and game=='acc' else '')+('<script src="/assets/site.min.js" defer></script>' if game=='acc' and section in ('courses','records','circuits','profile','pilots') else '')+('<script src="/assets/ranking.min.js" defer></script>' if section=='ranking' and game=='acc' else '')+('<script src="/assets/events.min.js" defer></script>' if game=='acc' and section in ('calendar','archives','event','course','worldgt','daily-race','ballade') else '')+('<script src="/assets/media.min.js" defer></script>' if section=='live' else '')+('<script src="/assets/messages.min.js" defer></script>' if section=='messages' else '')+('<script src="/assets/admin.min.js" defer></script>' if section=='admin' else '')+('<script src="/assets/account.min.js" defer></script>' if game else '')+'</body></html>'
+ out=head+body+footer+'<script src="/assets/public-data.min.js" defer></script><script src="/assets/gate.min.js" defer></script><script src="/assets/community.min.js" defer></script>'+('<script src="/assets/insignia.min.js" defer></script>' if section=='profile' and game=='acc' else '')+('<script src="/assets/circuit-images.min.js" defer></script>' if game=='acc' and section in ('profile','records','circuits') else '')+('<script src="/assets/profile-media.min.js" defer></script>' if section=='profile' and game=='acc' else '')+('<script src="/assets/site.min.js" defer></script>' if game=='acc' and section in ('courses','records','circuits','profile','pilots') else '')+('<script src="/assets/ranking.min.js" defer></script>' if section=='ranking' and game=='acc' else '')+('<script src="/assets/events.min.js" defer></script>' if game=='acc' and section in ('calendar','archives','event','course','worldgt','daily-race','ballade') else '')+('<script src="/assets/media.min.js" defer></script>' if section=='live' else '')+('<script src="/assets/messages.min.js" defer></script>' if section=='messages' else '')+('<script src="/assets/admin.min.js" defer></script>' if section=='admin' else '')+('<script src="/assets/account.min.js" defer></script>' if game else '')+'</body></html>'
  path=R/lang/(game or '')/('index.html' if section in ('home','league') else section+'.html');write(path,out)
 for l in T:
  page(l,'','home')

@@ -2,6 +2,9 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { validateProfile } from '../supabase/functions/driver-profile/validation.mjs';
 const valid = {nickname:'Pilot',displayName:'Public Pilot',teamName:'',carNumber:'',preferredGt3:'',favoriteCircuits:[],preferredRaceFormat:'',gamesPlayed:[],gamesToDiscover:[]};
+test('Bentley Continental GT3 2018 is a supported profile preference',()=>{
+ assert.equal(validateProfile({...valid,preferredGt3:'Bentley Continental GT3 (2018)'}).preferred_gt3,'Bentley Continental GT3 (2018)');
+});
 test('a beginner can save without a team, a car, a number or game history',()=>{
  const result=validateProfile(valid);
  assert.equal(result.team_name,null);assert.equal(result.preferred_gt3,null);assert.deepEqual(result.games_played,[]);

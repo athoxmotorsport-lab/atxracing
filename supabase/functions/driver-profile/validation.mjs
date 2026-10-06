@@ -3,7 +3,7 @@ export const GT3_CARS = [
   'BMW M4 GT3','Ferrari 296 GT3','Ferrari 488 GT3','Ford Mustang GT3',
   'Honda NSX GT3 Evo','Lamborghini Huracán GT3 Evo2','Lexus RC F GT3',
   'McLaren 720S GT3','McLaren 720S GT3 Evo','Mercedes-AMG GT3',
-  'Nissan GT-R Nismo GT3 (2018)','Porsche 911 GT3 R (2018)','Porsche 992 GT3 R',
+  'Bentley Continental GT3 (2018)','Nissan GT-R Nismo GT3 (2018)','Porsche 911 GT3 R (2018)','Porsche 992 GT3 R',
 ];
 export const ACC_CIRCUITS = [
   'barcelona','brands_hatch','cota','donington','hungaroring','imola',

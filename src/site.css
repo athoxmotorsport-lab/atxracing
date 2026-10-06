@@ -105,7 +105,7 @@ body[data-page=profile] .masthead-copy h1{font-size:clamp(2.8rem,5vw,4.8rem)}
 /* Supplied artwork remains fixed behind every page; content surfaces soften it for legibility. */
 html{background:#050505}
 body{background:transparent;isolation:isolate;min-height:100vh}
-body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(2,4,8,.43),rgba(2,4,8,.59)),url('site-background.jpg') center center/cover no-repeat}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(2,4,8,.43),rgba(2,4,8,.59)),url('site-background.webp') center center/cover no-repeat}
 body:not([data-page=home]){--surface:rgba(8,11,15,.82);--raised:rgba(17,20,25,.88)}
 body[data-game=ace]:not([data-page=home]){--surface:rgba(11,15,20,.83);--raised:rgba(21,26,33,.89)}
 .league-overview,.page-masthead,.format-card,.status-panel,.rule-card,.event-tile,.race-overview,.account-card,.admin-panel,.privacy-sections article{background:rgba(7,10,14,.84);backdrop-filter:blur(6px)}
@@ -129,7 +129,7 @@ body[data-game=ace]:not([data-page=home]){--surface:rgba(11,15,20,.83);--raised:
 
 /* Steam-first entrance, without the site logo or navigation chrome. */
 body[data-page=entry]{overflow-x:hidden}
-body[data-page=entry]::before{background:linear-gradient(180deg,rgba(2,5,10,.55),rgba(2,4,8,.64) 48%,rgba(2,3,7,.88)),url('site-background.jpg') center center/cover no-repeat}
+body[data-page=entry]::before{background:linear-gradient(180deg,rgba(2,5,10,.55),rgba(2,4,8,.64) 48%,rgba(2,3,7,.88)),url('site-background.webp') center center/cover no-repeat}
 .entry{min-height:100svh;display:grid;place-items:center;position:relative;text-align:center;padding:40px 24px 85px}
 .entry-content{width:min(100%,850px);margin:auto;transform:translateY(-12px)}
 .entry-kicker,.entry-english-kicker{color:#ff6d70;font:700 clamp(.72rem,1vw,.88rem) Inter,sans-serif;letter-spacing:.32em}

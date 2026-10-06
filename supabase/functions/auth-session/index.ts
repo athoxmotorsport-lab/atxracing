@@ -138,6 +138,18 @@ const readSession = async (request: Request): Promise<Response> => {
   if (error || !session) return jsonResponse(request, { error: "invalid_session" }, 401);
   await supabase.from("auth_sessions")
     .update({ last_seen_at: new Date().toISOString() }).eq("id", session.id);
+  if (new URL(request.url).searchParams.get("view") === "identity") {
+    const { data: driver, error: driverError } = await supabase.from("drivers")
+      .select("id, display_name, avatar_url, driver_profile_preferences(profile_confirmed_at)")
+      .eq("id", session.driver_id).single();
+    if (driverError || !driver) throw driverError ?? Error("driver_missing");
+    const preferences = Array.isArray(driver.driver_profile_preferences)
+      ? driver.driver_profile_preferences[0] : driver.driver_profile_preferences;
+    return jsonResponse(request, { expires_at: session.expires_at, driver: {
+      id: driver.id, display_name: driver.display_name, avatar_url: driver.avatar_url,
+      profile_confirmed_at: preferences?.profile_confirmed_at ?? null,
+    } });
+  }
   return jsonResponse(request, {
     expires_at: session.expires_at,
     driver: await publicDriver(session.driver_id),

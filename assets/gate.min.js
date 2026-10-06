@@ -12,16 +12,21 @@
  try{token=sessionStorage.getItem(key);}catch{}
  if(!token){location.replace(base);return;}
  const api='https://twjpjzalyvbsdpbzhqln.supabase.co/functions/v1/';
- fetch(api+'auth-session',{
+ window.ATX_SESSION_TOKEN=token;
+ window.ATX_SESSION_AUTH=fetch(api+'auth-session'+(document.body.dataset.page==='profile'?'':'?view=identity'),{
   headers:{Authorization:'Bearer '+token},signal:AbortSignal.timeout(15000)
  }).then(response=>{
-  if(!response.ok)throw Error('session');
+  if(!response.ok){const error=Error('session');error.status=response.status;throw error;}
   return response.json();
- }).then(async session=>{
+ });
+ window.ATX_SESSION_AUTH.then(async session=>{
   if(document.body.dataset.page!=='profile'){
-   const response=await fetch(api+'driver-profile',{headers:{Authorization:'Bearer '+token},signal:AbortSignal.timeout(15000)});
-   if(!response.ok)throw Error('profile');
-   const profile=await response.json();
+   let profile=session;
+   if(session.driver?.profile_confirmed_at===undefined){
+    const response=await fetch(api+'driver-profile',{headers:{Authorization:'Bearer '+token},signal:AbortSignal.timeout(15000)});
+    if(!response.ok)throw Error('profile');
+    profile=await response.json();
+   }
    if(!profile.driver?.profile_confirmed_at){
     const lang=document.documentElement.lang==='en'?'en':'fr';
     location.replace(base+lang+'/acc/profile.html?onboarding=1');

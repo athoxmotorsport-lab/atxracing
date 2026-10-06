@@ -56,7 +56,7 @@ let browser;
  assert((await page.locator('.account-card .insignia-panel').innerText()).includes('20 tours valides'));
  await page.locator('.insignia-dismiss').click();
  assert.equal(await page.locator('.driver-levels').evaluate(el=>getComputedStyle(el).backgroundColor),'rgba(0, 0, 0, 0)');
- const background=await page.evaluate(()=>{const style=getComputedStyle(document.body,'::before');return{position:style.position,size:style.backgroundSize.split(',').at(-1).trim(),repeat:style.backgroundRepeat.split(',').at(-1).trim(),images:style.backgroundImage.match(/site-background\.jpg/g)?.length||0}});
+ const background=await page.evaluate(()=>{const style=getComputedStyle(document.body,'::before');return{position:style.position,size:style.backgroundSize.split(',').at(-1).trim(),repeat:style.backgroundRepeat.split(',').at(-1).trim(),images:style.backgroundImage.match(/site-background\.webp/g)?.length||0}});
  assert.deepEqual(background,{position:'fixed',size:'cover',repeat:'no-repeat',images:1});
  assert((await page.locator('.driver-levels-base').getAttribute('src')).endsWith('/assets/driver-levels-cutout.png'));
  await page.waitForTimeout(1700);

@@ -202,7 +202,7 @@ type SessionType = "FP" | "Q" | "R";
 type BestLap = { lap_ms: number; session_type: SessionType; at: string; car_model_name: string | null };
 type SessionLaps = { FP: number | null; Q: number | null; R: number | null };
 
-Deno.serve(async (request) => {
+const buildLeaderboard = async (request: Request): Promise<Response> => {
   if (request.method === "OPTIONS") return new Response("ok", { headers: cors });
   if (request.method !== "GET") return json({ error: "method_not_allowed" }, 405);
 
@@ -482,4 +482,25 @@ Deno.serve(async (request) => {
     console.error("Leaderboard failed", error instanceof Error ? error.message : "unknown error");
     return json({ error: "server_error" }, 500);
   }
+};
+
+// Public standings already have a 60-second HTTP cache lifetime. Reuse successful
+// responses within an isolate and share simultaneous builds for the same scope.
+const responseCache = new Map<string, { until: number; response: Response }>();
+const pendingBuilds = new Map<string, Promise<Response>>();
+Deno.serve(async (request) => {
+  if (request.method !== "GET") return buildLeaderboard(request);
+  const requested = new URL(request.url).searchParams.get("category")?.toUpperCase() ?? "DR";
+  const key = ["WGT", "ATXS", "OL", "ALL"].includes(requested) ? requested : "DR";
+  const cached = responseCache.get(key);
+  if (cached && cached.until > Date.now()) return cached.response.clone();
+  let pending = pendingBuilds.get(key);
+  if (!pending) {
+    pending = buildLeaderboard(request).then(response => {
+      if (response.ok) responseCache.set(key, { until: Date.now() + 60_000, response: response.clone() });
+      return response;
+    }).finally(() => pendingBuilds.delete(key));
+    pendingBuilds.set(key, pending);
+  }
+  return (await pending).clone();
 });

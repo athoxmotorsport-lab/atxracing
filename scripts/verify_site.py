@@ -72,8 +72,8 @@ for lang in ('fr','en'):
    assert [a['href'] for t,a in tags if t=='a' and a.get('hreflang') in ('fr','en')]==[BASE+f'{language}/{game}/{"" if section=="index.html" else section}' for language in ('fr','en')]*2
    assert not any(t=='div' and a.get('class')=='wrap languages' for t,a in tags)
 css=(ROOT/'assets/site.min.css').read_text()
-assert "url('site-background.jpg')" in css and 'position:fixed' in css
-for image in ('site-background.jpg','landing-banner.jpg','driver-levels-cutout.png'):
+assert "url('site-background.webp')" in css and 'position:fixed' in css
+for image in ('site-background.webp','landing-banner.jpg','driver-levels-cutout.png'):
  assert (ROOT/'assets'/image).is_file()
 for image in ('circuits/red-bull-ring.jpg','events/monza-2026-09-09.jpg','events/nurburgring-gp-2026-09-11.webp','events/barcelona-2026-09-13.jpg','events/kyalami-2026-09-20.jpg'):
  assert (ROOT/'assets'/image).is_file()
