@@ -21,6 +21,7 @@ let browser;
  await page.locator('.standing-row').first().waitFor();
  assert.equal(await page.locator('[data-view]').count(),2);
  assert.equal(await page.locator('[data-category=BA]').count(),0);
+ assert.equal(await page.locator('[data-category=DR] strong').innerText(),'Daily Race');
  assert.equal(await page.locator('.standing-row').first().getAttribute('data-level'),'alien');
  assert.equal(await page.locator('.standing-row').nth(1).getAttribute('data-level'),'unranked');
  assert((await page.locator('.standing-row').first().innerText()).includes('84 / 100'));

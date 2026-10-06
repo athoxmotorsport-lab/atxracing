@@ -1,6 +1,6 @@
 # Classements ACC
 
-Les catégories actives sont WGT (WorldGT), DR (Délirez) et ATXS (ATX Series).
+Les catégories actives sont WGT (WorldGT), DR (Daily Race) et ATXS (ATX Series).
 ATXS est disponible dans l'administration ; choisir compétition ATXS et format ATXS.
 La durée est configurable : le futur rendez-vous de 45 minutes toutes les deux heures
 n'est pas programmé automatiquement par cette modification.
