@@ -32,7 +32,7 @@ Deno.serve(async (request) => {
       .eq("driver_id", driverId).not("last_login_at", "is", null).maybeSingle();
     if (!identity) return json({ error: "profile_not_claimed" }, 404);
     const { data: driver, error } = await supabase.from("drivers")
-      .select("id, display_name, avatar_url, country_code, team_name, car_number, bio_fr, bio_en, twitch_url, tiktok_url, youtube_url, website_url")
+      .select("id, display_name, avatar_url, country_code, team_name, car_number, bio_fr, bio_en, twitch_url, tiktok_url, youtube_url, instagram_url, website_url")
       .eq("id", driverId).eq("is_profile_public", true).maybeSingle();
     if (error) throw error;
     if (!driver) return json({ error: "profile_not_found" }, 404);
@@ -72,4 +72,3 @@ Deno.serve(async (request) => {
     return json({ error: "server_error" }, 500);
   }
 });
-

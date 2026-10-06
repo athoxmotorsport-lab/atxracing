@@ -2,7 +2,7 @@ import { validateProfile } from './validation.mjs';
 
 // Reuse the existing Steam session protocol without changing the legacy functions.
 const encoder = new TextEncoder();
-const columns = 'id,display_name,avatar_url,team_name,car_number,driver_profile_preferences(nickname,games_played,games_to_discover,preferred_gt3,favorite_circuits,preferred_race_format,profile_confirmed_at)';
+const columns = 'id,display_name,avatar_url,team_name,car_number,youtube_url,instagram_url,twitch_url,driver_profile_preferences(nickname,games_played,games_to_discover,preferred_gt3,favorite_circuits,preferred_race_format,profile_confirmed_at)';
 
 function required(name: string): string {
   const value = Deno.env.get(name);

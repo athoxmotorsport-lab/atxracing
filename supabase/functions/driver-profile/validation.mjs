@@ -34,11 +34,23 @@ export function validateProfile(body) {
   const format = body.preferredRaceFormat ?? '';
   if (typeof format !== 'string' || (format && !RACE_FORMATS.includes(format))) throw Error('invalid_preferredRaceFormat');
   const displayName = text('displayName', 64, true);
+  const social = (key, hosts) => {
+    if (body[key] == null) return null;
+    const value = text(key, 200);
+    if (!value) return null;
+    let parsed; try { parsed = new URL(value); } catch { throw Error('invalid_' + key); }
+    const host = parsed.hostname.toLowerCase().replace(/^www\./, '');
+    if (parsed.protocol !== 'https:' || parsed.username || parsed.password || !hosts.includes(host)) throw Error('invalid_' + key);
+    return parsed.href;
+  };
   return {
     nickname: text('nickname', 64, true), display_name: displayName, custom_display_name: displayName,
     team_name: text('teamName', 64), car_number: number?.toUpperCase() ?? null,
     preferred_gt3: preferredGt3, favorite_circuits: circuits,
     preferred_race_format: format || null,
     games_played: games('gamesPlayed'), games_to_discover: games('gamesToDiscover'),
+    youtube_url: social('youtubeUrl', ['youtube.com','youtu.be']),
+    instagram_url: social('instagramUrl', ['instagram.com']),
+    twitch_url: social('twitchUrl', ['twitch.tv']),
   };
 }

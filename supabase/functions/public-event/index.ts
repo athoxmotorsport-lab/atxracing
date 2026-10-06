@@ -76,7 +76,11 @@ Deno.serve(async (request) => {
         && (!notice.driver_id || publicDriverIds.has(notice.driver_id)))
       .slice(0, 30)
       .map(({ event_id: _eventId, visibility: _visibility, ...notice }) => notice);
-    return json({ events: calendar, today, archives, notifications: visibleNotifications });
+    const { data: media, error: mediaError } = await supabase.from("atx_media")
+      .select("id, media_type, title_fr, title_en, url, event_slug, published_at")
+      .eq("is_public", true).order("published_at", { ascending: false }).limit(50);
+    if (mediaError) return json({ error: "media_unavailable" }, 500);
+    return json({ events: calendar, today, archives, notifications: visibleNotifications, media: media ?? [] });
   }
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return json({ error: "invalid_slug" }, 400);
 
@@ -144,4 +148,3 @@ Deno.serve(async (request) => {
     honours: visibleHonours.map((honour) => ({ ...honour, driver: driverById.get(honour.driver_id) ?? null })),
   });
 });
-
