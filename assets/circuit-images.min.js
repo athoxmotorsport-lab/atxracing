@@ -3,3 +3,7 @@ const ATX_CIRCUITS={barcelona:{image:"https://cdn-image.as-web.jp/2022/12/151122
 // Keep the established Red Bull Ring photograph, served by this site so hotlink blocking cannot hide it.
 ATX_CIRCUITS.red_bull_ring.image=(document.querySelector('meta[name=atx-base]')?.content||'/atxracing/')+'assets/circuits/red-bull-ring.jpg';
 ATX_CIRCUITS.redbull_ring=ATX_CIRCUITS.red_bull_ring;
+const ATX_LOCAL_CIRCUITS=['barcelona','brands_hatch','cota','donington','hungaroring','imola','indianapolis','kyalami','misano','mount_panorama','nurburgring','nurburgring_24h','oulton_park','paul_ricard','silverstone','snetterton','spa','suzuka','valencia','watkins_glen','zandvoort','zolder'];
+for(const key of ATX_LOCAL_CIRCUITS)ATX_CIRCUITS[key].image=(document.querySelector('meta[name=atx-base]')?.content||'/atxracing/')+'assets/circuits/'+key+'.webp';
+for(const [alias,key] of Object.entries({circuit_of_the_americas:'cota',donington_park:'donington',nurburgring_gp:'nurburgring',spa_francorchamps:'spa'}))ATX_CIRCUITS[alias]=ATX_CIRCUITS[key];
+function ATX_CIRCUIT_FRAME(element,key,name){const normal=value=>String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');const data=ATX_CIRCUITS[key]||ATX_CIRCUITS[normal(name)];if(!data)return;const colors=data.colors;element.classList.add('circuit-country-frame');element.style.setProperty('--country-frame',`linear-gradient(135deg,${colors[0]} 0 33%,${colors[1]} 33% 66%,${colors[2]} 66% 100%)`);}
