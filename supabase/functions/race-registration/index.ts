@@ -14,9 +14,9 @@ Deno.serve(async request=>{
   const admin=async()=>{const r=await check(db.from('driver_roles').select('role').eq('driver_id',actor).eq('role','admin').maybeSingle());if(!r)throw Error('forbidden');};
   const url=new URL(request.url);
   if(request.method==='GET'&&url.searchParams.get('admin')==='1'){
-   await admin();const events=await check(db.from('events').select('id,slug,title_fr,title_en,starts_at,format_code,site_registration_enabled,status').eq('is_public',true).order('starts_at',{ascending:false}).limit(100));
+   await admin();const events=await check(db.from('events').select('id,slug,title_fr,title_en,starts_at,format_code,site_registration_enabled,status,competition_code,simgrid_url').eq('is_public',true).order('starts_at',{ascending:false}).limit(100));
    const cars=await check(db.from('atx_acc_cars').select('*').order('name'));
-   return reply({events,cars});
+   return reply({events:events.filter((event:any)=>!event.simgrid_url&&(event.competition_code==='ATXS'||event.site_registration_enabled)),cars});
   }
   const raw=request.method==='POST'?await request.text():'';if(raw.length>8192)return reply({error:'payload_too_large'},413);
   const body=raw?JSON.parse(raw):{};
@@ -25,14 +25,14 @@ Deno.serve(async request=>{
    await check(db.from('atx_acc_cars').upsert({car_model_id:body.carModelId,name:body.name.trim(),active:body.active!==false}));return reply({saved:true});
   }
   const eventId=body.eventId||url.searchParams.get('event');if(!/^[0-9a-f-]{36}$/i.test(eventId||''))return reply({error:'invalid_event'},400);
-  const event=await check(db.from('events').select('id,slug,format_code,starts_at,status,max_drivers,site_registration_enabled,is_public').eq('id',eventId).maybeSingle());
+  const event=await check(db.from('events').select('id,slug,format_code,starts_at,status,max_drivers,site_registration_enabled,is_public,simgrid_url').eq('id',eventId).maybeSingle());
   if(!event||!event.is_public)return reply({error:'event_not_found'},404);
   if(body.action==='enable'){
-   await admin();if(event.starts_at<=new Date().toISOString())return reply({error:'registration_closed'},409);
+   await admin();if(event.simgrid_url)return reply({error:'external_registration'},409);if(event.starts_at<=new Date().toISOString())return reply({error:'registration_closed'},409);
    await check(db.from('events').update({site_registration_enabled:body.enabled===true}).eq('id',eventId));return reply({saved:true});
   }
   if(request.method==='GET'&&url.searchParams.has('export')){
-   await admin();const entries=await check(db.from('atx_race_entries').select('*').eq('event_id',eventId).order('race_number'));
+   await admin();if(event.simgrid_url)return reply({error:'external_registration'},409);const entries=await check(db.from('atx_race_entries').select('*').eq('event_id',eventId).order('race_number'));
    const members=await check(db.from('atx_entry_members').select('*').eq('event_id',eventId).order('driver_id'));
    const identities=members.length?await check(db.from('driver_identities').select('driver_id,steam_id64,last_login_at').in('driver_id',members.map((m:any)=>m.driver_id))):[];
    const list=entryList(entries,members,identities);
@@ -42,6 +42,7 @@ Deno.serve(async request=>{
    response.headers.set('Content-Disposition','attachment; filename="entrylist.'+(csv?'csv':'json')+'"');
    return new Response(csv?entryCSV(list):JSON.stringify(list,null,2),{headers:response.headers});
   }
+  if(event.simgrid_url)return reply({error:'external_registration'},409);
   if(!event.site_registration_enabled)return reply({error:'registration_unavailable'},409);
   if(request.method==='GET'){
    const cars=await check(db.from('atx_acc_cars').select('car_model_id,name').eq('active',true).order('name'));

@@ -3,12 +3,13 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {stripTypeScriptTypes} from 'node:module';
 import {entryList,entryCSV} from '../supabase/functions/race-registration/export.mjs';
-let handler,admin=false,session=true,writes=[],queries=[];
+let handler,admin=false,session=true,writes=[],queries=[],external=false;
 const eventId='00000000-0000-4000-8000-000000000001';
 function query(table){
  queries.push(table);const state={table};const chain={};for(const name of ['select','eq','is','gt','maybeSingle','single','order','limit','in'])chain[name]=()=>chain;
  for(const name of ['upsert','update'])chain[name]=body=>{writes.push({table,body});return chain;};
- chain.then=(resolve,reject)=>Promise.resolve({data:table==='auth_sessions'?session?{driver_id:'verified-actor'}:null:table==='driver_roles'?admin?{role:'admin'}:null:table==='events'?{id:eventId,is_public:true,site_registration_enabled:true,starts_at:'2099-01-01T00:00:00Z'}:[],count:0,error:null}).then(resolve,reject);
+ chain.select=columns=>{state.columns=columns;return chain;};
+ chain.then=(resolve,reject)=>Promise.resolve({data:table==='auth_sessions'?session?{driver_id:'verified-actor'}:null:table==='driver_roles'?admin?{role:'admin'}:null:table==='events'?state.columns.includes('title_fr')?[{id:'native',competition_code:'ATXS',simgrid_url:null},{id:'simgrid',competition_code:'ATXS',site_registration_enabled:true,simgrid_url:'https://www.thesimgrid.com/championships/1'},{id:'inactive',competition_code:'DR',simgrid_url:null}]:{simgrid_url:external?'https://www.thesimgrid.com/championships/1':null,id:eventId,is_public:true,site_registration_enabled:true,starts_at:'2099-01-01T00:00:00Z'}:[],count:0,error:null}).then(resolve,reject);
  return chain;
 }
 const db={from:query,rpc:(name,body)=>{writes.push({name,body});return Promise.resolve({data:{registered:true},error:null});}};
@@ -29,4 +30,9 @@ test('only administrators can export Steam IDs or manage cars and registration',
 test('registration always uses the verified session actor, ignoring submitted driver IDs',async()=>{
  writes=[];const response=await handler(request('',{action:'register',eventId,firstName:'Test',lastName:'Driver',shortName:'TST',raceNumber:37,carModelId:36,teamName:'',driverId:'victim',p_actor:'victim',steamId:'70000000000000001'}));assert.equal(response.status,200);
  assert.equal(writes[0].name,'atx_register_entry');assert.equal(writes[0].body.p_actor,'verified-actor');
+});
+
+test('SimGrid races are excluded from site management and cannot enable registrations or export here',async()=>{
+ admin=true;external=false;const response=await handler(request('?admin=1'));assert.equal(response.status,200);assert.deepEqual((await response.json()).events.map(e=>e.id),['native']);
+ external=true;writes=[];for(const req of [request('',{action:'enable',eventId,enabled:true}),request('?event='+eventId+'&export=json')]){const result=await handler(req);assert.equal(result.status,409);assert.equal((await result.json()).error,'external_registration');}assert.deepEqual(writes,[]);external=false;admin=false;
 });
