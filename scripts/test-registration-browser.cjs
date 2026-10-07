@@ -1,0 +1,40 @@
+const {chromium}=require('playwright');
+const assert=require('node:assert/strict'),http=require('node:http'),fs=require('node:fs'),path=require('node:path');
+const root=path.resolve(__dirname,'../dist');
+const server=http.createServer((req,res)=>{const file=path.resolve(root,new URL(req.url,'http://localhost').pathname.replace(/^\/atxracing\//,''));if(!file.startsWith(root+path.sep)){res.writeHead(403);return res.end();}try{res.setHeader('Content-Type',({'html':'text/html','js':'text/javascript','css':'text/css'})[file.split('.').pop()]||'application/octet-stream');res.end(fs.readFileSync(file));}catch{res.writeHead(404);res.end();}});
+let browser;
+(async()=>{
+ await new Promise(r=>server.listen(0,'127.0.0.1',r));browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH||'/usr/bin/chromium'});
+ for(const lang of ['fr','en']){
+  const context=await browser.newContext({viewport:{width:390,height:844}});await context.addInitScript(()=>sessionStorage.setItem('atx-racing-session','test-token'));
+  const driver={id:'test',display_name:'Test',profile_confirmed_at:'2026-10-07T00:00:00Z',roles:['admin']};
+  const event={id:'00000000-0000-4000-8000-000000000001',slug:'atxs-test',title_fr:'ATX Series Test',title_en:'ATX Series Test',competition_code:'ATXS',format_code:'ATXS',circuit_name:'Monza',starts_at:'2099-10-07T18:00:00Z',status:'registration_open',max_drivers:28,site_registration_enabled:true,event_schedule:[],is_public:true};
+  let registered=false,body=null,drafts=[];
+  await context.route('https://**/*',async route=>{
+   const req=route.request(),url=new URL(req.url()),name=url.pathname.split('/').pop();let data={};
+   if(name==='auth-session')data={driver,access_token:'test-token'};
+   if(name==='driver-profile')data={driver};
+   if(name==='public-event')data={event,results:[],events:[event]};
+   if(name==='atx-event-admin'){if(req.method()==='GET')data={drafts:drafts.map((d,i)=>({id:'draft-'+i,draft:d,status:'draft'})),media:[]};else if(req.method()==='POST'){body=req.postDataJSON();if(body.action==='save'){drafts.push(body.draft);data={draft:{id:'test',draft:body.draft}};}}}
+   if(name==='race-registration'){
+    if(req.method()==='POST'){body=req.postDataJSON();if(body.action==='register')registered=true;if(body.action==='withdraw')registered=false;data={saved:true};}
+    else if(url.searchParams.has('export'))data={entries:[{raceNumber:37,forcedCarModel:36,drivers:[{playerID:'S70000000000000001'}]}],forceEntryList:1};
+    else if(url.searchParams.has('admin'))data={events:[event],cars:[]};
+    else data={event,count:registered?1:0,cars:[{name:'Verified test model',car_model_id:36}],entry:registered?{race_number:37,team_name:'',car_model_id:36}:null};
+   }
+   await route.fulfill({contentType:'application/json',headers:{'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'authorization,content-type','Access-Control-Allow-Methods':'GET,POST,OPTIONS'},body:JSON.stringify(data)});
+  });
+  const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));const origin='http://127.0.0.1:'+server.address().port;
+  await page.goto(origin+'/atxracing/'+lang+'/acc/courses.html');assert.equal(await page.locator('.format-card').count(),4);assert.equal(await page.locator('.format-card').last().textContent().then(x=>x.includes('ATX Series')),true);
+  await page.goto(origin+'/atxracing/'+lang+'/acc/worldgt-endurance.html');assert.equal(await page.locator('.format-detail').textContent().then(x=>x.includes('Sprint')),false);
+  await page.goto(origin+'/atxracing/'+lang+'/acc/course.html?slug=atxs-test');const form=page.locator('.race-registration form');await form.waitFor();
+  await form.locator('[name=firstName]').fill('Test');await form.locator('[name=lastName]').fill('Driver');await form.locator('[name=shortName]').fill('TST');await form.locator('[name=raceNumber]').fill('37');await form.locator('button[type=submit]').click();await page.locator('.registration-body button').waitFor();assert.equal(body.action,'register');assert.equal(body.carModelId,36);assert.ok(!('steamId' in body));
+  await page.locator('.registration-body button').click();await form.waitFor();assert.equal(registered,false);
+  await page.goto(origin+'/atxracing/'+lang+'/acc/admin.html');const downloadPromise=page.waitForEvent('download');await page.getByRole('button',{name:lang==='fr'?'Exporter JSON':'Export JSON',exact:true}).click();const download=await downloadPromise;assert.equal(download.suggestedFilename(),'entrylist.json');assert.equal(JSON.parse(fs.readFileSync(await download.path(),'utf8')).forceEntryList,1);await page.getByText(lang==='fr'?'Nouveau brouillon manuel':'New manual draft',{exact:true}).click();
+  await page.locator('[name=competition]').selectOption('ATXS');assert.equal(await page.locator('[name=simgridUrl]').evaluate(x=>x.required),false);assert.equal(await page.locator('[name=raceMinutes]').inputValue(),'45');
+  await page.locator('[name=startsAt]').fill('2099-10-07T20:00');await page.locator('textarea[aria-label]').fill('Monza\nSilverstone');await page.getByRole('button',{name:lang==='fr'?'Créer les brouillons ATX Series':'Create ATX Series drafts',exact:true}).click();await page.waitForFunction(()=>document.querySelector('.admin-content').textContent.includes('Monza'));
+  assert.equal(drafts.length,2);assert.equal(Date.parse(drafts[1].startsAt)-Date.parse(drafts[0].startsAt),90*60000);assert.deepEqual(drafts.map(d=>[d.practiceMinutes,d.qualifyingMinutes,d.raceMinutes]),[[2,15,45],[2,15,45]]);assert.deepEqual(errors,[]);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true);
+  await context.close();
+ }
+ console.log('FR/EN competition, solo registration, withdrawal and 90-minute draft schedule passed on mobile.');
+})().catch(e=>{console.error(e);process.exitCode=1;}).finally(async()=>{if(browser)await browser.close();server.close();});

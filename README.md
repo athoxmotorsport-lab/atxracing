@@ -4,6 +4,8 @@ Portail statique ACC / ACE, en français et en anglais. La première page prése
 
 La porte d'entrée vérifie la session Steam existante côté navigateur. GitHub Pages restant un hébergement statique, ce contrôle guide la navigation mais ne protège pas les pages ou données publiques contre un accès direct hors navigateur ; les données privées restent protégées par les fonctions Supabase.
 
+Compétitions : World GT Sprint et Endurance ont leurs pages dédiées ; Daily Race propose 60 ou 90 minutes. ATX Series remplace Ballade dans les formats actifs, avec un programme préparé toutes les 90 minutes et des inscriptions Steam sur le site. Voir [les inscriptions et exports ACC](docs/inscriptions-acc.md) pour le catalogue de modèles serveur, les équipages, les exports administrateur CSV/JSON et le déploiement.
+
 - Source : `build.py`, `content.py`, `src/site.css`, `src/entry.js`, `src/gate.js`, `src/site.js`, `src/ranking.js`, `src/circuit-images.js`, `src/events.js`, `src/account.js`, `src/admin.js`, `media/`, `docs/refonte-multijeu.md`.
 - Sortie GitHub Pages : `dist/` et miroir généré à la racine (Pages est configuré sur `main / (root)`, chemins `/atxracing/`). Exécuter `python3 build.py`, puis `node --check dist/assets/site.min.js` et `python3 scripts/verify_site.py`.
 - Domaine personnalisé à la racine : `ATX_BASE_PATH=/ python3 build.py` ; revenir au préfixe GitHub Pages avec `python3 build.py`.

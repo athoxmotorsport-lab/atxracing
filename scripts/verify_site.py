@@ -20,7 +20,7 @@ def local_path(url):
  if candidate.is_dir():candidate=candidate/'index.html'
  return candidate
 
-assert len(list(ROOT.rglob('*.html')))==79
+assert len(list(ROOT.rglob('*.html')))==91
 for path in ROOT.rglob('*.html'):
  for tag,attrs in page(path.relative_to(ROOT)):
   for key in ('href','src'):
@@ -61,7 +61,7 @@ for lang in ('fr','en'):
  assert not any(a.get('id')=='driver-search' for _,a in profile)
  assert any(a.get('id')=='driver-search' for _,a in pilots)
  for game in ('acc','ace'):
-  for section in ('index.html','courses.html','worldgt.html','daily-race.html','ballade.html','calendar.html','ranking.html','records.html','circuits.html','live.html','archives.html','event.html','course.html','rules.html','privacy.html','profile.html','messages.html'):
+  for section in ('index.html','courses.html','worldgt.html','worldgt-sprint.html','worldgt-endurance.html','daily-race.html','atx-series.html','calendar.html','ranking.html','records.html','circuits.html','live.html','archives.html','event.html','course.html','rules.html','privacy.html','profile.html','messages.html'):
    tags=page(f'{lang}/{game}/{section}')
    assert any(t=='nav' and a.get('class')=='game-switch' for t,a in tags)
    assert any(t=='nav' and a.get('class')=='side-dock' for t,a in tags)
@@ -108,8 +108,8 @@ for language in ('fr','en'):
  for section in ('calendar','archives','event','course'):
   assert BASE+'assets/events.min.js' in (ROOT/language/'acc'/f'{section}.html').read_text()
   assert BASE+'assets/circuit-images.min.js' not in (ROOT/language/'acc'/f'{section}.html').read_text()
- for section in ('worldgt','daily-race','ballade'):
+ for section in ('worldgt','worldgt-sprint','worldgt-endurance','daily-race','atx-series'):
   assert BASE+'assets/events.min.js' in (ROOT/language/'acc'/f'{section}.html').read_text()
 for language in ('de','es','it'):
  assert not (ROOT/language).exists(), 'Only FR and EN should be published'
-print('Verified 79 pages, Steam onboarding, bilingual entrance, signed-in paddock, SEO files, fixed artwork and FR/EN pages')
+print('Verified 91 pages, Steam onboarding, bilingual entrance, signed-in paddock, SEO files, fixed artwork and FR/EN pages')

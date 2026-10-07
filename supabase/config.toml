@@ -51,3 +51,7 @@ verify_jwt = false
 [functions.driver-messages]
 # Verifies the existing opaque Steam session inside the function.
 verify_jwt = false
+
+[functions.race-registration]
+# Validates opaque Steam sessions and administrator roles inside the function.
+verify_jwt = false

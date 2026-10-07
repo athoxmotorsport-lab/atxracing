@@ -17,16 +17,17 @@ create unique index events_atx_simgrid_source_unique on public.events(source_eve
   where source_event_key like 'atx-simgrid:%';
 alter table public.events
   add column if not exists competition_code text check (competition_code in ('DR','BATX','WGT','ATXS')),
-  add column if not exists format_code text check (format_code in ('DR','BATX','WGT_SPRINT','WGT_ENDURANCE','ATXS')),
+  add column if not exists format_code text check (format_code in ('DR','DR_90','BATX','WGT_SPRINT','WGT_ENDURANCE','ATXS')),
   add column if not exists mandatory_stop_count integer check (mandatory_stop_count between 0 and 20),
   add column if not exists server_opens_at timestamptz,
+  add column if not exists site_registration_enabled boolean not null default false,
   add column if not exists registered_snapshot integer check (registered_snapshot between 0 and 1000);
 alter table public.atx_event_drafts enable row level security;
 revoke all on public.atx_event_drafts from public, anon, authenticated;
 grant select, insert, update on public.atx_event_drafts to service_role;
 
 -- Publication of a reviewed draft and its public event is all-or-nothing.
-create function public.publish_atx_event_draft(p_draft_id uuid)
+create or replace function public.publish_atx_event_draft(p_draft_id uuid)
 returns jsonb language plpgsql security invoker set search_path = '' as $$
 declare item public.atx_event_drafts%rowtype;
 declare d jsonb;
@@ -44,8 +45,8 @@ begin
   end if;
   d:=item.draft;
   if coalesce(d->>'competition','') not in ('DR','BATX','WGT','ATXS')
-    or coalesce(d->>'format','') not in ('DR','BATX','WGT_SPRINT','WGT_ENDURANCE','ATXS')
-    or (d->>'competition'='DR' and d->>'format'<>'DR')
+    or coalesce(d->>'format','') not in ('DR','DR_90','BATX','WGT_SPRINT','WGT_ENDURANCE','ATXS')
+    or (d->>'competition'='DR' and d->>'format' not in ('DR','DR_90'))
     or (d->>'competition'='BATX' and d->>'format'<>'BATX')
     or (d->>'competition'='ATXS' and d->>'format'<>'ATXS')
     or (d->>'competition'='WGT' and d->>'format' not in ('WGT_SPRINT','WGT_ENDURANCE'))
@@ -54,20 +55,22 @@ begin
     or nullif(trim(d->>'descriptionFr'),'') is null or nullif(trim(d->>'descriptionEn'),'') is null
     or nullif(trim(d->>'circuit'),'') is null or coalesce(d->>'circuitKey','') !~ '^[a-z0-9]+(_[a-z0-9]+)*$'
     or nullif(d->>'startsAt','') is null
-    or nullif(d->>'simgridUrl','') is null or nullif(d->>'imageUrl','') is null
+    or (d->>'competition'<>'ATXS' and nullif(d->>'simgridUrl','') is null) or nullif(d->>'imageUrl','') is null
     then raise exception 'missing_required_fields'; end if;
-  if d->>'simgridUrl' !~ '^https://www\.thesimgrid\.com/championships/[0-9]+$'
+  if nullif(d->>'simgridUrl','') is not null and d->>'simgridUrl' !~ '^https://www\.thesimgrid\.com/championships/[0-9]+$'
     or d->>'imageUrl' !~ '^https://' then raise exception 'invalid_url'; end if;
   race_minutes:=(d->>'raceMinutes')::integer;
   if race_minutes < 1 or race_minutes > 1440 or (d->>'maxDrivers')::integer not between 1 and 100
     then raise exception 'invalid_duration_or_capacity'; end if;
-  if d->>'format' in ('DR','BATX','WGT_SPRINT') and (
+  if d->>'format' in ('DR','DR_90','BATX','WGT_SPRINT') and (
     (d->>'practiceMinutes')::integer is distinct from 60 or (d->>'qualifyingMinutes')::integer is distinct from 15
-    or race_minutes <> case when d->>'format'='BATX' then 90 else 60 end
+    or race_minutes <> case when d->>'format' in ('BATX','DR_90') then 90 else 60 end
   ) then raise exception 'invalid_format_duration'; end if;
   if nullif(d->>'serverOpensAt','')::timestamptz > (d->>'startsAt')::timestamptz
     then raise exception 'invalid_server_opening'; end if;
+  if d->>'format'='ATXS' and ((d->>'practiceMinutes')::integer is distinct from 2 or (d->>'qualifyingMinutes')::integer is distinct from 15 or race_minutes<>45) then raise exception 'invalid_format_duration'; end if;
   if d->>'format'='ATXS' then chosen_type:='daily_race';pit_count:=0;
+  elsif d->>'format'='DR_90' then chosen_type:='daily_race';pit_count:=2;
   elsif d->>'format'='DR' then chosen_type:='daily_race';pit_count:=1;
   elsif d->>'format'='BATX' then chosen_type:='special_event';pit_count:=2;
   elsif d->>'format'='WGT_SPRINT' then chosen_type:='sprint';pit_count:=1;
@@ -78,18 +81,18 @@ begin
     circuit_name,circuit_key,starts_at,timezone,duration_minutes,max_drivers,simgrid_url,
     image_url,is_public,is_official,source_event_key,car_class,schedule_timezone_label,
     event_schedule,mandatory_pit_stop,mandatory_tyre_change,mandatory_refuelling,
-    time_multiplier,competition_code,format_code,mandatory_stop_count,server_opens_at,registered_snapshot
+    time_multiplier,competition_code,format_code,mandatory_stop_count,server_opens_at,registered_snapshot,site_registration_enabled
   ) values (
     'atx-'||substr(replace(item.id::text,'-',''),1,24),chosen_type,'registration_open',
     d->>'titleFr',d->>'titleEn',nullif(d->>'descriptionFr',''),nullif(d->>'descriptionEn',''),
     'Assetto Corsa Competizione',d->>'circuit',d->>'circuitKey',
     (d->>'startsAt')::timestamptz,'Europe/Brussels',race_minutes,(d->>'maxDrivers')::integer,
-    d->>'simgridUrl',d->>'imageUrl',true,true,source_id,
+    nullif(d->>'simgridUrl',''),d->>'imageUrl',true,true,source_id,
     coalesce(nullif(d->>'carClass',''),'GT3'),'Europe/Brussels',
     coalesce(d->'schedule','[]'::jsonb),pit_count>0,
     d->>'format'='BATX',d->>'format'='BATX',1,
     d->>'competition',d->>'format',pit_count,nullif(d->>'serverOpensAt','')::timestamptz,
-    nullif(d->>'registered','')::integer
+    nullif(d->>'registered','')::integer,d->>'competition'='ATXS'
   ) returning * into new_event;
   update public.atx_event_drafts set status='published',event_id=new_event.id,published_slug=new_event.slug,updated_at=now() where id=item.id;
   return jsonb_build_object('id',new_event.id,'slug',new_event.slug,'already_published',false);

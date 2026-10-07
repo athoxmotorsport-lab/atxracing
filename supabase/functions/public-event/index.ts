@@ -23,7 +23,7 @@ Deno.serve(async (request) => {
   const publicDriverIds = new Set((publicDrivers ?? []).map((driver) => driver.id));
   if (!slug) {
     const { data: events, error } = await supabase.from("events")
-      .select("id, slug, event_type, status, title_fr, title_en, description_fr, description_en, circuit_name, starts_at, duration_minutes, max_drivers, simgrid_url, image_url, car_class, schedule_timezone_label, event_schedule, mandatory_pit_stop, mandatory_tyre_change, mandatory_refuelling, fixed_refuelling_seconds, time_multiplier, server_name, competition_code, format_code, mandatory_stop_count, server_opens_at, registered_snapshot")
+      .select("id, slug, event_type, status, title_fr, title_en, description_fr, description_en, circuit_name, starts_at, duration_minutes, max_drivers, simgrid_url, image_url, car_class, schedule_timezone_label, event_schedule, mandatory_pit_stop, mandatory_tyre_change, mandatory_refuelling, fixed_refuelling_seconds, time_multiplier, server_name, competition_code, format_code, mandatory_stop_count, server_opens_at, registered_snapshot, site_registration_enabled")
       .eq("is_public", true).neq("status", "draft").order("starts_at", { ascending: false }).limit(100);
     if (error) return json({ error: "server_error" }, 500);
     const ids = (events ?? []).map((event) => event.id);
@@ -45,7 +45,7 @@ Deno.serve(async (request) => {
     // Le calendrier est prospectif : aucune course terminée n'y revient après un import ACC.
     const calendar = publicEvents
       .filter((event) => event.status !== "cancelled" && event.status !== "draft"
-        && Date.parse(event.starts_at) >= now && event.image_url && event.simgrid_url)
+        && Date.parse(event.starts_at) >= now && event.image_url && (event.simgrid_url || event.site_registration_enabled))
       .sort((a, b) => Date.parse(a.starts_at) - Date.parse(b.starts_at)).slice(0, 24);
     const localDay = (instant: number) => new Intl.DateTimeFormat("en-CA", {
       year: "numeric", month: "2-digit", day: "2-digit", timeZone: "Europe/Brussels",
@@ -53,7 +53,7 @@ Deno.serve(async (request) => {
     const todayKey = localDay(now);
     const today = publicEvents
       .filter((event) => event.status !== "cancelled" && event.status !== "draft"
-        && Boolean(event.simgrid_url) && Boolean(event.image_url)
+        && Boolean(event.simgrid_url || event.site_registration_enabled) && Boolean(event.image_url)
         && localDay(Date.parse(event.starts_at)) === todayKey
         && now < Date.parse(event.starts_at) + (Number(event.duration_minutes) + 120) * 60000)
       .sort((a, b) => Date.parse(a.starts_at) - Date.parse(b.starts_at));
@@ -85,7 +85,7 @@ Deno.serve(async (request) => {
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return json({ error: "invalid_slug" }, 400);
 
   const { data: event, error } = await supabase.from("events")
-    .select("id, slug, title_fr, title_en, description_fr, description_en, event_type, status, circuit_name, starts_at, duration_minutes, max_drivers, simgrid_url, image_url, server_name, is_official, car_class, schedule_timezone_label, event_schedule, mandatory_pit_stop, mandatory_tyre_change, mandatory_refuelling, fixed_refuelling_seconds, time_multiplier, competition_code, format_code, mandatory_stop_count, server_opens_at, registered_snapshot")
+    .select("id, slug, title_fr, title_en, description_fr, description_en, event_type, status, circuit_name, starts_at, duration_minutes, max_drivers, simgrid_url, image_url, server_name, is_official, car_class, schedule_timezone_label, event_schedule, mandatory_pit_stop, mandatory_tyre_change, mandatory_refuelling, fixed_refuelling_seconds, time_multiplier, competition_code, format_code, mandatory_stop_count, server_opens_at, registered_snapshot, site_registration_enabled")
     .eq("slug", slug).eq("is_public", true).neq("status", "draft").maybeSingle();
   if (error) return json({ error: "server_error" }, 500);
   if (!event) return json({ error: "event_not_found" }, 404);
