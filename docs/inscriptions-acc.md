@@ -4,7 +4,7 @@ Les pages françaises et anglaises distinguent World GT Sprint et Endurance. Dai
 
 ## Préparer un programme
 
-Dans l’administration, ouvrir un brouillon manuel, choisir la première date en heure de Bruxelles, puis renseigner un circuit par ligne dans « Programme ATX Series ». Le générateur prépare jusqu’à 24 brouillons espacés de 90 minutes. Vérifier les descriptions FR/EN, l’affiche et la capacité, enregistrer puis publier chaque rendez-vous. Il ne publie pas automatiquement des jours ou des horaires encore indéfinis et ne démarre pas les serveurs ACC.
+Dans l’administration, cliquer sur « Nouveau programme ATX Series », choisir la première date en heure de Bruxelles, puis renseigner un circuit par ligne dans « Programme ATX Series ». Le générateur prépare jusqu’à 24 brouillons espacés de 90 minutes. Vérifier les descriptions FR/EN, l’affiche et la capacité, enregistrer puis publier chaque rendez-vous. Il ne publie pas automatiquement des jours ou des horaires encore indéfinis et ne démarre pas les serveurs ACC.
 
 ATX Series ne demande aucun lien SimGrid ; les inscriptions sur le site sont activées à la publication. Pour une autre course publique, utiliser « Activer les inscriptions sur le site » dans le panneau des entry lists. Éviter d’ouvrir simultanément deux systèmes d’inscription pour la même course.
 
