@@ -12,9 +12,9 @@ const assert=require('node:assert/strict');
  try{
   const context=await browser.newContext({viewport:{width:1365,height:900}});
   await context.addInitScript(()=>sessionStorage.setItem('atx-racing-session','test-token'));
-  await context.route('**/functions/v1/auth-session',route=>route.fulfill({status:200,headers:{'Access-Control-Allow-Origin':origin},contentType:'application/json',body:JSON.stringify({driver:{id:me,display_name:'Test'}})}));
+  await context.route('**/functions/v1/auth-session*',route=>route.fulfill({status:200,headers:{'Access-Control-Allow-Origin':origin},contentType:'application/json',body:JSON.stringify({driver:{id:me,display_name:'Test'}})}));
   await context.route('**/functions/v1/driver-profile',route=>route.fulfill({status:200,headers:{'Access-Control-Allow-Origin':origin},contentType:'application/json',body:JSON.stringify({driver:{id:me,display_name:'Test',profile_confirmed_at:'2026-10-06T00:00:00Z'}})}));
-  await context.route('**/functions/v1/public-event',route=>route.fulfill({status:200,headers:{'Access-Control-Allow-Origin':origin},contentType:'application/json',body:JSON.stringify({notifications:[],today:[],events:[]})}));
+  await context.route('**/functions/v1/public-event*',route=>route.fulfill({status:200,headers:{'Access-Control-Allow-Origin':origin},contentType:'application/json',body:JSON.stringify({notifications:[],today:[],events:[]})}));
   await context.route('**/functions/v1/driver-messages**',async route=>{
    const request=route.request(),url=new URL(request.url());let body={},status=200;
    if(request.method()==='GET'&&url.searchParams.get('view')==='directory')body={drivers:[driver]};

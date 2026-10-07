@@ -18,6 +18,11 @@ Deno.serve(async request => {
   if(request.method==='GET'){
    const params=new URL(request.url).searchParams;
    const view=params.get('view')||'inbox';
+   if(view==='unread'){
+    const {count,error}=await db.from('driver_messages').select('id',{count:'exact',head:true}).eq('recipient_id',me).is('read_at',null);
+    if(error)throw error;
+    return jsonResponse(request,{unread:count||0});
+   }
    if(view==='directory'){
     const search=(params.get('q')||'').trim().slice(0,64);
     let query=db.from('drivers').select(publicFields).eq('is_profile_public',true).neq('id',me).order('display_name').limit(40);

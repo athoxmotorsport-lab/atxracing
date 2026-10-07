@@ -132,12 +132,16 @@ const readSession = async (request: Request): Promise<Response> => {
   if (!token) return jsonResponse(request, { error: "missing_session" }, 401);
   const supabase = adminClient();
   const { data: session, error } = await supabase.from("auth_sessions")
-    .select("id, driver_id, expires_at")
+    .select("id, driver_id, expires_at, last_seen_at")
     .eq("token_hash", await hmacHex(token)).is("revoked_at", null)
     .gt("expires_at", new Date().toISOString()).maybeSingle();
-  if (error || !session) return jsonResponse(request, { error: "invalid_session" }, 401);
-  await supabase.from("auth_sessions")
-    .update({ last_seen_at: new Date().toISOString() }).eq("id", session.id);
+  if (error) throw error;
+  if (!session) return jsonResponse(request, { error: "invalid_session" }, 401);
+  // Presence is approximate; navigating through the menu need not write every time.
+  if (!session.last_seen_at || Date.now()-Date.parse(session.last_seen_at)>=300000) {
+    await supabase.from("auth_sessions")
+      .update({ last_seen_at: new Date().toISOString() }).eq("id", session.id);
+  }
   if (new URL(request.url).searchParams.get("view") === "identity") {
     const { data: driver, error: driverError } = await supabase.from("drivers")
       .select("id, display_name, avatar_url, driver_profile_preferences(profile_confirmed_at)")

@@ -9,11 +9,11 @@ const assert=require('node:assert/strict');
  try{
   const context=await browser.newContext({viewport:{width:1440,height:900}});
   await context.addInitScript(()=>sessionStorage.setItem('atx-racing-session','test'));
- await context.route('**/functions/v1/auth-session',route=>route.fulfill({status:200,headers:{'Access-Control-Allow-Origin':origin},contentType:'application/json',body:JSON.stringify({driver:{display_name:'Test'}})}));
+ await context.route('**/functions/v1/auth-session*',route=>route.fulfill({status:200,headers:{'Access-Control-Allow-Origin':origin},contentType:'application/json',body:JSON.stringify({driver:{display_name:'Test'}})}));
  await context.route('**/functions/v1/driver-profile',route=>route.fulfill({status:200,headers:{'Access-Control-Allow-Origin':origin},contentType:'application/json',body:JSON.stringify({driver:{display_name:'Test',profile_confirmed_at:'2026-10-06T00:00:00Z'}})}));
   await context.route('**/functions/v1/driver-messages**',route=>route.fulfill({status:200,headers:{'Access-Control-Allow-Origin':origin},contentType:'application/json',body:JSON.stringify({conversations:[],unread:2})}));
   const notices=[{id:'a',type:'results_published',title_fr:'Résultat',title_en:'Result',message_fr:'Course publiée',message_en:'Race published',related_link:'course.html?event=sample-race'},{id:'b',type:'circuit_record',title_fr:'Record',title_en:'Record',message_fr:'Record du circuit',message_en:'Track record',related_link:'classement.html#circuit'}];
-  await context.route('**/functions/v1/public-event',route=>route.fulfill({status:200,headers:{'Access-Control-Allow-Origin':origin},contentType:'application/json',body:JSON.stringify({notifications:notices,today:[],events:[],archives:[]})}));
+  await context.route('**/functions/v1/public-event*',route=>route.fulfill({status:200,headers:{'Access-Control-Allow-Origin':origin},contentType:'application/json',body:JSON.stringify({notifications:notices,today:[],events:[],archives:[]})}));
   const page=await context.newPage();
   await page.goto(origin+'/atxracing/fr/acc/archives.html');
   const bell=page.locator('.community-bell');await bell.waitFor();await page.waitForFunction(()=>document.querySelector('.community-count')?.textContent==='2');

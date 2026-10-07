@@ -37,7 +37,7 @@
  async function refreshMessages(){
   let token;try{token=sessionStorage.getItem('atx-racing-session')}catch{}
   if(!token)return;
-  try{const response=await fetch('https://twjpjzalyvbsdpbzhqln.supabase.co/functions/v1/driver-messages?view=inbox',{headers:{Authorization:'Bearer '+token},signal:AbortSignal.timeout(10000)});if(!response.ok)return;const data=await response.json();const value=Math.max(0,Number(data.unread)||0);messageCount.hidden=value===0;messageCount.textContent=value>9?'9+':String(value);messagesLink.setAttribute('aria-label',text(`Messages privés : ${value} non lu(s)`,`Private messages: ${value} unread`))}catch{}
+  try{const response=await fetch('https://twjpjzalyvbsdpbzhqln.supabase.co/functions/v1/driver-messages?view=unread',{headers:{Authorization:'Bearer '+token},signal:AbortSignal.timeout(10000)});if(!response.ok)return;const data=await response.json();const value=Math.max(0,Number(data.unread)||0);messageCount.hidden=value===0;messageCount.textContent=value>9?'9+':String(value);messagesLink.setAttribute('aria-label',text(`Messages privés : ${value} non lu(s)`,`Private messages: ${value} unread`))}catch{}
  }
  if(header){header.insertBefore(shell,header.querySelector('.steam-connect'));header.insertBefore(messagesLink,header.querySelector('.steam-connect'))}
  refreshMessages();setInterval(refreshMessages,60000);window.addEventListener('atx-messages-changed',refreshMessages);
@@ -77,8 +77,7 @@
  };
  async function refresh(){
   try{
-   const response=await fetch(api,{cache:'no-store',signal:AbortSignal.timeout(15000)});if(!response.ok)throw Error('notifications');
-   const data=await response.json();
+   const data=window.ATX_PUBLIC_EVENTS?await window.ATX_PUBLIC_EVENTS():await (await fetch(api+'?view=feed',{signal:AbortSignal.timeout(15000)})).json();
    notices=(Array.isArray(data.notifications)?data.notifications:[]).filter(item=>item&&typeof item.id==='string'&&typeof item.title_fr==='string'&&typeof item.message_fr==='string').slice(0,30);
    today=(Array.isArray(data.today)?data.today:[]).filter(item=>item&&/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(item.slug||''));
    updateCount();if(!panel.hidden)render();

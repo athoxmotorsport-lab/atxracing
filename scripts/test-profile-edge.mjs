@@ -31,10 +31,10 @@ test('GET merges private preferences, Safe and official honours only for the ses
   if(url.includes('/driver_ratings?'))return Response.json([{safety_class:'gold',safety_score:84}]);
   if(url.includes('/event_honours?'))return Response.json([{event_id:'visible',award_type:'fast_driver'},{event_id:'hidden',award_type:'gentleman_driver'}]);
   if(url.includes('/events?'))return Response.json([{id:'visible'}]);
-  if(url.includes('/results?'))return Response.json([{event_id:'visible',finish_position:2,status:'classified'}]);
+  if(url.includes('/results?')){assert(url.includes('driver_id=eq.verified-owner'));return Response.json([{event_id:'visible',finish_position:2,status:'classified',points:18,event:{event_type:'daily_race',starts_at:'2026-10-07'}},{event_id:'lobby',finish_position:1,status:'classified',points:25,event:{title_fr:'Open Lobby'}}]);}
   throw Error('unexpected request');
  };
- const response=await handler(new Request('https://edge.test',{headers}));assert.deepEqual(await response.json(),{driver:{id:'verified-owner',nickname:'Private nickname',favorite_circuits:['spa'],car_photo:null,rating:{safety_class:'gold',safety_score:84},awards:[{event_id:'visible',award_type:'fast_driver',finish_position:2,finish_status:'classified'}]}});
+ const response=await handler(new Request('https://edge.test',{headers}));assert.deepEqual(await response.json(),{driver:{id:'verified-owner',nickname:'Private nickname',favorite_circuits:['spa'],stats:{races:1,wins:0,podiums:1,points:18},results:[{event_id:'visible',finish_position:2,status:'classified',points:18,event:{event_type:'daily_race',starts_at:'2026-10-07'}}],car_photo:null,rating:{safety_class:'gold',safety_score:84},awards:[{event_id:'visible',award_type:'fast_driver',finish_position:2,finish_status:'classified'}]}});
 });
 test('invalid input never reaches the write RPC',async()=>{
  let calls=0;globalThis.fetch=async()=>{calls++;return Response.json([{driver_id:'verified-owner'}]);};

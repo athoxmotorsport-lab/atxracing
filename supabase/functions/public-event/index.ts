@@ -1,5 +1,6 @@
 import { adminClient } from "../_shared/auth.ts";
 import { worldGTPoints } from "../_shared/worldgt-scoring.ts";
+import { eventFeed } from './feed.ts';
 
 const cors = {
   "Access-Control-Allow-Origin": "https://athoxmotorsport-lab.github.io",
@@ -18,6 +19,10 @@ Deno.serve(async (request) => {
   if (request.method !== "GET") return json({ error: "method_not_allowed" }, 405);
   const slug = new URL(request.url).searchParams.get("slug") ?? "";
   const supabase = adminClient();
+  if (!slug && new URL(request.url).searchParams.get('view') === 'feed') {
+    try { return json(await eventFeed(supabase)); }
+    catch { return json({error:'feed_unavailable'},500); }
+  }
   const { data: publicDrivers, error: publicDriversError } = await supabase.from("drivers").select("id").eq("is_profile_public", true);
   if (publicDriversError) return json({ error: "server_error" }, 500);
   const publicDriverIds = new Set((publicDrivers ?? []).map((driver) => driver.id));

@@ -69,7 +69,7 @@ const fetchCommunitySummary = async (steamId: string): Promise<Record<string, un
   try {
     const profileUrl = `https://steamcommunity.com/profiles/${steamId}`;
     const response = await fetch(`${profileUrl}/?xml=1`, {
-      headers: { "Accept": "application/xml", "User-Agent": "ATX-Racing/1.0" },
+      headers: { "Accept": "application/xml", "User-Agent": "ATX-Racing/1.0" }, signal: AbortSignal.timeout(5000),
     });
     if (!response.ok) return null;
     const xml = await response.text();
@@ -103,7 +103,7 @@ const hydrateSteamProfiles = async (
       endpoint.searchParams.set("key", apiKey);
       endpoint.searchParams.set("steamids", batch.map((identity) => identity.steam_id64).join(","));
       try {
-        const response = await fetch(endpoint, { headers: { "Accept": "application/json", "User-Agent": "ATX-Racing/1.0" } });
+        const response = await fetch(endpoint, { headers: { "Accept": "application/json", "User-Agent": "ATX-Racing/1.0" }, signal: AbortSignal.timeout(5000) });
         if (!response.ok) continue;
         const body = await response.json();
         for (const player of body?.response?.players ?? []) summaries.set(String(player.steamid), player);
@@ -151,7 +151,10 @@ const hydrateSteamProfiles = async (
       driver.avatar_url = avatarUrl;
       updates.avatar_url = avatarUrl;
     }
-    if (Object.keys(updates).length) await supabase.from("drivers").update(updates).eq("id", identity.driver_id);
+    // Recheck custom choices when writing: the driver may edit them during refresh.
+    await Promise.all(Object.entries(updates).map(([field,value])=>supabase.from("drivers")
+      .update({[field]:value}).eq("id",identity.driver_id)
+      .or((field==='display_name'?'custom_display_name':'custom_avatar_url')+'.is.null,'+(field==='display_name'?'custom_display_name':'custom_avatar_url')+'.eq.')));
   }));
 };
 
@@ -213,16 +216,32 @@ const buildLeaderboard = async (request: Request): Promise<Response> => {
 
     // Circuit rankings are based on imported ACC timing data, not on whether a
     // driver has made their profile public. Privacy only controls profile links.
-    const { data: drivers, error: driversError } = await supabase.from("drivers")
-      .select("id, display_name, custom_display_name, avatar_url, custom_avatar_url, team_name, is_profile_public").eq("is_profile_public", true);
-    if (driversError) throw driversError;
-
-    const { data: identityRows, error: claimedError } = await supabase.from("driver_identities")
-      .select("driver_id, steam_id64, steam_persona_name, steam_profile_url, steam_avatar_url, last_login_at");
-    if (claimedError) throw claimedError;
+    const readPages = async (query: (from: number) => any): Promise<Array<Record<string, any>>> => {
+      const rows: Array<Record<string, any>> = [];
+      for (let from=0;from<10000;from+=1000) {
+        const {data,error}=await query(from);if(error)throw error;
+        rows.push(...(data??[]));if(!data||data.length<1000)break;
+      }
+      return rows;
+    };
+    const [driverResponse,identityResponse,results,sessionResults] = await Promise.all([
+      supabase.from("drivers").select("id, display_name, custom_display_name, avatar_url, custom_avatar_url, team_name, is_profile_public").eq("is_profile_public",true),
+      supabase.from("driver_identities").select("driver_id, steam_id64, steam_persona_name, steam_profile_url, steam_avatar_url, last_login_at"),
+      readPages(from=>supabase.from("results")
+        .select("driver_id, status, finish_position, points, best_lap_ms, car_model_name, created_at, event:events!inner(id, circuit_key, circuit_name, starts_at, is_public, server_name, title_fr, title_en, competition_code)")
+        .eq("event.is_public",true).order("created_at",{ascending:true}).range(from,from+999)),
+      readPages(from=>supabase.from("acc_session_results")
+        .select("driver_id, best_lap_ms, car_model_name, created_at, session:acc_sessions!inner(session_type, session_date, published_at, created_at, event:events!inner(circuit_key, circuit_name, starts_at, is_public, status, is_official, server_name, title_fr, title_en, competition_code))")
+        .order("created_at",{ascending:true}).range(from,from+999)),
+    ]);
+    if(driverResponse.error)throw driverResponse.error;if(identityResponse.error)throw identityResponse.error;
+    const drivers=driverResponse.data,identityRows=identityResponse.data;
     const publicDriverIds = new Set((drivers ?? []).map((driver) => driver.id));
     const visibleIdentities = (identityRows ?? []).filter((identity) => publicDriverIds.has(identity.driver_id));
-    await hydrateSteamProfiles(supabase, drivers ?? [], visibleIdentities as SteamIdentity[]);
+    // Missing Steam artwork must not hold up sporting results. The stored identity
+    // is rendered now; the next response can use refreshed metadata.
+    const runtime=(globalThis as any).EdgeRuntime;
+    if(runtime?.waitUntil)runtime.waitUntil(hydrateSteamProfiles(supabase,structuredClone(drivers??[]),structuredClone(visibleIdentities) as SteamIdentity[]).catch(()=>{}));
     const identityByDriver = new Map(visibleIdentities.map((identity) => [identity.driver_id, identity]));
     for (const driver of drivers ?? []) {
       const identity = identityByDriver.get(driver.id);
@@ -234,15 +253,6 @@ const buildLeaderboard = async (request: Request): Promise<Response> => {
     const publicProfileId = (driverId: string): string | null =>
       claimed.has(driverId) && profileIsPublic.get(driverId) === true ? driverId : null;
 
-    const results: Array<Record<string, unknown>> = [];
-    for (let from = 0; from < 10000; from += 1000) {
-      const { data, error } = await supabase.from("results")
-        .select("driver_id, status, finish_position, points, best_lap_ms, car_model_name, created_at, event:events!inner(id, circuit_key, circuit_name, starts_at, is_public, server_name, title_fr, title_en, competition_code)")
-        .eq("event.is_public", true).order("created_at", { ascending: true }).range(from, from + 999);
-      if (error) throw error;
-      results.push(...(data ?? []));
-      if (!data || data.length < 1000) break;
-    }
     const generalResults = results.filter((result) => publicDriverIds.has(String(result.driver_id ?? ""))
       && eventRow(result.event)?.status !== "draft"
       && (category === "ALL" || raceCategory(result.event) === category));
@@ -268,16 +278,6 @@ const buildLeaderboard = async (request: Request): Promise<Response> => {
       if (raceCategory(result.event) !== "WGT") return Number(result.points ?? 0);
       return wgtEntryForResult(result)?.points ?? 0;
     };
-
-    const sessionResults: Array<Record<string, unknown>> = [];
-    for (let from = 0; from < 10000; from += 1000) {
-      const { data, error } = await supabase.from("acc_session_results")
-        .select("driver_id, best_lap_ms, car_model_name, created_at, session:acc_sessions!inner(session_type, session_date, published_at, created_at, event:events!inner(circuit_key, circuit_name, starts_at, is_public, status, is_official, server_name, title_fr, title_en, competition_code))")
-        .order("created_at", { ascending: true }).range(from, from + 999);
-      if (error) throw error;
-      sessionResults.push(...(data ?? []));
-      if (!data || data.length < 1000) break;
-    }
 
     // Publish FP/Q/R timing only for public, non-draft events and public driver profiles.
     // Private event laps remain stored in ACC tables but never enter public rankings.

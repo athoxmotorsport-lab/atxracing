@@ -1,4 +1,5 @@
 import { validateProfile } from './validation.mjs';
+import { sportingProfile } from './sporting.mjs';
 
 // Reuse the existing Steam session protocol without changing the legacy functions.
 const encoder = new TextEncoder();
@@ -53,12 +54,12 @@ Deno.serve(async request => {
         rest('driver_ratings?select=performance_class,performance_score,safety_class,safety_score,algorithm_version&driver_id=eq.' + id + '&circuit_key=eq.overall&limit=1'),
         rest('event_honours?select=event_id,award_type,best_lap_ms,penalty_count,clean_laps,event_slug,circuit_name,starts_at&driver_id=eq.' + id + '&order=starts_at.desc'),
         rest('events?select=id&is_public=eq.true&status=neq.draft'),
-        rest('results?select=event_id,finish_position,status&driver_id=eq.' + id),
+        rest('results?select=event_id,status,finish_position,points,laps_completed,best_lap_ms,car_model_name,created_at,event:events(slug,title_fr,title_en,circuit_name,circuit_key,starts_at,event_type,competition_code)&driver_id=eq.' + id + '&order=created_at.desc'),
         selected?.preferred_gt3 ? rest('gt3_car_catalog?select=model_name,image_url,source_url,credit&model_name=eq.' + encodeURIComponent(selected.preferred_gt3) + '&limit=1') : Promise.resolve([]),
       ]);
       const visibleIds = new Set(visibleEvents.map((event: { id: string }) => event.id));
       const finishByEvent = new Map(results.map((result: { event_id: string; finish_position: number | null; status: string }) => [result.event_id, result]));
-      return reply({ driver: { ...driver, ...selected, car_photo: carPhotos[0] ?? null,
+      return reply({ driver: { ...driver, ...selected, ...sportingProfile(results), car_photo: carPhotos[0] ?? null,
         rating: ratings[0] ?? null, awards: honours.filter((honour: { event_id: string }) => visibleIds.has(honour.event_id))
           .map((honour: { event_id: string }) => ({ ...honour, finish_position: finishByEvent.get(honour.event_id)?.finish_position ?? null,
             finish_status: finishByEvent.get(honour.event_id)?.status ?? null })) } });

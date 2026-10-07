@@ -1,4 +1,4 @@
-/* Keep visitors at the Steam entrance until their existing session is verified. */
+/* Verify Steam on every page without delaying its public layout. */
 (() => {
  'use strict';
  const base=document.querySelector('meta[name="atx-base"]')?.content||'/atxracing/';
@@ -12,8 +12,11 @@
  try{token=sessionStorage.getItem(key);}catch{}
  if(!token){location.replace(base);return;}
  const api='https://twjpjzalyvbsdpbzhqln.supabase.co/functions/v1/';
+ // Static public pages can paint while the server checks the session.
+ // Private endpoints still authenticate every request; no session result is cached.
+ document.body.classList.remove('site-locked');
  window.ATX_SESSION_TOKEN=token;
- window.ATX_SESSION_AUTH=fetch(api+'auth-session'+(document.body.dataset.page==='profile'?'':'?view=identity'),{
+ window.ATX_SESSION_AUTH=fetch(api+'auth-session?view=identity',{
   headers:{Authorization:'Bearer '+token},signal:AbortSignal.timeout(15000)
  }).then(response=>{
   if(!response.ok){const error=Error('session');error.status=response.status;throw error;}
@@ -24,7 +27,7 @@
    let profile=session;
    if(session.driver?.profile_confirmed_at===undefined){
     const response=await fetch(api+'driver-profile',{headers:{Authorization:'Bearer '+token},signal:AbortSignal.timeout(15000)});
-    if(!response.ok)throw Error('profile');
+    if(!response.ok){const error=Error('profile');error.status=response.status;throw error;}
     profile=await response.json();
    }
    if(!profile.driver?.profile_confirmed_at){
@@ -38,8 +41,15 @@
   const name=document.querySelector('[data-driver-name]');
   if(name)name.textContent=session.driver?.display_name||(document.documentElement.lang==='en'?'driver':'pilote');
   document.body.classList.remove('site-locked');
- }).catch(()=>{
-  try{sessionStorage.removeItem(key);}catch{}
-  location.replace(base);
+ }).catch(error=>{
+  if(error.status===401||error.status===403){
+   try{sessionStorage.removeItem(key);}catch{}
+   location.replace(base);return;
+  }
+  // A temporary network failure does not mean the account has signed out.
+  window.ATX_SESSION_AUTH=null;
+  const retry=document.createElement('button');retry.type='button';retry.className='session-retry pill';
+  retry.textContent=document.documentElement.lang==='en'?'Steam check unavailable · Retry':'Vérification Steam indisponible · Réessayer';
+  retry.onclick=()=>location.reload();document.body.append(retry);
  });
 })();

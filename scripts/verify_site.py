@@ -1,7 +1,8 @@
 """Verify the generated static portal and its critical visitor paths."""
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import urlsplit, parse_qs
+from hashlib import sha256
 import os
 import sys
 
@@ -25,7 +26,10 @@ for path in ROOT.rglob('*.html'):
  for tag,attrs in page(path.relative_to(ROOT)):
   for key in ('href','src'):
    target=local_path(attrs.get(key,''))
-   if target is not None:assert target.is_file(),f'{path}: missing {attrs[key]}'
+   if target is not None:
+    assert target.is_file(),f'{path}: missing {attrs[key]}'
+    if target.parent==ROOT/'assets' and target.suffix in ('.js','.css'):
+     assert parse_qs(urlsplit(attrs[key]).query).get('v')==[sha256(target.read_bytes()).hexdigest()[:12]],f'{path}: stale asset revision {attrs[key]}'
 for generated in ROOT.rglob('*'):
  if generated.is_file():
   mirrored=ROOT.parent/generated.relative_to(ROOT)
@@ -35,8 +39,8 @@ assert not any(t in ('header','footer') for t,_ in entry)
 assert not any(t=='img' and 'logo' in a.get('src','') for t,a in entry)
 assert not any(t=='a' and 'gateway-link' in a.get('class','') for t,a in entry)
 assert any(t=='a' and f'return_path={BASE}fr/acc/profile.html' in a.get('href','') for t,a in entry)
-assert any(t=='script' and a.get('src')==BASE+'assets/entry.min.js' for t,a in entry)
-assert not any(t=='script' and a.get('src')==BASE+'assets/community.min.js' for t,a in entry)
+assert any(t=='script' and urlsplit(a.get('src','')).path==BASE+'assets/entry.min.js' for t,a in entry)
+assert not any(t=='script' and urlsplit(a.get('src','')).path==BASE+'assets/community.min.js' for t,a in entry)
 for path,lang in (('fr/index.html','fr'),('en/index.html','en')):
  tags=page(path)
  assert any(t=='header' for t,_ in tags) and any(t=='footer' for t,_ in tags)
@@ -53,7 +57,7 @@ for game in ('acc','ace'):
 for lang in ('fr','en'):
  about=page(f'{lang}/about.html')
  assert any(t=='h1' for t,_ in about)
- assert any(t=='script' and a.get('src')==BASE+'assets/community.min.js' for t,a in about)
+ assert any(t=='script' and urlsplit(a.get('src','')).path==BASE+'assets/community.min.js' for t,a in about)
  assert len([1 for t,a in about if t=='nav' and a.get('class')=='header-languages'])==1
  assert [a['href'] for t,a in about if t=='a' and a.get('hreflang') in ('fr','en')]==[BASE+f'{language}/about.html' for language in ('fr','en')]*2
  profile=page(f'{lang}/acc/profile.html')
@@ -68,7 +72,7 @@ for lang in ('fr','en'):
    assert any(t=='img' and a.get('src')==BASE+f'assets/{game}-banner.webp' for t,a in tags)
    assert len([1 for t,a in tags if t=='nav' and a.get('class')=='header-languages'])==1
    assert len([1 for t,a in tags if t=='nav' and a.get('class')=='footer-languages'])==1
-   assert any(t=='script' and a.get('src')==BASE+'assets/community.min.js' for t,a in tags)
+   assert any(t=='script' and urlsplit(a.get('src','')).path==BASE+'assets/community.min.js' for t,a in tags)
    assert [a['href'] for t,a in tags if t=='a' and a.get('hreflang') in ('fr','en')]==[BASE+f'{language}/{game}/{"" if section=="index.html" else section}' for language in ('fr','en')]*2
    assert not any(t=='div' and a.get('class')=='wrap languages' for t,a in tags)
 css=(ROOT/'assets/site.min.css').read_text()
