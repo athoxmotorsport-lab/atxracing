@@ -4,7 +4,7 @@ Les versions française et anglaise proposent les mêmes fonctions. L’entrée 
 
 ## Résultats
 
-Les quatre Daily Race historiques conservent leur statut officiel. Hotlaps, entraînements et open lobbies ne figurent pas dans les archives de courses, le dernier résultat ou les statistiques de compétition. Leurs chronos peuvent alimenter les meilleurs tours et le rythme selon les références ACC existantes.
+Les Daily Race historiques confirmées conservent leur statut officiel, y compris les anciennes courses importées comme `special_event`. Le nom/code du serveur et les sessions de course ont permis de rétablir Monza, Nürburgring GP, Barcelone et Kyalami. Hotlaps, entraînements et open lobbies ne figurent pas dans les archives de courses, le dernier résultat ou les statistiques de compétition. Leurs chronos peuvent alimenter les meilleurs tours et le rythme selon les références ACC existantes.
 
 Dans **Administration ATX Racing → Validation des résultats**, sélectionner une course puis consulter ses résultats. Chaque correction exige un motif public FR et EN. Les positions, statuts et points peuvent être corrigés ; une correction remet le résultat en examen et conserve les valeurs avant/après dans un journal. Publier **Officiel** uniquement après vérification. La validation officielle est bloquée pendant un import en cours. Un import Collector ultérieur remet les résultats en provisoire et retire les récompenses dépendant de l’ancienne publication. Les points du classement proviennent uniquement des résultats officiels. Les imports et données sources ne sont pas supprimés par le nouveau parcours.
 
