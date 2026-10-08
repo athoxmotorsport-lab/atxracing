@@ -30,7 +30,7 @@ Deno.serve(async (request) => {
   const publicDriverIds = new Set((publicDrivers ?? []).map((driver) => driver.id));
   if (!slug) {
     const { data: events, error } = await supabase.from("events")
-      .select("id, slug, event_type, status, title_fr, title_en, description_fr, description_en, circuit_name, starts_at, duration_minutes, max_drivers, simgrid_url, image_url, car_class, schedule_timezone_label, event_schedule, mandatory_pit_stop, mandatory_tyre_change, mandatory_refuelling, fixed_refuelling_seconds, time_multiplier, server_name, competition_code, format_code, mandatory_stop_count, server_opens_at, registered_snapshot, site_registration_enabled,result_publication_state,results_validated_at")
+      .select("id, slug, event_type, status, title_fr, title_en, description_fr, description_en, circuit_name, starts_at, duration_minutes, max_drivers, simgrid_url, image_url, car_class, schedule_timezone_label, event_schedule, mandatory_pit_stop, mandatory_tyre_change, mandatory_refuelling, fixed_refuelling_seconds, time_multiplier, server_name, competition_code, format_code, mandatory_stop_count, server_opens_at, registered_snapshot, site_registration_enabled,publication_origin,deleted_at,result_publication_state,results_validated_at")
       .eq("is_public", true).neq("status", "draft").order("starts_at", { ascending: false }).limit(100);
     if (error) return json({ error: "server_error" }, 500);
     const ids = (events ?? []).map((event) => event.id);
@@ -52,7 +52,7 @@ Deno.serve(async (request) => {
     const publicEvents = countedEvents.map(({ id, ...event }) => ({ ...event, result_count: resultCounts.get(id) ?? 0 }));
     // Le calendrier est prospectif : aucune course terminée n'y revient après un import ACC.
     const calendar = publicEvents
-      .filter((event) => event.status !== "cancelled" && event.status !== "draft"
+      .filter((event) => event.publication_origin !== "collector" && !event.deleted_at && event.status !== "cancelled" && event.status !== "draft"
         && Date.parse(event.starts_at) >= now && event.image_url && (event.simgrid_url || event.site_registration_enabled))
       .sort((a, b) => Date.parse(a.starts_at) - Date.parse(b.starts_at)).slice(0, 24);
     const localDay = (instant: number) => new Intl.DateTimeFormat("en-CA", {
@@ -60,12 +60,12 @@ Deno.serve(async (request) => {
     }).format(new Date(instant));
     const todayKey = localDay(now);
     const today = publicEvents
-      .filter((event) => event.status !== "cancelled" && event.status !== "draft"
+      .filter((event) => event.publication_origin !== "collector" && !event.deleted_at && event.status !== "cancelled" && event.status !== "draft"
         && Boolean(event.simgrid_url || event.site_registration_enabled) && Boolean(event.image_url)
         && localDay(Date.parse(event.starts_at)) === todayKey
         && now < Date.parse(event.starts_at) + (Number(event.duration_minutes) + 120) * 60000)
       .sort((a, b) => Date.parse(a.starts_at) - Date.parse(b.starts_at));
-    const archives = publicEvents.filter((event) => Date.parse(event.starts_at) >= archiveStart && Date.parse(event.starts_at) <= now && event.result_count > 0 && competitiveRace(event));
+    const archives = publicEvents.filter((event) => Date.parse(event.starts_at) >= archiveStart && Date.parse(event.starts_at) <= now && event.result_count > 0 && !event.deleted_at && event.status!=="cancelled" && competitiveRace(event));
     const { data: notifications, error: noticesError } = await supabase.from("notifications")
       .select("id, event_id, visibility, type, title_fr, title_en, message_fr, message_en, related_link, circuit_key, driver_id, best_lap_ms, created_at")
       .order("created_at", { ascending: false }).limit(200);
@@ -93,10 +93,10 @@ Deno.serve(async (request) => {
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return json({ error: "invalid_slug" }, 400);
 
   const { data: event, error } = await supabase.from("events")
-    .select("id, slug, title_fr, title_en, description_fr, description_en, event_type, status, circuit_name, starts_at, duration_minutes, max_drivers, simgrid_url, image_url, server_name, is_official, car_class, schedule_timezone_label, event_schedule, mandatory_pit_stop, mandatory_tyre_change, mandatory_refuelling, fixed_refuelling_seconds, time_multiplier, competition_code, format_code, mandatory_stop_count, server_opens_at, registered_snapshot, site_registration_enabled,result_publication_state,results_validated_at")
+    .select("id, slug, title_fr, title_en, description_fr, description_en, event_type, status, circuit_name, starts_at, duration_minutes, max_drivers, simgrid_url, image_url, server_name, is_official, car_class, schedule_timezone_label, event_schedule, mandatory_pit_stop, mandatory_tyre_change, mandatory_refuelling, fixed_refuelling_seconds, time_multiplier, competition_code, format_code, mandatory_stop_count, server_opens_at, registered_snapshot, site_registration_enabled,publication_origin,deleted_at,result_publication_state,results_validated_at")
     .eq("slug", slug).eq("is_public", true).neq("status", "draft").maybeSingle();
   if (error) return json({ error: "server_error" }, 500);
-  if (!event) return json({ error: "event_not_found" }, 404);
+  if (!event || event.deleted_at || !competitiveRace(event)) return json({ error: "event_not_found" }, 404);
 
   const { data: results, error: resultsError } = await supabase.from("results")
     .select("driver_id, finish_position, status, points, laps_completed, best_lap_ms, car_model_name, race_number, driver:drivers(display_name, avatar_url)")

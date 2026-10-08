@@ -79,3 +79,9 @@ test('published event edits retain identity and cannot overwrite points or state
  const response=await handler(new Request('https://edge.test',{method:'POST',headers,body:JSON.stringify({action:'update_event',id,event:{titleFr:'Date corrigée',titleEn:'Corrected date',startsAt:'2026-10-11T18:00:00Z',serverOpensAt:'2026-10-11T17:30:00Z',points:999,result_publication_state:'provisional'}})}));assert.equal(response.status,200);assert.equal((await response.json()).event.id,id);assert.equal(patch.starts_at,'2026-10-11T18:00:00.000Z');assert.equal(patch.event_schedule[0].start,'20:00');assert.equal(patch.event_schedule[0].end,'20:15');assert(!('points' in patch));assert(!('result_publication_state' in patch));
  const invalid=await handler(new Request('https://edge.test',{method:'POST',headers,body:JSON.stringify({action:'update_event',id,event:{titleFr:'FR',titleEn:'EN',startsAt:'bad'}})}));assert.equal(invalid.status,400);globalThis.fetch=originalFetch;
 });
+
+
+test('published events list filters Collector sessions at the database boundary',async()=>{
+ let eventQuery='';globalThis.fetch=async(input)=>{const url=String(input);if(url.includes('/auth_sessions?'))return Response.json([{driver_id:id}]);if(url.includes('/driver_roles?'))return Response.json([{role:'admin'}]);if(url.includes('/events?'))eventQuery=url;return Response.json([]);};
+ const response=await handler(new Request('https://edge.test',{headers}));assert.equal(response.status,200);assert(eventQuery.includes('publication_origin=eq.organizer'));assert(eventQuery.includes('deleted_at=is.null'));globalThis.fetch=originalFetch;
+});

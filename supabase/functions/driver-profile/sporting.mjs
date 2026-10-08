@@ -6,7 +6,7 @@ export function sportingProfile(rows){
   if(/discord|open\s*lobby|hotlaper|entrainement|entraînement/.test(title))return false;
   return ['DR','WGT','BATX','BA','ATXS'].includes(String(e.competition_code||'').toUpperCase())||['daily_race','sprint','championship','endurance'].includes(e.event_type)||/\b(daily\s*race|dr|wgt|ball?ade\s*atx)\b/i.test(title);
  });
- const results=history.filter(row=>event(row).result_publication_state==='official');
+ const results=history.filter(row=>event(row).result_publication_state==='official'&&event(row).status!=='cancelled');
  const stats=results.reduce((s,r)=>({races:s.races+1,wins:s.wins+(r.finish_position===1&&r.status==='classified'?1:0),podiums:s.podiums+(r.finish_position&&r.finish_position<=3&&r.status==='classified'?1:0),points:s.points+Number(r.points||0)}),{races:0,wins:0,podiums:0,points:0});
  return {stats,results:[...results].sort((a,b)=>Date.parse(event(b).starts_at||'')-Date.parse(event(a).starts_at||''))};
 }

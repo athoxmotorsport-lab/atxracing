@@ -14,13 +14,14 @@ let browser;
  const context=await browser.newContext({viewport:{width:390,height:844}});
  await context.addInitScript(()=>sessionStorage.setItem('atx-racing-session','test-token'));
  await context.route('https://fonts.googleapis.com/**',r=>r.abort());await context.route('https://fonts.gstatic.com/**',r=>r.abort());
- let drafts=[],published=0,imported=0,saved=[],edited;const publishedEvent={id:"00000000-0000-4000-8000-000000000002",slug:"existing-race",title_fr:"Course publiée",title_en:"Published race",starts_at:"2026-10-12T18:00:00Z",circuit_name:"Monza"};
+ let drafts=[],published=0,imported=0,saved=[],edited,eventDeleted=false;const publishedEvent={id:"00000000-0000-4000-8000-000000000002",slug:"existing-race",title_fr:"Course publiée",title_en:"Published race",starts_at:"2026-10-12T18:00:00Z",circuit_name:"Monza"};
  await context.route('https://twjpjzalyvbsdpbzhqln.supabase.co/functions/v1/**',async route=>{
   const request=route.request(),name=new URL(request.url()).pathname.split('/').pop();let result={},status=200;
   if(name==='atx-event-admin'){
-   if(request.method()==='GET')result={drafts,events:[publishedEvent]};
+   if(request.method()==='GET')result={drafts,events:eventDeleted?[]:[publishedEvent]};
    else{const body=request.postDataJSON();if(body.action==='import'){imported++;status=503;result={error:'simgrid_token_required'};}
     else if(body.action==='save'){saved.push(body.draft);const record={id:'00000000-0000-4000-8000-000000000001',draft:{...body.draft,circuitKey:'laguna_seca',schedule:[]},status:'draft'};drafts=[record];result={draft:record};status=201;}
+    else if(body.action==='delete_event'){eventDeleted=true;result={deleted:true};}
     else if(body.action==='update_event'){edited=body;result={event:publishedEvent};}
     else if(body.action==='publish'){published++;result={event:{slug:'atx-test'}};}
    }
@@ -61,6 +62,7 @@ let browser;
  await page.getByRole('button',{name:'New ATX Series schedule'}).click();await page.getByLabel('Circuit',{exact:true}).fill('Silverstone');assert.equal(await page.getByLabel('SimGrid registration link').isVisible(),false);await page.evaluate(()=>{document.querySelector('[name=simgridUrl]').value='invalid-link';document.querySelector('[name=imageUrl]').value='http://invalid-poster.test';});await page.getByRole('button',{name:'Save draft',exact:true}).click();await page.getByText('Draft saved. It is still invisible to drivers.').waitFor();assert.equal(saved.at(-1).simgridUrl,'');assert(saved.at(-1).imageUrl.endsWith('/assets/circuits/silverstone.webp'));assert.equal(saved.at(-1).startsAt,'');
  await page.getByRole('button',{name:'Back to list'}).click();await page.getByRole('button',{name:'New manual draft'}).click();await page.locator('[name=competition]').selectOption('WGT');await page.locator('[name=format]').selectOption('WGT_ENDURANCE');await page.locator('[name=registrationMode]').selectOption('site');assert.equal(await page.locator('[name=simgridUrl]').isVisible(),false);await page.getByRole('button',{name:'Save draft',exact:true}).click();await page.getByText('Draft saved. It is still invisible to drivers.').waitFor();assert.equal(saved.at(-1).registrationMode,'site');assert.equal(saved.at(-1).simgridUrl,'');
  for(const lang of ['fr','en']){await page.goto(origin+'/atxracing/'+lang+'/acc/admin.html');await page.getByRole('button',{name:lang==='fr'?'Modifier l’événement':'Edit event',exact:true}).click();await page.locator('input[type=datetime-local]').first().fill('2026-10-11T20:00');await page.getByRole('button',{name:lang==='fr'?'Enregistrer les modifications':'Save changes',exact:true}).click();await page.getByText(lang==='fr'?'Événement mis à jour.':'Event updated.',{exact:true}).waitFor();assert.equal(edited.id,publishedEvent.id);assert.equal(edited.event.startsAt,'2026-10-11T18:00:00.000Z');}
+ await page.getByRole('button',{name:'Delete event',exact:true}).click();assert.equal(eventDeleted,false);await page.getByRole('button',{name:'Confirm deletion',exact:true}).click();await page.getByText('Event deleted.',{exact:true}).waitFor();assert.equal(eventDeleted,true);assert.equal(await page.getByRole('button',{name:'Edit event',exact:true}).count(),0);
  assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'mobile overflow');assert.deepEqual(errors,[]);
  console.log('Admin browser checks passed: manual creation without SimGrid import, private save, publish, FR/EN, automatic track images, per-track 90-minute programme without SimGrid or poster fields, and incomplete ATX Series draft saves.');
 })().catch(error=>{console.error(error);process.exitCode=1;}).finally(async()=>{await browser?.close();server.close();});

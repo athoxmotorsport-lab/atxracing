@@ -42,7 +42,7 @@ Deno.serve(async (request) => {
     if (ratingsError) throw ratingsError;
     const { data: results, error: resultsError } = await supabase.from("results")
       .select("status, finish_position, points, laps_completed, best_lap_ms, car_model_name, created_at, event:events!inner(slug, title_fr, title_en, circuit_name, circuit_key, starts_at, is_public, status, event_type, competition_code, result_publication_state)")
-      .eq("driver_id", driverId).eq("event.is_public", true).neq("event.status", "draft").eq("event.result_publication_state","official").order("created_at", { ascending: false });
+      .eq("driver_id", driverId).eq("event.is_public", true).neq("event.status", "draft").neq("event.status", "cancelled").eq("event.result_publication_state","official").order("created_at", { ascending: false });
     if (resultsError) throw resultsError;
     const allResults = (results ?? []).filter(isCompetition);
     const { data: preference, error: preferenceError } = await supabase.from("driver_profile_preferences")

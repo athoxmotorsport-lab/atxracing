@@ -254,7 +254,7 @@ const buildLeaderboard = async (request: Request): Promise<Response> => {
       claimed.has(driverId) && profileIsPublic.get(driverId) === true ? driverId : null;
 
     const generalResults = results.filter((result) => publicDriverIds.has(String(result.driver_id ?? ""))
-      && eventRow(result.event)?.status !== "draft"
+      && eventRow(result.event)?.status !== "draft" && eventRow(result.event)?.status !== "cancelled"
       && eventRow(result.event)?.result_publication_state === "official"
       && (category === "ALL" || raceCategory(result.event) === category));
     const wgtRawResults = generalResults.filter((result) => raceCategory(result.event) === "WGT");

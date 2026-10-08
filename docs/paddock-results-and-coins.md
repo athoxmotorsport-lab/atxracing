@@ -49,3 +49,9 @@ Les tests SQL `scripts/test-registration.sql` et `scripts/test-paddock.sql` util
 ## Modification des événements publiés
 
 Dans Administration → Événements publiés, « Modifier l’événement » permet de corriger les titres, descriptions, date et ouverture du serveur, en heure de Bruxelles. La course garde son identifiant, ses inscriptions, ses résultats et ses points.
+
+## Sessions Collector et événements
+
+`publication_origin` distingue les événements publiés par l’organisation des supports techniques créés pour les imports Collector. Seuls les événements d’origine organisateur apparaissent dans la gestion des événements publiés. Les Hotlaps, entraînements et free practices restent des sources de chronos pour les profils et circuits ; ils n’alimentent pas les points de championnat. Les résultats historiques Daily Race restent accessibles comme résultats de compétition.
+
+La suppression depuis l’administration retire l’événement du calendrier, supprime ses inscriptions et sa file d’attente et rembourse les Coins de participation non encore remboursés. Le support technique et les sessions ACC sont conservés pour préserver les chronos. Les résultats officiels validés sont verrouillés et ne peuvent pas être supprimés par ce bouton.

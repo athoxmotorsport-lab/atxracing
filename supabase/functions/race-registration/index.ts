@@ -14,9 +14,9 @@ Deno.serve(async request=>{
   const admin=async()=>{const r=await check(db.from('driver_roles').select('role').eq('driver_id',actor).eq('role','admin').maybeSingle());if(!r)throw Error('forbidden');};
   const url=new URL(request.url);
   if(request.method==='GET'&&url.searchParams.get('admin')==='1'){
-   await admin();const events=await check(db.from('events').select('id,slug,title_fr,title_en,starts_at,format_code,site_registration_enabled,status,competition_code,simgrid_url').eq('is_public',true).order('starts_at',{ascending:false}).limit(100));
+   await admin();const events=await check(db.from('events').select('id,slug,title_fr,title_en,starts_at,format_code,site_registration_enabled,status,competition_code,simgrid_url,deleted_at').eq('is_public',true).order('starts_at',{ascending:false}).limit(100));
    const cars=await check(db.from('atx_acc_cars').select('*').order('name'));
-   return reply({events:events.filter((event:any)=>!event.simgrid_url&&(event.competition_code==='ATXS'||event.site_registration_enabled)),cars});
+   return reply({events:events.filter((event:any)=>!event.deleted_at&&event.status!=='cancelled'&&!event.simgrid_url&&(event.competition_code==='ATXS'||event.site_registration_enabled)),cars});
   }
   const raw=request.method==='POST'?await request.text():'';if(raw.length>8192)return reply({error:'payload_too_large'},413);
   const body=raw?JSON.parse(raw):{};
@@ -25,8 +25,8 @@ Deno.serve(async request=>{
    await check(db.from('atx_acc_cars').upsert({car_model_id:body.carModelId,name:body.name.trim(),active:body.active!==false}));return reply({saved:true});
   }
   const eventId=body.eventId||url.searchParams.get('event');if(!/^[0-9a-f-]{36}$/i.test(eventId||''))return reply({error:'invalid_event'},400);
-  const event=await check(db.from('events').select('id,slug,format_code,starts_at,status,max_drivers,site_registration_enabled,is_public,simgrid_url').eq('id',eventId).maybeSingle());
-  if(!event||!event.is_public)return reply({error:'event_not_found'},404);
+  const event=await check(db.from('events').select('id,slug,format_code,starts_at,status,max_drivers,site_registration_enabled,is_public,simgrid_url,deleted_at').eq('id',eventId).maybeSingle());
+  if(!event||!event.is_public||event.deleted_at||event.status==='cancelled')return reply({error:'event_not_found'},404);
   if(body.action==='enable'){
    await admin();if(event.simgrid_url)return reply({error:'external_registration'},409);if(event.starts_at<=new Date().toISOString())return reply({error:'registration_closed'},409);
    await check(db.from('events').update({site_registration_enabled:body.enabled===true}).eq('id',eventId));return reply({saved:true});
