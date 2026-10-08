@@ -2,7 +2,7 @@ export const GT3_CARS = [
   'Aston Martin V8 Vantage GT3','Audi R8 LMS GT3','Audi R8 LMS GT3 Evo 2',
   'BMW M4 GT3','Ferrari 296 GT3','Ferrari 488 GT3','Ford Mustang GT3',
   'Honda NSX GT3 Evo','Lamborghini Huracán GT3 Evo2','Lexus RC F GT3',
-  'McLaren 720S GT3','McLaren 720S GT3 Evo','Mercedes-AMG GT3',
+  'McLaren 720S GT3','McLaren 720S GT3 Evo','Mercedes-AMG GT3','Mercedes-AMG GT3 Evo (2020)',
   'Bentley Continental GT3 (2018)','Nissan GT-R Nismo GT3 (2018)','Porsche 911 GT3 R (2018)','Porsche 992 GT3 R',
 ];
 export const ACC_CIRCUITS = [
@@ -25,8 +25,9 @@ export function validateProfile(body) {
     if (!Array.isArray(body[key]) || body[key].length > 2 || body[key].some(g => !['acc', 'ace'].includes(g))) throw Error('invalid_' + key);
     return [...new Set(body[key])];
   };
-  const number = text('carNumber', 4);
-  if (number && !/^[A-Za-z0-9-]{1,4}$/.test(number)) throw Error('invalid_carNumber');
+  const number = text('carNumber', 3, true);
+  if (number && !/^[0-9]{1,3}$/.test(number)) throw Error('invalid_carNumber');
+  const initials=text('accShortName',3,true);if(!/^[A-Za-z0-9]{1,3}$/.test(initials))throw Error('invalid_accShortName');
   const preferredGt3 = text('preferredGt3', 100);
   if (preferredGt3 && !GT3_CARS.includes(preferredGt3) && preferredGt3 !== 'Porsche 911 GT3 R') throw Error('invalid_preferredGt3');
   const circuits = body.favoriteCircuits ?? [];
@@ -44,6 +45,7 @@ export function validateProfile(body) {
     return parsed.href;
   };
   return {
+    acc_first_name: text('accFirstName',50,true), acc_last_name: text('accLastName',50,true), acc_short_name: text('accShortName',3,true).toUpperCase(),
     nickname: text('nickname', 64, true), display_name: displayName, custom_display_name: displayName,
     team_name: text('teamName', 64), car_number: number?.toUpperCase() ?? null,
     preferred_gt3: preferredGt3, favorite_circuits: circuits,

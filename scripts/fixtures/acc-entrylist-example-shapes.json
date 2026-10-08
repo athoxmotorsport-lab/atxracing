@@ -1,0 +1,53 @@
+{
+  "solo": {
+    "entryKeys": [
+      "drivers",
+      "raceNumber",
+      "forcedCarModel",
+      "overrideDriverInfo",
+      "defaultGridPosition",
+      "ballastKg",
+      "restrictor",
+      "isServerAdmin"
+    ],
+    "driverKeys": [
+      "firstName",
+      "lastName",
+      "shortName",
+      "driverCategory",
+      "nationality",
+      "playerID"
+    ],
+    "crewSizes": [
+      1
+    ]
+  },
+  "team": {
+    "entryKeys": [
+      "drivers",
+      "raceNumber",
+      "forcedCarModel",
+      "customCar",
+      "overrideDriverInfo",
+      "defaultGridPosition",
+      "teamName",
+      "ballastKg",
+      "restrictor",
+      "isServerAdmin"
+    ],
+    "driverKeys": [
+      "firstName",
+      "lastName",
+      "shortName",
+      "nationality",
+      "driverCategory",
+      "playerID"
+    ],
+    "crewSizes": [
+      1,
+      2,
+      3,
+      4
+    ]
+  }
+}

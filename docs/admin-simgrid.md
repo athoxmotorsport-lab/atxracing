@@ -2,7 +2,7 @@
 
 La page `/fr/acc/admin.html` ou `/en/acc/admin.html` apparaît dans le profil d’un pilote portant le rôle `admin`. La fonction `atx-event-admin` revérifie la session Steam et le rôle administrateur à chaque appel. Les brouillons sont privés ; seul le bouton de publication crée une course visible.
 
-L’interface permet la création manuelle. L’import par lien SimGrid a été retiré. Les courses Daily Race et WGT dont les inscriptions passent par SimGrid conservent leur lien d’inscription externe. Elles n’apparaissent pas dans la gestion des inscriptions et entry lists du site.
+L’interface permet la création manuelle. L’import par lien SimGrid a été retiré. Pour Daily Race et WGT, le champ « Inscriptions » permet de choisir le site ATX Racing ou SimGrid. Les courses dont les inscriptions passent par SimGrid conservent leur lien externe. Les courses WGT inscrites sur le site utilisent le parcours par équipage (capitaine, code privé, membres liés à leurs propres profils Steam). Elles n’apparaissent pas dans la gestion des inscriptions et entry lists du site.
 
 Pour **ATX Series**, cliquer sur « Nouveau programme ATX Series » ou choisir cette compétition dans un brouillon. Les champs SimGrid, nombre d’inscrits SimGrid et affiche sont masqués et désactivés. La photo du circuit est automatique ; aucune affiche personnalisée n’est utilisée. Le serveur ignore aussi les anciens liens, affiches et identifiants d’import de ce format. Il calcule l’image depuis le même catalogue que la page Circuits et impose 2 minutes d’essais, 15 minutes de qualifications et 45 minutes de course. Le catalogue est dans `src/circuit-images.js` et son équivalent serveur `supabase/functions/atx-event-admin/circuits.mjs`.
 

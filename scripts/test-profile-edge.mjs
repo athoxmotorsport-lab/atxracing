@@ -4,7 +4,7 @@ let handler;
 globalThis.Deno={env:{get:name=>({SESSION_SECRET:'unit-test-secret',ATX_SITE_URL:'https://example.test',SUPABASE_URL:'https://database.test',SUPABASE_SERVICE_ROLE_KEY:'unit-test-service-key'})[name]},serve:fn=>{handler=fn;}};
 await import('../supabase/functions/driver-profile/index.ts');
 const token='a'.repeat(43),headers={Origin:'https://example.test',Authorization:'Bearer '+token,'Content-Type':'application/json'};
-const payload={nickname:'Pilot',displayName:'Public Pilot',teamName:'',carNumber:'',preferredGt3:'Porsche 992 GT3 R',favoriteCircuits:['spa','monza'],preferredRaceFormat:'sprint_60',gamesPlayed:['acc'],gamesToDiscover:['ace'],driver_id:'attacker-chosen-id'};
+const payload={accFirstName:'Test',accLastName:'Driver',accShortName:'tst',nickname:'Pilot',displayName:'Public Pilot',teamName:'',carNumber:'37',preferredGt3:'Porsche 992 GT3 R',favoriteCircuits:['spa','monza'],preferredRaceFormat:'sprint_60',gamesPlayed:['acc'],gamesToDiscover:['ace'],driver_id:'attacker-chosen-id'};
 const originalFetch=globalThis.fetch;
 test('custom authentication rejects missing, expired and revoked sessions before any profile query',async()=>{
  let calls=0;globalThis.fetch=async()=>{calls++;return Response.json([]);};

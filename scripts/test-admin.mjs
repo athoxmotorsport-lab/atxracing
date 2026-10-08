@@ -69,3 +69,7 @@ test('ATX Series saves without a poster or SimGrid and clears stale imported fie
  mockDatabase({id,status:'draft'});const partial=await handler(new Request('https://edge.test',{method:'POST',headers,body:JSON.stringify({action:'save',draft:{competition:'ATXS',circuit:'Spa-Francorchamps'}})}));assert.equal(partial.status,201);const d=(await partial.json()).draft.draft;assert.equal(d.imageUrl,'https://example.test/assets/circuits/spa.webp');assert.equal(d.startsAt,'');
  globalThis.fetch=originalFetch;
 });
+
+test('native WGT crew drafts do not require a SimGrid source',async()=>{
+ mockDatabase({id,status:'draft'});const response=await handler(new Request('https://edge.test',{method:'POST',headers,body:JSON.stringify({action:'save',draft:{...draft,competition:'WGT',format:'WGT_ENDURANCE',registrationMode:'site',simgridUrl:'not-a-link',sourceKey:'invalid-key'}})}));assert.equal(response.status,201);const row=(await response.json()).draft;assert.equal(row.draft.simgridUrl,'');assert.equal(row.draft.sourceKey,'');assert.equal(row.draft.registrationMode,'site');const count=mockDatabase(row);assert.equal((await handler(new Request('https://edge.test',{method:'POST',headers,body:JSON.stringify({action:'publish',id})}))).status,200);assert.equal(count(),1);globalThis.fetch=originalFetch;
+});

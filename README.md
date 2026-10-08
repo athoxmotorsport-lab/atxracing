@@ -17,7 +17,7 @@ Le workflow vérifie le site généré et son miroir à la racine. Les tests `sc
 
 ## Profil pilote
 
-Connexion Steam existante, puis trois étapes : identité (pseudo et nom public), préférences (équipe, numéro, GT3, ACC/ACE pratiqués ou à découvrir), confirmation. Les préférences sont facultatives pour permettre l'inscription d'un débutant. Les initiales servent d'avatar en l'absence de photo. Un brouillon local par compte survit aux changements de langue et de jeu ; l'enregistrement confirmé passe par `driver-profile`.
+Connexion Steam existante, puis trois étapes : identité (pseudo, nom public et identité ACC privée), préférences (équipe, numéro préféré, GT3, ACC/ACE), confirmation. Prénom, nom, initiales ACC et numéro préféré sont obligatoires ; équipe, voiture préférée et historique de jeux restent facultatifs. Les inscriptions réutilisent le profil du compte authentifié, avec voiture et numéro proposés automatiquement. Les initiales servent d'avatar en l'absence de photo. Un brouillon local par compte survit aux changements de langue et de jeu ; l'enregistrement confirmé passe par `driver-profile`.
 
 Le profil ACC conserve son historique. ACE ne présente pas les statistiques ACC comme les siennes. L’illustration fournie représente les cinq niveaux, avec le niveau ACC publié affiché dans l’en-tête. La note Safe et les distinctions proviennent des données sportives publiées ; la régularité et le seuil Challenger restent à définir.
 

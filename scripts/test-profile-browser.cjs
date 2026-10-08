@@ -24,7 +24,7 @@ let browser;
   if(req.method()==='OPTIONS')return route.fulfill({status:204,headers});
   if(name==='auth-session'){if(sessionFailure){status=503;body={error:'offline'};}else {const {roles,...identity}=driver;body={driver:identity,access_token:'test-token'};}}
   if(name==='driver-profile'){
-   if(req.method()==='POST'){if(failSave){status=503;body={error:'offline'};}else{saved=req.postDataJSON();driver={...driver,display_name:saved.displayName,nickname:saved.nickname,team_name:saved.teamName||null,preferred_gt3:saved.preferredGt3||null,favorite_circuits:saved.favoriteCircuits,preferred_race_format:saved.preferredRaceFormat||null,car_number:saved.carNumber||null,games_played:saved.gamesPlayed,games_to_discover:saved.gamesToDiscover,profile_confirmed_at:'2026-09-28T12:00:00Z'};body={driver};}}else body={driver};
+   if(req.method()==='POST'){if(failSave){status=503;body={error:'offline'};}else{saved=req.postDataJSON();driver={...driver,acc_first_name:saved.accFirstName,acc_last_name:saved.accLastName,acc_short_name:saved.accShortName,display_name:saved.displayName,nickname:saved.nickname,team_name:saved.teamName||null,preferred_gt3:saved.preferredGt3||null,favorite_circuits:saved.favoriteCircuits,preferred_race_format:saved.preferredRaceFormat||null,car_number:saved.carNumber||null,games_played:saved.gamesPlayed,games_to_discover:saved.gamesToDiscover,profile_confirmed_at:'2026-09-28T12:00:00Z'};body={driver};}}else body={driver};
   }
   if(name==='public-leaderboard')body={drivers:[{driver_id:driver.id,profile_id:driver.id,display_name:driver.display_name,team_name:driver.team_name,performance_class:'alien',safety_class:'gold',safety_score:84,races:1,wins:0,points:25}]};
   if(name==='public-driver')body={driver};
@@ -72,11 +72,13 @@ let browser;
  await page.screenshot({path:path.join(output,'profile-scrolled-desktop.png')});
  await page.evaluate(()=>scrollTo(0,0));
  assert.equal(await page.locator('.header-languages a').count(),2);assert.equal(await page.locator('.footer-languages a').count(),2);
+ await page.getByLabel('Prénom ACC',{exact:true}).fill('Test');await page.getByLabel('Nom ACC',{exact:true}).fill('Driver');await page.getByLabel('Initiales ACC',{exact:true}).fill('TST');
  await page.getByLabel('Pseudo',{exact:true}).fill('Mon pseudo');
  await page.getByLabel('Nom public',{exact:true}).fill('Nom public test');
  await page.locator('.profile-step-button').nth(1).click();
  await page.locator('#profile-editor').scrollIntoViewIfNeeded();
  await page.screenshot({path:path.join(output,'profile-preferences.png')});
+ await page.locator('[name=carNumber]').fill('37');
  await page.getByLabel('Porsche 992 GT3 R',{exact:true}).check();
  await page.getByLabel('Spa-Francorchamps',{exact:true}).check();
  await page.getByLabel('Monza',{exact:true}).check();
