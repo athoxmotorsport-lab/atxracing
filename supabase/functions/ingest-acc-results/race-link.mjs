@@ -1,20 +1,23 @@
-/* Explicit event marker avoids guessing among recurring races on the same track. */
-export function linkedRaceSlug(serverName){
- const match=String(serverName||'').match(/\[ATX:([a-z0-9]+(?:-[a-z0-9]+)*)\]/);
- return match?.[1]||null;
+/* Short competition codes, track and session time identify published races. */
+export function competitionCode(serverName){
+ const codes=[...String(serverName||'').toUpperCase().matchAll(/(?:^|[^A-Z0-9])(ATXS|(?:LF)?WGT|DR)(?=$|[^A-Z0-9])/g)].map(m=>m[1]==='LFWGT'?'WGT':m[1]);
+ const unique=[...new Set(codes)];
+ if(unique.length>1)throw Error('Ambiguous ACC competition code');
+ return unique[0]||null;
 }
-export function validateLinkedRace(event,key,stamp,date){
- if(!event?.is_public||event.status==='draft'||event.status==='cancelled'||!event.site_registration_enabled||event.circuit_key!==key)throw Error('Invalid published ACC race marker');
- const start=Date.parse(event.starts_at),instant=stamp?Date.parse(stamp):NaN;
- if(Number.isFinite(instant)){
-  const earliest=Date.parse(event.server_opens_at||event.starts_at)-30*60000;
-  const minutes=(event.event_schedule||[]).reduce((n,s)=>n+Number(s.durationMinutes||s.duration_minutes||0),0);
-  const latest=start+(Math.max(minutes,Number(event.duration_minutes)||0)+90)*60000;
-  if(instant<earliest||instant>latest)throw Error('ACC session outside published race window');
- }else{
-  if(!/^\d{4}-\d{2}-\d{2}$/.test(date||''))throw Error('ACC session date required for published race');
-  const day=Date.parse(date+'T00:00:00Z'),utcDay=Date.parse(event.starts_at.slice(0,10)+'T00:00:00Z');
-  if(Math.abs(day-utcDay)>86400000)throw Error('ACC session outside published race date');
- }
- return event;
+export function matchPublishedRace(events,code,key,stamp,date){
+ if(!code)return null;
+ const instant=Date.parse(stamp||'');
+ const candidates=(events||[]).filter(e=>e.is_public&&e.status!=='draft'&&e.status!=='cancelled'&&e.competition_code===code&&e.circuit_key===key).filter(e=>{
+  if(!Number.isFinite(instant))return String(e.starts_at||'').slice(0,10)===date;
+  const opens=Date.parse(e.server_opens_at||e.starts_at),start=Date.parse(e.starts_at);
+  const schedule=(e.event_schedule||[]).reduce((n,s)=>n+Number(s.durationMinutes||s.duration_minutes||0),0);
+  return instant>=opens-30*60000&&instant<=start+(Math.max(schedule,Number(e.duration_minutes)||0)+90)*60000;
+ });
+ if(!candidates.length)return null;
+ if(candidates.length===1)return candidates[0];
+ if(!Number.isFinite(instant))throw Error('ACC session time required to distinguish recurring races');
+ candidates.sort((a,b)=>Math.abs(Date.parse(a.starts_at)-instant)-Math.abs(Date.parse(b.starts_at)-instant));
+ if(Math.abs(Date.parse(candidates[0].starts_at)-instant)===Math.abs(Date.parse(candidates[1].starts_at)-instant))throw Error('Ambiguous published ACC race time');
+ return candidates[0];
 }

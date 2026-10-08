@@ -1,4 +1,4 @@
-import {linkedRaceSlug,validateLinkedRace} from './race-link.mjs';
+import {competitionCode,matchPublishedRace} from './race-link.mjs';
 import { adminClient } from "../_shared/auth.ts";
 
 type DriverPayload = {
@@ -201,11 +201,18 @@ const resolveEvent = async (payload: ImportPayload): Promise<EventRow> => {
     ? payload.dateSession
     : new Date().toISOString().slice(0, 10);
   const key = circuitKey(payload.circuit);
-  const linkedSlug=linkedRaceSlug(payload.nomServeur);
-  if(linkedSlug){
-    const {data:linked,error:linkedError}=await supabase.from('events').select('*').eq('slug',linkedSlug).maybeSingle();
-    if(linkedError)throw linkedError;
-    return validateLinkedRace(linked,key,payload.debutCourse,payload.dateSession) as EventRow;
+  const code=competitionCode(payload.nomServeur);
+  if(code){
+    const day=Date.parse(date+'T00:00:00Z');
+    const {data:candidates,error:matchError}=await supabase.from('events').select('*')
+      .eq('competition_code',code).eq('circuit_key',key)
+      .gte('starts_at',new Date(day-86400000).toISOString())
+      .lt('starts_at',new Date(day+2*86400000).toISOString());
+    if(matchError)throw matchError;
+    const published=matchPublishedRace(candidates,code,key,payload.debutCourse,payload.dateSession);
+    if(published)return published as EventRow;
+    // Never attach a coded session to a different competition on the same day.
+    if(candidates?.some(e=>e.site_registration_enabled&&e.is_public&&e.status!=='draft'&&e.status!=='cancelled'))throw Error('ACC session outside published race window');
   }
   let sourceEventKey = payload.cleCourse?.trim() ?? "";
   if (sourceEventKey && !/^[a-z0-9][a-z0-9_-]{7,119}$/.test(sourceEventKey)) {
@@ -221,13 +228,13 @@ const resolveEvent = async (payload: ImportPayload): Promise<EventRow> => {
     if (keyError) throw keyError;
     if (byKey) {
       const eventCircuit = circuitKey(String(byKey.circuit_key ?? byKey.circuit_name ?? ""));
-      if (eventCircuit === key) return byKey as EventRow;
+      if (eventCircuit === key && (!code || byKey.competition_code===code)) return byKey as EventRow;
 
       const scopedKey = `${sourceEventKey}_${key}`.slice(0, 120);
       const { data: byScopedKey, error: scopedError } = await supabase.from("events").select("*")
         .eq("source_event_key", scopedKey).maybeSingle();
       if (scopedError) throw scopedError;
-      if (byScopedKey) return byScopedKey as EventRow;
+      if (byScopedKey && (!code || byScopedKey.competition_code===code)) return byScopedKey as EventRow;
       sourceEventKey = scopedKey;
     }
   }
@@ -241,8 +248,8 @@ const resolveEvent = async (payload: ImportPayload): Promise<EventRow> => {
     .order("starts_at", { ascending: true });
   if (error) throw error;
   const existing = sourceEventKey
-    ? (sameDay ?? []).find((event) => !event.source_event_key && event.status !== "completed")
-    : (sameDay ?? [])[0];
+    ? (sameDay ?? []).find((event) => !event.source_event_key && event.status !== "completed" && (!code || event.competition_code===code))
+    : (sameDay ?? []).find(event=>!code || event.competition_code===code);
   if (existing) {
     const serverName = payload.nomServeur?.trim().slice(0, 160);
     const startsAt = payload.debutCourse && !Number.isNaN(Date.parse(payload.debutCourse))
@@ -275,7 +282,8 @@ const resolveEvent = async (payload: ImportPayload): Promise<EventRow> => {
     : `${date}T20:30:00+02:00`;
   const { data: created, error: createError } = await supabase.from("events").insert({
     slug,
-    event_type: "special_event",
+    competition_code: code,
+    event_type: code === "DR" || code === "ATXS" ? "daily_race" : "special_event",
     status: payload.typeSession === "R" ? "completed" : "announced",
     title_fr: baseTitle,
     title_en: baseTitle,
