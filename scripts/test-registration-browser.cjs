@@ -12,6 +12,7 @@ let browser;
   let registered=false,body=null,drafts=[],profileComplete=true,lastJoin='';
   await context.route('https://**/*',async route=>{
    const req=route.request(),url=new URL(req.url()),name=url.pathname.split('/').pop();let data={};
+   if(name==='public-community')data={members:13};
    if(name==='auth-session')data={driver,access_token:'test-token'};
    if(name==='driver-profile')data={driver};
    if(name==='public-event')data={event,results:[],events:[event]};
@@ -25,7 +26,7 @@ let browser;
    await route.fulfill({contentType:'application/json',headers:{'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'authorization,content-type','Access-Control-Allow-Methods':'GET,POST,OPTIONS'},body:JSON.stringify(data)});
   });
   const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));const origin='http://127.0.0.1:'+server.address().port;
-  await page.goto(origin+'/atxracing/'+lang+'/acc/courses.html');assert.equal(await page.locator('.format-card').count(),4);assert.equal(await page.locator('.format-card').last().textContent().then(x=>x.includes('ATX Series')),true);
+  await page.goto(origin+'/atxracing/'+lang+'/acc/courses.html');await page.waitForFunction(()=>document.querySelector('[data-atx-members]')?.textContent==='13');assert.equal(await page.locator('.format-card').count(),4);assert.equal(await page.locator('.format-card').last().textContent().then(x=>x.includes('ATX Series')),true);
   await page.goto(origin+'/atxracing/'+lang+'/acc/worldgt-endurance.html');assert.equal(await page.locator('.format-detail').textContent().then(x=>x.includes('Sprint')),false);
   await page.goto(origin+'/atxracing/'+lang+'/acc/course.html?slug=atxs-test');const form=page.locator('.race-registration form');await form.waitFor();
   assert.equal(await form.locator('[name=firstName],[name=lastName],[name=shortName]').count(),0);assert.equal(await form.locator('[name=raceNumber]').inputValue(),'37');assert.equal(await form.locator('[name=teamName]').inputValue(),'ATX');assert(await form.getByRole('radio',{name:'Porsche 992 GT3 R',exact:true}).isChecked());await form.getByRole('radio',{name:'Porsche 992 GT3 R',exact:true}).check();await form.getByRole('radio',{name:'McLaren 720S GT3 Evo',exact:true}).check();assert.equal(await form.locator('[name=carModelId]:checked').count(),1);await page.waitForFunction(()=>document.querySelector('.registration-car-option img')?.naturalWidth>0);await form.locator('button[type=submit]').click();await page.locator('.registration-body button').waitFor();assert.equal(body.action,'register');assert.equal(body.carModelId,35);assert.ok(!('steamId' in body));assert.ok(!('firstName' in body));

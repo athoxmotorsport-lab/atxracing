@@ -107,3 +107,15 @@
  discordClose.onclick=()=>{closeDiscord();discordButton.focus()};
  document.addEventListener('keydown',event=>{if(event.key==='Escape'){closeNotices();if(!drawer.hidden){closeDiscord();discordButton.focus()}}});
 })();
+
+/* Aggregate community size; no identities are exposed and rendering never waits for this request. */
+(() => {
+ const count=document.querySelector('[data-atx-members]');if(!count)return;
+ const key='atx-community-count-v1',valid=data=>Number.isInteger(data?.members)&&data.members>=0;
+ const render=data=>{count.textContent=new Intl.NumberFormat(document.documentElement.lang).format(data.members);};
+ try{const cached=JSON.parse(sessionStorage.getItem(key)||'null');if(valid(cached)&&Date.now()-cached.at<60000){render(cached);return;}}catch{}
+ fetch('https://twjpjzalyvbsdpbzhqln.supabase.co/functions/v1/public-community',{signal:AbortSignal.timeout(5000)})
+ .then(response=>{if(!response.ok)throw Error('unavailable');return response.json();})
+ .then(data=>{if(!valid(data))throw Error('invalid_count');render(data);try{sessionStorage.setItem(key,JSON.stringify({members:data.members,at:Date.now()}));}catch{}})
+ .catch(()=>{count.closest('.header-members').title=document.documentElement.lang==='fr'?'Nombre de membres indisponible actuellement':'Member count currently unavailable';});
+})();
