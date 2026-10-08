@@ -14,6 +14,9 @@ for image in ('site-background.jpg','site-background.webp','landing-banner.jpg',
 (R/'assets'/'gt3').mkdir(parents=True,exist_ok=True)
 for photo in (Path(__file__).parent/'media'/'gt3').glob('*.webp'):
  shutil.copy2(photo,R/'assets'/'gt3'/photo.name)
+(R/'assets'/'gt3'/'thumbs').mkdir(parents=True,exist_ok=True)
+for photo in (Path(__file__).parent/'media'/'gt3'/'thumbs').glob('*.webp'):
+ shutil.copy2(photo,R/'assets'/'gt3'/'thumbs'/photo.name)
 for folder in ('circuits','events','fonts'):
  (R/'assets'/folder).mkdir(parents=True,exist_ok=True)
  for photo in (Path(__file__).parent/'media'/folder).iterdir():

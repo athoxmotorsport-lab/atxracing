@@ -45,7 +45,7 @@ Deno.serve(async request=>{
   if(event.simgrid_url)return reply({error:'external_registration'},409);
   if(!event.site_registration_enabled)return reply({error:'registration_unavailable'},409);
   if(request.method==='GET'){
-   const cars=await check(db.from('atx_acc_cars').select('car_model_id,name').eq('active',true).order('name'));
+   const cars=await check(db.from('atx_acc_cars').select('car_model_id,name,artwork_file').eq('active',true).order('name'));
    const membership=await check(db.from('atx_entry_members').select('entry_id,first_name,last_name,short_name').eq('event_id',eventId).eq('driver_id',actor).maybeSingle());
    let entry=null;
    if(membership){entry=await check(db.from('atx_race_entries').select('id,owner_driver_id,race_number,car_model_id,team_name,join_code').eq('id',membership.entry_id).single());if(entry.owner_driver_id!==actor)delete entry.join_code;delete entry.owner_driver_id;}
