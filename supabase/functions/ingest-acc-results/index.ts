@@ -340,6 +340,11 @@ const ingest = async (payload: ImportPayload, rawJson: string) => {
 
   try {
     const event = await resolveEvent(payload);
+    if(payload.typeSession==='R'&&event.result_publication_state==='official'){
+      const {error}=await supabase.from('ingestion_batches').update({status:'processed',processed_at:new Date().toISOString(),imported_events:0,imported_results:0}).eq('id',batchId);
+      if(error)throw error;
+      return {duplicate:false,locked:true,batch_id:batchId,event_slug:event.slug,imported_drivers:0};
+    }
     const storagePath = `${payload.dateSession || "unknown-date"}/${payload.empreinte}-${slugPart(payload.nomFichier) || "result"}.json`;
     const { error: storageError } = await supabase.storage.from("acc-results").upload(
       storagePath,

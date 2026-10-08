@@ -35,7 +35,7 @@ async function simgridApi(id:string,source:string){const token=Deno.env.get('SIM
 Deno.serve(async request=>{const headers=new Headers({'Content-Type':'application/json','Cache-Control':'no-store','Vary':'Origin','Access-Control-Allow-Methods':'GET, POST, PATCH, OPTIONS','Access-Control-Allow-Headers':'authorization, content-type'});const reply=(data:unknown,status=200)=>new Response(JSON.stringify(data),{status,headers});
  try{const origin=new URL(required('ATX_SITE_URL')).origin;headers.set('Access-Control-Allow-Origin',origin);if(request.headers.get('origin')&&request.headers.get('origin')!==origin)return reply({error:'origin_not_allowed'},403);if(request.method==='OPTIONS')return reply({ok:true});if(!['GET','POST','PATCH'].includes(request.method))return reply({error:'method_not_allowed'},405);
   const admin=await administrator(request);
-  if(request.method==='GET'){const [drafts,media]=await Promise.all([rest('atx_event_drafts?select=id,source_key,draft,status,event_id,published_slug,created_at,updated_at&order=created_at.desc&limit=100'),rest('atx_media?select=id,media_type,title_fr,title_en,url,event_slug,is_public,published_at&order=published_at.desc&limit=100')]);return reply({drafts,media});}
+  if(request.method==='GET'){const [drafts,media,events]=await Promise.all([rest('atx_event_drafts?select=id,source_key,draft,status,event_id,published_slug,created_at,updated_at&order=created_at.desc&limit=100'),rest('atx_media?select=id,media_type,title_fr,title_en,url,event_slug,is_public,published_at&order=published_at.desc&limit=100'),rest('events?select=id,slug,title_fr,title_en,description_fr,description_en,starts_at,server_opens_at,circuit_name,status&is_public=eq.true&status=neq.draft&order=starts_at.desc&limit=500')]);return reply({drafts,media,events});}
   const raw=await request.text();if(raw.length>65_536)return reply({error:'payload_too_large'},413);let body;try{body=JSON.parse(raw);}catch{return reply({error:'invalid_json'},400);}const action=body?.action;
   if(action==='import'&&request.method==='POST'){
    const url=simgridUrl(body.url);return reply(await simgridApi(url.match(/\d+$/)![0],url));
@@ -46,6 +46,21 @@ Deno.serve(async request=>{const headers=new Headers({'Content-Type':'applicatio
    if(request.method==='PATCH'){if(!/^[0-9a-f-]{36}$/i.test(id))return reply({error:'invalid_id'},400);rows=await rest('atx_event_drafts?id=eq.'+id+'&status=eq.draft',{method:'PATCH',body:JSON.stringify({draft,source_key:draft.sourceKey||null,updated_at:new Date().toISOString()})});}
    else rows=await rest('atx_event_drafts',{method:'POST',body:JSON.stringify({draft,source_key:draft.sourceKey||null,created_by:admin})});
    return rows.length?reply({draft:rows[0]},request.method==='POST'?201:200):reply({error:'draft_not_found'},404);
+  }
+  if(action==='update_event'&&request.method==='POST'){
+   const id=clean(body.id,36);if(!/^[0-9a-f-]{36}$/i.test(id))return reply({error:'invalid_id'},400);
+   const raw=body.event||{},title_fr=clean(raw.titleFr,160),title_en=clean(raw.titleEn,160);
+   const instant=(value:unknown,optional=false)=>{if(optional&&!value)return null;const text=clean(value,36);if(!text||!Number.isFinite(Date.parse(text))||!/^\d{4}-\d\d-\d\dT/.test(text))throw Error('invalid_date');return new Date(text).toISOString();};
+   if(!title_fr||!title_en)throw Error('invalid_title');
+   const patch={title_fr,title_en,description_fr:clean(raw.descriptionFr,12000),description_en:clean(raw.descriptionEn,12000),starts_at:instant(raw.startsAt),server_opens_at:instant(raw.serverOpensAt,true),updated_at:new Date().toISOString()};
+   if(patch.server_opens_at&&patch.server_opens_at>patch.starts_at)throw Error('invalid_server_opening');
+   const existing=await rest('events?id=eq.'+id+'&is_public=eq.true&status=neq.draft&select=event_schedule&limit=1');
+   if(!existing.length)return reply({error:'event_not_found'},404);
+   const fmt=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Brussels',hour:'2-digit',minute:'2-digit',hourCycle:'h23'});let at=Date.parse(patch.starts_at);
+   const minute=(v:unknown)=>{const m=String(v||'').match(/^(\d{2}):(\d{2})$/);return m?Number(m[1])*60+Number(m[2]):null;};
+   const event_schedule=(existing[0].event_schedule||[]).map((item:any)=>{const start=minute(item.start),end=minute(item.end);if(start==null||end==null)return item;const begin=fmt.format(at);at+=((end-start+1440)%1440)*60000;return {...item,start:begin,end:fmt.format(at)};});
+   const rows=await rest('events?id=eq.'+id+'&is_public=eq.true&status=neq.draft',{method:'PATCH',body:JSON.stringify({...patch,event_schedule})});
+   return rows.length?reply({event:rows[0]}):reply({error:'event_not_found'},404);
   }
   if(action==='save_media'&&request.method==='POST'){
    const media=validateMedia(body.media),id=clean(body.id,36);let rows;
