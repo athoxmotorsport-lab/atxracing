@@ -16,7 +16,7 @@
   const query=scope==='feed'?'?view=feed':scope==='archives'?'':'?slug='+encodeURIComponent(scope);
   const started=eventRevision;
   const task=fetch(eventEndpoint+query,{signal:AbortSignal.timeout(12000)}).then(async response=>{
-   if(!response.ok)throw Error('events');const data=await response.json();
+   if(!response.ok){const error=Error('events');error.status=response.status;throw error;}const data=await response.json();
    if(scope==='feed'||scope==='archives'){if(!Array.isArray(data.events)||!Array.isArray(data.notifications))throw Error('invalid_events');}
    else if(!data.event||data.event.slug!==scope)throw Error('invalid_event');
    try{if(started===eventRevision){const entry=JSON.stringify({at:Date.now(),data});sessionStorage.setItem(key,entry);if(scope==='archives')sessionStorage.setItem('atx-public-events-v1:feed',entry);}}catch{}
