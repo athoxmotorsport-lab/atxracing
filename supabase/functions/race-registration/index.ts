@@ -39,7 +39,7 @@ Deno.serve(async request=>{
    for(const e of list.entries){if(event.format_code==='WGT_SPRINT'&&e.drivers.length!==2) return reply({error:'incomplete_sprint_crew',raceNumber:e.raceNumber},409);}
    const csv=url.searchParams.get('export')==='csv';const response=reply({});
    response.headers.set('Content-Type',csv?'text/csv; charset=utf-8':'application/json; charset=utf-8');
-   response.headers.set('Content-Disposition','attachment; filename="entrylist.'+(csv?'csv':'json')+'"');
+   response.headers.set('Content-Disposition','attachment; filename="'+(csv?'suivi-inscriptions.csv':'entrylist.json')+'"');
    return new Response(csv?entryCSV(list):JSON.stringify(list,null,2),{headers:response.headers});
   }
   if(event.simgrid_url)return reply({error:'external_registration'},409);
