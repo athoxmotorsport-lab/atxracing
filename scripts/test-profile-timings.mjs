@@ -1,0 +1,9 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';import {stripTypeScriptTypes} from 'node:module';
+test('practice and hotlap records without races appear while private and invalid laps stay hidden',async()=>{
+ const event={circuit_key:'monza',circuit_name:'Monza',title_fr:'Hotlap practice',event_type:'special_event',is_official:true,is_public:true,status:'announced'};
+ const base={driver_id:'pilot',driver:{is_profile_public:true},session:{session_type:'FP',event}};
+ const tables={acc_laps:[{...base,lap_time_ms:100000,split_1_ms:30000},{...base,driver_id:'private',driver:{is_profile_public:false},lap_time_ms:90000},{...base,driver_id:'hidden-event',session:{...base.session,event:{...event,is_public:false}},lap_time_ms:90000},{...base,driver_id:'invalid',lap_time_ms:0}],acc_session_results:[{...base,best_lap_ms:99000},{...base,session:{...base.session,session_type:'Q'},best_lap_ms:101000}]};
+ const db={from(table){const chain={};for(const method of ['select','eq','range'])chain[method]=()=>chain;chain.then=(resolve,reject)=>Promise.resolve({data:tables[table],error:null}).then(resolve,reject);return chain;}};
+ let handler;const source=stripTypeScriptTypes(readFileSync(new URL('../supabase/functions/public-driver-sectors/index.ts',import.meta.url),'utf8').replace(/^import .*;$/gm,''));new Function('Deno','adminClient',source)({serve:fn=>handler=fn},()=>db);
+ const response=await handler(new Request('https://edge.test/'));assert.equal(response.status,200);const {sectors}=await response.json();assert.equal(sectors.filter(s=>s.best_lap_ms>0).length,1);const row=sectors.find(s=>s.driver_id==='pilot');assert.equal(row.best_lap_ms,99000);assert.equal(row.best_lap_session_type,'FP');assert.equal(row.best_sector_1_ms,30000);assert(!sectors.some(s=>['private','hidden-event'].includes(s.driver_id)));
+});

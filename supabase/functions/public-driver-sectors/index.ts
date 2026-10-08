@@ -40,6 +40,16 @@ Deno.serve(async (request) => {
       if (!data || data.length < 1000) break;
     }
 
+    // Session summaries retain valid best laps even when individual lap rows are absent.
+    for (let from = 0; from < 50000; from += 1000) {
+      const { data, error } = await supabase.from("acc_session_results")
+        .select("driver_id,best_lap_ms,created_at,driver:drivers!inner(is_profile_public),session:acc_sessions!inner(session_type,published_at,created_at,event:events!inner(circuit_key,circuit_name,is_official,is_public,status))")
+        .range(from, from + 999);
+      if (error) throw error;
+      for (const result of data ?? []) rows.push({ ...result, lap_time_ms: result.best_lap_ms });
+      if (!data || data.length < 1000) break;
+    }
+
     type Timing = {
       driver_id: string; circuit_key: string; circuit_name: string;
       best_lap_ms: number | null; best_lap_session_type: string | null; best_lap_at: string | null;
@@ -52,11 +62,6 @@ Deno.serve(async (request) => {
       const session = Array.isArray(row.session) ? row.session[0] : row.session as Record<string, unknown> | null;
       const event = Array.isArray(session?.event) ? session?.event[0] : session?.event as Record<string, unknown> | null;
       if (event?.is_official === false || event?.is_public !== true || event?.status === "draft") continue;
-      const title = `${event?.title_fr ?? ''} ${event?.title_en ?? ''}`.toLowerCase();
-      if (/discord|open\s*lobby|hotlaper|entrainement|entraînement/.test(title)) continue;
-      if (!(['DR', 'WGT', 'BATX', 'BA', 'ATXS'].includes(String(event?.competition_code ?? '').toUpperCase())
-        || ['daily_race', 'sprint', 'championship', 'endurance'].includes(String(event?.event_type ?? ''))
-        || /\b(daily\s*race|dr|wgt|ball?ade\s*atx)\b/i.test(title))) continue;
       const driverId = String(row.driver_id ?? "");
       const circuitKey = canonical(event?.circuit_key ?? event?.circuit_name);
       if (!driverId || !circuitKey) continue;
