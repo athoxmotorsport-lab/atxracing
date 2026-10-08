@@ -27,7 +27,7 @@ La GT3 préférée apparaît avec une création ATXRACING détourée dans le pro
 
 ## Administration des courses
 
-Le panel ACC FR/EN permet de lire un championnat SimGrid avec le jeton de communauté configuré côté serveur, préparer chaque manche en brouillon privé, puis publier une course après vérification. Sans jeton ou en cas de refus, la saisie manuelle reste disponible et l'échec est explicite. Voir [docs/admin-simgrid.md](docs/admin-simgrid.md). Les formats officiels sont vérifiés à la publication ; l'import seul ne publie jamais.
+Le panel Administration ATX Racing ACC FR/EN permet de créer les courses en brouillon, puis de les publier après vérification. ATX Series utilise exclusivement les inscriptions du site, la photo automatique du circuit et le format 2/15/45 minutes. Aucun lien SimGrid ni affiche n’est demandé pour ATX Series. Voir [docs/admin-simgrid.md](docs/admin-simgrid.md).
 
 L'état vérifié et les points encore ouverts sont suivis dans [docs/etat-du-projet.md](docs/etat-du-projet.md).
 

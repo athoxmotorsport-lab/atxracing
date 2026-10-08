@@ -1,4 +1,5 @@
 import { mapSimgridChampionship, simgridUrl } from './simgrid.mjs';
+import { circuitPhoto } from './circuits.mjs';
 
 const encoder=new TextEncoder();
 const required=(name:string)=>{const value=Deno.env.get(name);if(!value)throw Error('configuration');return value;};
@@ -9,19 +10,19 @@ async function administrator(request:Request){const token=request.headers.get('a
 const clean=(value:unknown,max:number)=>typeof value==='string'?value.trim().slice(0,max):'';
 function validateMedia(raw:any){if(!raw||typeof raw!=='object'||Array.isArray(raw))throw Error('invalid_media');const mediaType=clean(raw.mediaType,12),titleFr=clean(raw.titleFr,120),titleEn=clean(raw.titleEn,120),url=clean(raw.url,500),eventSlug=clean(raw.eventSlug,120);if(!['live','replay'].includes(mediaType)||!titleFr||!titleEn)throw Error('invalid_media');let parsed;try{parsed=new URL(url);}catch{throw Error('invalid_media_url');}const host=parsed.hostname.toLowerCase().replace(/^www\./,'');if(parsed.protocol!=='https:'||parsed.username||parsed.password||!['youtube.com','youtu.be','twitch.tv'].includes(host))throw Error('invalid_media_url');if(eventSlug&&!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(eventSlug))throw Error('invalid_event_slug');return{media_type:mediaType,title_fr:titleFr,title_en:titleEn,url:parsed.href,event_slug:eventSlug||null,is_public:raw.isPublic!==false,published_at:new Date().toISOString(),updated_at:new Date().toISOString()};}
 function validateDraft(raw:any){if(!raw||typeof raw!=='object'||Array.isArray(raw))throw Error('invalid_draft');
- const allowed=['DR','BATX','WGT','ATXS'],formats=['DR','DR_90','BATX','WGT_SPRINT','WGT_ENDURANCE','ATXS'];const competition=clean(raw.competition,8),format=clean(raw.format,20);
+ const allowed=['DR','BATX','WGT','ATXS'],formats=['DR','DR_90','BATX','WGT_SPRINT','WGT_ENDURANCE','ATXS'];const competition=clean(raw.competition,8),siteOnly=competition==='ATXS',format=siteOnly?'ATXS':clean(raw.format,20);
  if(competition&&!allowed.includes(competition)||format&&!formats.includes(format))throw Error('invalid_format');
  if(format&&competition&&!(format===competition||(competition==='DR'&&format==='DR_90')||(competition==='WGT'&&format.startsWith('WGT_'))))throw Error('invalid_format');
  const numeric=(key,max)=>{if(raw[key]==null||raw[key]==='')return null;const number=Number(raw[key]);if(!Number.isInteger(number)||number<0||number>max)throw Error('invalid_'+key);return number;};
  const instant=key=>{const value=clean(raw[key],36);if(!value)return '';const date=new Date(value);if(!Number.isFinite(date.getTime())||!/\d{4}-\d\d-\d\dT/.test(value))throw Error('invalid_'+key);return date.toISOString();};
- const source=clean(raw.simgridUrl,180),image=clean(raw.imageUrl,500);const canonicalSource=source?simgridUrl(source):'';
+ const source=siteOnly?'':clean(raw.simgridUrl,180),image=siteOnly?circuitPhoto(raw.circuit,required('ATX_SITE_URL')):clean(raw.imageUrl,500);const canonicalSource=source?simgridUrl(source):'';
  if(image){let url;try{url=new URL(image);}catch{throw Error('invalid_image_url');}if(url.protocol!=='https:'||url.username||url.password)throw Error('invalid_image_url');}
  const circuit=clean(raw.circuit,64),circuitKey=circuit.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'').slice(0,64);
- const sourceKey=clean(raw.sourceKey,80);if(sourceKey&&!/^\d+:(?:\d+|round-\d+)$/.test(sourceKey))throw Error('invalid_source_key');
+ const sourceKey=siteOnly?'':clean(raw.sourceKey,80);if(sourceKey&&!/^\d+:(?:\d+|round-\d+)$/.test(sourceKey))throw Error('invalid_source_key');
  const draft={sourceKey,titleFr:clean(raw.titleFr,96),titleEn:clean(raw.titleEn,96),descriptionFr:clean(raw.descriptionFr,4000),descriptionEn:clean(raw.descriptionEn,4000),circuit,circuitKey,
-  startsAt:instant('startsAt'),serverOpensAt:instant('serverOpensAt'),practiceMinutes:numeric('practiceMinutes',1440),qualifyingMinutes:numeric('qualifyingMinutes',1440),raceMinutes:numeric('raceMinutes',1440),
-  maxDrivers:numeric('maxDrivers',100),registered:numeric('registered',1000),carClass:clean(raw.carClass,32),imageUrl:image,simgridUrl:canonicalSource,competition,format,
-  raceUrl:clean(raw.raceUrl,180),roundNumber:numeric('roundNumber',200)};
+  startsAt:instant('startsAt'),serverOpensAt:instant('serverOpensAt'),practiceMinutes:siteOnly?2:numeric('practiceMinutes',1440),qualifyingMinutes:siteOnly?15:numeric('qualifyingMinutes',1440),raceMinutes:siteOnly?45:numeric('raceMinutes',1440),
+  maxDrivers:numeric('maxDrivers',100),registered:siteOnly?null:numeric('registered',1000),carClass:clean(raw.carClass,32),imageUrl:image,simgridUrl:canonicalSource,competition,format,
+  raceUrl:siteOnly?'':clean(raw.raceUrl,180),roundNumber:numeric('roundNumber',200)};
  if(draft.startsAt&&draft.serverOpensAt&&Date.parse(draft.serverOpensAt)>Date.parse(draft.startsAt))throw Error('invalid_serverOpensAt');
  return {...draft,schedule:draft.startsAt?schedule(draft):[]};
 }

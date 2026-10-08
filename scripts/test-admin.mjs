@@ -59,3 +59,13 @@ test('saving a round creates a private draft; publication requires reviewed offi
  assert.equal(denied.status,400);assert.equal(invalid(),0);
  globalThis.fetch=originalFetch;
 });
+
+
+test('ATX Series saves without a poster or SimGrid and clears stale imported fields',async()=>{
+ mockDatabase({id,status:'draft'});
+ const save=await handler(new Request('https://edge.test',{method:'POST',headers,body:JSON.stringify({action:'save',draft:{...draft,competition:'ATXS',format:'WGT_SPRINT',imageUrl:'not-an-image',simgridUrl:'not-a-link',sourceKey:'invalid-import-key',practiceMinutes:60,raceMinutes:90,circuit:'Silverstone'}})}));
+ assert.equal(save.status,201);const row=(await save.json()).draft;assert.equal(row.draft.imageUrl,'https://example.test/assets/circuits/silverstone.webp');assert.equal(row.draft.simgridUrl,'');assert.equal(row.draft.sourceKey,'');assert.equal(row.draft.format,'ATXS');assert.deepEqual([row.draft.practiceMinutes,row.draft.qualifyingMinutes,row.draft.raceMinutes],[2,15,45]);
+ const calls=mockDatabase(row);const publish=await handler(new Request('https://edge.test',{method:'POST',headers,body:JSON.stringify({action:'publish',id})}));assert.equal(publish.status,200);assert.equal(calls(),1);
+ mockDatabase({id,status:'draft'});const partial=await handler(new Request('https://edge.test',{method:'POST',headers,body:JSON.stringify({action:'save',draft:{competition:'ATXS',circuit:'Spa-Francorchamps'}})}));assert.equal(partial.status,201);const d=(await partial.json()).draft.draft;assert.equal(d.imageUrl,'https://example.test/assets/circuits/spa.webp');assert.equal(d.startsAt,'');
+ globalThis.fetch=originalFetch;
+});
