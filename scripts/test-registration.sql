@@ -13,7 +13,8 @@ BEGIN
  PERFORM public.atx_register_entry(d1,e,'register',payload);
  IF NOT EXISTS(SELECT 1 FROM public.atx_entry_members WHERE event_id=e AND driver_id=d1 AND first_name='Captain' AND short_name='CAP') THEN RAISE EXCEPTION 'client identity replaced profile identity'; END IF;
  BEGIN PERFORM public.atx_register_entry(d1,e,'register',payload); RAISE EXCEPTION 'duplicate not rejected'; EXCEPTION WHEN raise_exception THEN IF SQLERRM<>'already_registered' THEN RAISE; END IF; END;
- BEGIN PERFORM public.atx_register_entry(d2,e,'register',payload); RAISE EXCEPTION 'capacity not enforced'; EXCEPTION WHEN raise_exception THEN IF SQLERRM<>'event_full' THEN RAISE; END IF; END;
+ IF NOT (public.atx_register_entry(d2,e,'register',payload)->>'waitlisted')::boolean THEN RAISE EXCEPTION 'full grid did not queue'; END IF;
+ IF (SELECT sum(amount) FROM public.atx_coin_ledger WHERE driver_id=d2)<>10 THEN RAISE EXCEPTION 'waitlist charged coins'; END IF;
  PERFORM public.atx_register_entry(d1,e,'withdraw');
  PERFORM public.atx_register_entry(d2,e,'register',payload);
  IF (SELECT count(*) FROM public.atx_race_entries WHERE event_id=e)<>1 THEN RAISE EXCEPTION 'withdrawal did not release capacity'; END IF;

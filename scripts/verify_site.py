@@ -21,7 +21,8 @@ def local_path(url):
  if candidate.is_dir():candidate=candidate/'index.html'
  return candidate
 
-assert len(list(ROOT.rglob('*.html')))==91
+race_pages=list(ROOT.glob('*/acc/races/*.html'))
+assert len(list(ROOT.rglob('*.html')))==91+len(race_pages)
 for path in ROOT.rglob('*.html'):
  for tag,attrs in page(path.relative_to(ROOT)):
   for key in ('href','src'):
@@ -116,4 +117,13 @@ for language in ('fr','en'):
   assert BASE+'assets/events.min.js' in (ROOT/language/'acc'/f'{section}.html').read_text()
 for language in ('de','es','it'):
  assert not (ROOT/language).exists(), 'Only FR and EN should be published'
-print('Verified 91 pages, Steam onboarding, bilingual entrance, signed-in paddock, SEO files, fixed artwork and FR/EN pages')
+print(f'Verified {91+len(race_pages)} pages, Steam onboarding, bilingual entrance, signed-in paddock, SEO files, fixed artwork and FR/EN pages')
+
+for path in race_pages:
+ tags=page(str(path.relative_to(ROOT)))
+ assert any(t=='script' and a.get('type')=='application/ld+json' for t,a in tags)
+ assert any('data-prerendered' in a for t,a in tags)
+ assert any(t=='link' and a.get('rel')=='canonical' and '/races/' in a.get('href','') for t,a in tags)
+ assert path.stem+'.html' in (ROOT/'sitemap.xml').read_text()
+assert not any(t in ['header','footer'] for t,a in page('index.html'))
+assert all('share-atxracing-v2.jpg' in (ROOT/p).read_text() for p in ['index.html','fr/acc/courses.html','en/acc/courses.html'])

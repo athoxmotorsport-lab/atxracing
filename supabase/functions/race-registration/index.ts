@@ -43,8 +43,9 @@ Deno.serve(async request=>{
    return new Response(csv?entryCSV(list):JSON.stringify(list,null,2),{headers:response.headers});
   }
   if(event.simgrid_url)return reply({error:'external_registration'},409);
-  if(!event.site_registration_enabled)return reply({error:'registration_unavailable'},409);
   if(request.method==='GET'){
+   await check(db.rpc('atx_refresh_waitlist',{p_event:eventId}));
+   const waitlist=await check(db.from('atx_waitlist').select('state,offered_until,created_at').eq('event_id',eventId).eq('driver_id',actor).in('state',['waiting','offered']).maybeSingle());
    const cars=await check(db.from('atx_acc_cars').select('car_model_id,name,artwork_file').eq('active',true).order('name'));
    const membership=await check(db.from('atx_entry_members').select('entry_id,first_name,last_name,short_name').eq('event_id',eventId).eq('driver_id',actor).maybeSingle());
    let entry=null;
@@ -57,15 +58,15 @@ Deno.serve(async request=>{
    const profile={...preferences,car_number:driver?.car_number??null,team_name:driver?.team_name??null,
     complete:Boolean(preferences?.profile_confirmed_at&&preferences?.acc_first_name&&preferences?.acc_last_name&&preferences?.acc_short_name&&/^[0-9]{1,3}$/.test(driver?.car_number||''))};
    const crew=membership?await check(db.from('atx_entry_members').select('driver_id,first_name,last_name,short_name').eq('event_id',eventId).eq('entry_id',membership.entry_id)):[];
-   return reply({event,cars,entry,membership,count,profile,crew});
+   return reply({event,cars,entry,membership,count,profile,crew,waitlist});
   }
-  if(!['register','withdraw'].includes(body.action))return reply({error:'invalid_action'},400);
-  if(body.action==='register'){
+  if(!['register','withdraw','waitlist'].includes(body.action))return reply({error:'invalid_action'},400);
+  if(['register','waitlist'].includes(body.action)){
    if(body.joinCode){if(!/^[0-9a-f-]{36}$/i.test(body.joinCode))return reply({error:'invalid_invitation'},400);}
    else if(!Number.isInteger(body.raceNumber)||body.raceNumber<0||body.raceNumber>999||!Number.isInteger(body.carModelId)||typeof body.teamName!=='string'||body.teamName.length>100)return reply({error:'invalid_entry'},400);
   }
   const registration=await db.rpc('atx_register_entry',{p_actor:actor,p_event:eventId,p_action:body.action,p_data:{joinCode:body.joinCode||'',raceNumber:body.raceNumber,carModelId:body.carModelId,teamName:body.teamName}});
-  if(registration.error){const known=['acc_profile_required','registration_unavailable','registration_closed','confirmed_profile_required','captain_has_members','already_registered','invalid_invitation','crew_full','event_full','invalid_car','race_number_taken'];const error=known.find(code=>registration.error.message.includes(code));return reply({error:error||'registration_failed'},error?409:500);}
+  if(registration.error){const known=['team_name_required','team_name_taken','insufficient_coins','acc_profile_required','registration_unavailable','registration_closed','confirmed_profile_required','captain_has_members','already_registered','invalid_invitation','crew_full','event_full','invalid_car','race_number_taken'];const error=known.find(code=>registration.error.message.includes(code));return reply({error:error||'registration_failed'},error?409:500);}
   return reply(registration.data);
  }catch(error){const message=error instanceof Error?error.message:'';return reply({error:message==='forbidden'?'forbidden':message==='ORIGIN_NOT_ALLOWED'?'origin_not_allowed':'service_unavailable'},message==='forbidden'||message==='ORIGIN_NOT_ALLOWED'?403:503);}
 });

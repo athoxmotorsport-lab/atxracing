@@ -32,8 +32,8 @@ export function validateProfile(body) {
   if (preferredGt3 && !GT3_CARS.includes(preferredGt3) && preferredGt3 !== 'Porsche 911 GT3 R') throw Error('invalid_preferredGt3');
   const circuits = body.favoriteCircuits ?? [];
   if (!Array.isArray(circuits) || circuits.length > 3 || new Set(circuits).size !== circuits.length || circuits.some(c => !ACC_CIRCUITS.includes(c))) throw Error('invalid_favoriteCircuits');
-  const format = body.preferredRaceFormat ?? '';
-  if (typeof format !== 'string' || (format && !RACE_FORMATS.includes(format))) throw Error('invalid_preferredRaceFormat');
+  const formats = body.preferredRaceFormats === undefined ? (body.preferredRaceFormat ? [body.preferredRaceFormat] : []) : body.preferredRaceFormats;
+  if (!Array.isArray(formats) || formats.length > 3 || new Set(formats).size !== formats.length || formats.some(format => !RACE_FORMATS.includes(format))) throw Error('invalid_preferredRaceFormats');
   const displayName = text('displayName', 64, true);
   const social = (key, hosts) => {
     if (body[key] == null) return null;
@@ -49,7 +49,7 @@ export function validateProfile(body) {
     nickname: text('nickname', 64, true), display_name: displayName, custom_display_name: displayName,
     team_name: text('teamName', 64), car_number: number?.toUpperCase() ?? null,
     preferred_gt3: preferredGt3, favorite_circuits: circuits,
-    preferred_race_format: format || null,
+    preferred_race_format: formats[0] || null, preferred_race_formats: formats,
     games_played: games('gamesPlayed'), games_to_discover: games('gamesToDiscover'),
     youtube_url: social('youtubeUrl', ['youtube.com','youtu.be']),
     instagram_url: social('instagramUrl', ['instagram.com']),

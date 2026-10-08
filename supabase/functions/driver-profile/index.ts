@@ -3,7 +3,7 @@ import { sportingProfile } from './sporting.mjs';
 
 // Reuse the existing Steam session protocol without changing the legacy functions.
 const encoder = new TextEncoder();
-const columns = 'id,display_name,avatar_url,team_name,car_number,youtube_url,instagram_url,twitch_url,driver_profile_preferences(acc_first_name,acc_last_name,acc_short_name,nickname,games_played,games_to_discover,preferred_gt3,favorite_circuits,preferred_race_format,profile_confirmed_at)';
+const columns = 'id,display_name,avatar_url,team_name,car_number,youtube_url,instagram_url,twitch_url,driver_profile_preferences(acc_first_name,acc_last_name,acc_short_name,nickname,games_played,games_to_discover,preferred_gt3,favorite_circuits,preferred_race_format,preferred_race_formats,profile_confirmed_at)';
 
 function required(name: string): string {
   const value = Deno.env.get(name);
@@ -53,8 +53,8 @@ Deno.serve(async request => {
       const [ratings, honours, visibleEvents, results, carPhotos, roles] = await Promise.all([
         rest('driver_ratings?select=performance_class,performance_score,safety_class,safety_score,algorithm_version&driver_id=eq.' + id + '&circuit_key=eq.overall&limit=1'),
         rest('event_honours?select=event_id,award_type,best_lap_ms,penalty_count,clean_laps,event_slug,circuit_name,starts_at&driver_id=eq.' + id + '&order=starts_at.desc'),
-        rest('events?select=id&is_public=eq.true&status=neq.draft'),
-        rest('results?select=event_id,status,finish_position,points,laps_completed,best_lap_ms,car_model_name,created_at,event:events(slug,title_fr,title_en,circuit_name,circuit_key,starts_at,event_type,competition_code)&driver_id=eq.' + id + '&order=created_at.desc'),
+        rest('events?select=id&is_public=eq.true&status=neq.draft&result_publication_state=eq.official'),
+        rest('results?select=event_id,status,finish_position,points,laps_completed,best_lap_ms,car_model_name,created_at,event:events(slug,title_fr,title_en,circuit_name,circuit_key,starts_at,event_type,competition_code,result_publication_state)&driver_id=eq.' + id + '&order=created_at.desc'),
         selected?.preferred_gt3 ? rest('gt3_car_catalog?select=model_name,image_url,source_url,credit&model_name=eq.' + encodeURIComponent(selected.preferred_gt3) + '&limit=1') : Promise.resolve([]),
         rest('driver_roles?select=role&driver_id=eq.' + id),
       ]);

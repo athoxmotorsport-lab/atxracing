@@ -1,0 +1,926 @@
+[
+  {
+    "slug": "2026-09-22-laguna-seca-dr-laguna-seca-4da60a5e",
+    "title_fr": "ATXRACING |  DR Laguna Seca",
+    "title_en": "ATXRACING |  DR Laguna Seca",
+    "description_fr": null,
+    "description_en": null,
+    "circuit_name": "LAGUNA SECA",
+    "starts_at": "2026-09-29T20:23:18+00:00",
+    "duration_minutes": 60,
+    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2026-09-29/631f9cc8-ae28-4132-ba23-8faa35339027.jpg",
+    "simgrid_url": "https://www.thesimgrid.com/championships/27666",
+    "competition_code": null,
+    "format_code": null,
+    "site_registration_enabled": false,
+    "mandatory_stop_count": null,
+    "car_class": "GT3",
+    "result_publication_state": "official",
+    "event_schedule": [
+      {
+        "end": "21:00",
+        "key": "practice_1",
+        "start": "20:45",
+        "labelEn": "Free practice",
+        "labelFr": "Essais libres"
+      },
+      {
+        "end": "00:00",
+        "key": "briefing",
+        "start": "00:00",
+        "labelEn": "Free practice 2 - Briefing (Discord)",
+        "labelFr": "Essais libres 2 - Briefing (Discord)"
+      },
+      {
+        "end": "21:30",
+        "key": "qualifying",
+        "start": "21:00",
+        "labelEn": "Qualifying",
+        "labelFr": "Qualifications"
+      },
+      {
+        "end": "22:30",
+        "key": "race",
+        "start": "21:30",
+        "labelEn": "Race",
+        "labelFr": "Course"
+      }
+    ],
+    "status": "completed"
+  },
+  {
+    "slug": "2026-09-24-watkins-glen-dr-watkins-glen-7d897e8c",
+    "title_fr": "ATXRACING |  DR Watkins Glen",
+    "title_en": "ATXRACING |  DR Watkins Glen",
+    "description_fr": null,
+    "description_en": null,
+    "circuit_name": "WATKINS GLEN",
+    "starts_at": "2026-09-24T20:40:12+00:00",
+    "duration_minutes": 60,
+    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2026-09-24/336ddf4c-3ea4-4377-a34d-4c06893bba80.jpg",
+    "simgrid_url": "https://www.thesimgrid.com/championships/27665",
+    "competition_code": null,
+    "format_code": null,
+    "site_registration_enabled": false,
+    "mandatory_stop_count": null,
+    "car_class": "GT3",
+    "result_publication_state": "official",
+    "event_schedule": [
+      {
+        "end": "21:00",
+        "key": "practice_1",
+        "start": "20:45",
+        "labelEn": "Free practice",
+        "labelFr": "Essais libres"
+      },
+      {
+        "end": "00:00",
+        "key": "briefing",
+        "start": "00:00",
+        "labelEn": "Free practice 2 - Briefing (Discord)",
+        "labelFr": "Essais libres 2 - Briefing (Discord)"
+      },
+      {
+        "end": "21:30",
+        "key": "qualifying",
+        "start": "21:00",
+        "labelEn": "Qualifying",
+        "labelFr": "Qualifications"
+      },
+      {
+        "end": "22:30",
+        "key": "race",
+        "start": "21:30",
+        "labelEn": "Race",
+        "labelFr": "Course"
+      }
+    ],
+    "status": "completed"
+  },
+  {
+    "slug": "2026-09-27-valencia-dr-valencia-d85f64a0",
+    "title_fr": "ATXRACING |  DR Valencia",
+    "title_en": "ATXRACING |  DR Valencia",
+    "description_fr": null,
+    "description_en": null,
+    "circuit_name": "VALENCIA",
+    "starts_at": "2026-09-27T15:24:53+00:00",
+    "duration_minutes": 60,
+    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2026-09-27/937fa1f0-66ea-48b1-986d-26fb7ba527ce.jpg",
+    "simgrid_url": "https://www.thesimgrid.com/championships/27664",
+    "competition_code": null,
+    "format_code": null,
+    "site_registration_enabled": false,
+    "mandatory_stop_count": null,
+    "car_class": "GT3",
+    "result_publication_state": "official",
+    "event_schedule": [
+      {
+        "end": "16:00",
+        "key": "practice_1",
+        "start": "15:45",
+        "labelEn": "Free practice",
+        "labelFr": "Essais libres"
+      },
+      {
+        "end": "00:00",
+        "key": "briefing",
+        "start": "00:00",
+        "labelEn": "Free practice 2 - Briefing (Discord)",
+        "labelFr": "Essais libres 2 - Briefing (Discord)"
+      },
+      {
+        "end": "16:30",
+        "key": "qualifying",
+        "start": "16:00",
+        "labelEn": "Qualifying",
+        "labelFr": "Qualifications"
+      },
+      {
+        "end": "17:30",
+        "key": "race",
+        "start": "16:30",
+        "labelEn": "Race",
+        "labelFr": "Course"
+      }
+    ],
+    "status": "completed"
+  },
+  {
+    "slug": "2026-10-04-nurburgring-24h-la-bataille-de-l-enfer-vert-ac366094",
+    "title_fr": "ATXRACING |  Daily Race Nurburgring 24h",
+    "title_en": "ATXRACING |  Daily Race Nurburgring 24h",
+    "description_fr": null,
+    "description_en": null,
+    "circuit_name": "Nurburgring 24h",
+    "starts_at": "2026-10-04T14:52:09+00:00",
+    "duration_minutes": 90,
+    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2026-10-04/6c877b45-a59a-4a65-982a-f841aa4cc3e9.jpg",
+    "simgrid_url": "https://www.thesimgrid.com/championships/27932",
+    "competition_code": null,
+    "format_code": null,
+    "site_registration_enabled": false,
+    "mandatory_stop_count": null,
+    "car_class": "GT3",
+    "result_publication_state": "official",
+    "event_schedule": [
+      {
+        "end": "14:30",
+        "key": "practice_1",
+        "start": "14:00",
+        "labelEn": "Free practice",
+        "labelFr": "Essais libres"
+      },
+      {
+        "end": "00:00",
+        "key": "briefing",
+        "start": "00:00",
+        "labelEn": "Free practice 2 - Briefing (Discord)",
+        "labelFr": "Essais libres 2 - Briefing (Discord)"
+      },
+      {
+        "end": "14:45",
+        "key": "qualifying",
+        "start": "14:30",
+        "labelEn": "Qualifying",
+        "labelFr": "Qualifications"
+      },
+      {
+        "end": "16:15",
+        "key": "race",
+        "start": "14:45",
+        "labelEn": "Race",
+        "labelFr": "Course"
+      }
+    ],
+    "status": "completed"
+  },
+  {
+    "slug": "2026-10-09-circuit-of-the-americas-indianapolis-laguna-seca-watkins-g-american-dream-9ea786cf",
+    "title_fr": "WGT: AMERICAN DREAM MANCHE 1",
+    "title_en": "WGT: AMERICAN DREAM MANCHE 1",
+    "description_fr": null,
+    "description_en": null,
+    "circuit_name": "Circuit of the Americas",
+    "starts_at": "2026-10-09T16:45:00+00:00",
+    "duration_minutes": 90,
+    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2026-10-09/cedd74c1-4bda-4a1e-b136-b911db80f991.jpg",
+    "simgrid_url": "https://www.thesimgrid.com/championships/27979/races",
+    "competition_code": null,
+    "format_code": null,
+    "site_registration_enabled": false,
+    "mandatory_stop_count": null,
+    "car_class": "GT3",
+    "result_publication_state": "provisional",
+    "event_schedule": [
+      {
+        "end": "21:00",
+        "key": "practice_1",
+        "start": "18:45",
+        "labelEn": "Free practice",
+        "labelFr": "Essais libres"
+      },
+      {
+        "end": "00:00",
+        "key": "briefing",
+        "start": "00:00",
+        "labelEn": "Free practice 2 - Briefing (Discord)",
+        "labelFr": "Essais libres 2 - Briefing (Discord)"
+      },
+      {
+        "end": "21:15",
+        "key": "qualifying",
+        "start": "21:00",
+        "labelEn": "Qualifying",
+        "labelFr": "Qualifications"
+      },
+      {
+        "end": "22:45",
+        "key": "race",
+        "start": "21:15",
+        "labelEn": "Race",
+        "labelFr": "Course"
+      }
+    ],
+    "status": "registration_open"
+  },
+  {
+    "slug": "2026-10-10-monza-endu-1-000-km-monza-6ecdb1e4",
+    "title_fr": "WGT: 1.000 Km Monza",
+    "title_en": "WGT: 1.000 Km Monza",
+    "description_fr": null,
+    "description_en": null,
+    "circuit_name": "Monza",
+    "starts_at": "2026-10-10T06:00:00+00:00",
+    "duration_minutes": 520,
+    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2026-10-10/d47e210e-00d6-4a0d-8b69-62961a603c43.jpg",
+    "simgrid_url": "https://www.thesimgrid.com/championships/27590",
+    "competition_code": null,
+    "format_code": null,
+    "site_registration_enabled": false,
+    "mandatory_stop_count": null,
+    "car_class": "GT3",
+    "result_publication_state": "provisional",
+    "event_schedule": [
+      {
+        "end": "10:00",
+        "key": "practice_1",
+        "start": "08:00",
+        "labelEn": "Free practice",
+        "labelFr": "Essais libres"
+      },
+      {
+        "end": "10:20",
+        "key": "briefing",
+        "start": "10:00",
+        "labelEn": "Free practice 2 - Briefing (Discord)",
+        "labelFr": "Essais libres 2 - Briefing (Discord)"
+      },
+      {
+        "end": "10:50",
+        "key": "qualifying",
+        "start": "10:20",
+        "labelEn": "Qualifying",
+        "labelFr": "Qualifications"
+      },
+      {
+        "end": "16:10",
+        "key": "race",
+        "start": "10:50",
+        "labelEn": "Race",
+        "labelFr": "Course"
+      }
+    ],
+    "status": "registration_open"
+  },
+  {
+    "slug": "2026-10-16-indianapolis-american-dream-eb79a30c",
+    "title_fr": "WGT: AMERICAN DREAM MANCHE 2",
+    "title_en": "WGT: AMERICAN DREAM MANCHE 2",
+    "description_fr": null,
+    "description_en": null,
+    "circuit_name": "Indianapolis",
+    "starts_at": "2026-10-16T16:45:00+00:00",
+    "duration_minutes": 90,
+    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2026-10-16/a1b8da7a-d5e2-4a17-9908-c15b4951023c.jpg",
+    "simgrid_url": "https://www.thesimgrid.com/championships/27979/races",
+    "competition_code": null,
+    "format_code": null,
+    "site_registration_enabled": false,
+    "mandatory_stop_count": null,
+    "car_class": "GT3",
+    "result_publication_state": "provisional",
+    "event_schedule": [
+      {
+        "end": "21:00",
+        "key": "practice_1",
+        "start": "18:45",
+        "labelEn": "Free practice",
+        "labelFr": "Essais libres"
+      },
+      {
+        "end": "00:00",
+        "key": "briefing",
+        "start": "00:00",
+        "labelEn": "Free practice 2 - Briefing (Discord)",
+        "labelFr": "Essais libres 2 - Briefing (Discord)"
+      },
+      {
+        "end": "21:15",
+        "key": "qualifying",
+        "start": "21:00",
+        "labelEn": "Qualifying",
+        "labelFr": "Qualifications"
+      },
+      {
+        "end": "22:45",
+        "key": "race",
+        "start": "21:15",
+        "labelEn": "Race",
+        "labelFr": "Course"
+      }
+    ],
+    "status": "registration_open"
+  },
+  {
+    "slug": "2026-10-17-zolder-daily-race-zolder-2393db16",
+    "title_fr": "Daily Race ZOLDER",
+    "title_en": "Daily Race ZOLDER",
+    "description_fr": null,
+    "description_en": null,
+    "circuit_name": "ZOLDER",
+    "starts_at": "2026-10-17T11:45:00+00:00",
+    "duration_minutes": 90,
+    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2026-10-17/6839b75d-610b-4bfa-8ca3-d91246e913df.jpg",
+    "simgrid_url": "https://www.thesimgrid.com/championships/28029",
+    "competition_code": null,
+    "format_code": null,
+    "site_registration_enabled": false,
+    "mandatory_stop_count": null,
+    "car_class": "GT3",
+    "result_publication_state": "provisional",
+    "event_schedule": [
+      {
+        "end": "15:00",
+        "key": "practice_1",
+        "start": "13:45",
+        "labelEn": "Free practice",
+        "labelFr": "Essais libres"
+      },
+      {
+        "end": "15:00",
+        "key": "briefing",
+        "start": "14:50",
+        "labelEn": "Free practice 2 - Briefing (Discord)",
+        "labelFr": "Essais libres 2 - Briefing (Discord)"
+      },
+      {
+        "end": "15:15",
+        "key": "qualifying",
+        "start": "15:00",
+        "labelEn": "Qualifying",
+        "labelFr": "Qualifications"
+      },
+      {
+        "end": "16:45",
+        "key": "race",
+        "start": "15:15",
+        "labelEn": "Race",
+        "labelFr": "Course"
+      }
+    ],
+    "status": "registration_open"
+  },
+  {
+    "slug": "2026-10-23-laguna-seca-american-dream-d7340b71",
+    "title_fr": "WGT: AMERICAN DREAM MANCHE 3",
+    "title_en": "WGT: AMERICAN DREAM MANCHE 3",
+    "description_fr": null,
+    "description_en": null,
+    "circuit_name": "Laguna Seca",
+    "starts_at": "2026-10-23T16:45:00+00:00",
+    "duration_minutes": 90,
+    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2026-10-23/9d2100a3-4fd1-41c2-ba84-6c4e16f153a8.jpg",
+    "simgrid_url": "https://www.thesimgrid.com/championships/27979/races",
+    "competition_code": null,
+    "format_code": null,
+    "site_registration_enabled": false,
+    "mandatory_stop_count": null,
+    "car_class": "GT3",
+    "result_publication_state": "provisional",
+    "event_schedule": [
+      {
+        "end": "21:00",
+        "key": "practice_1",
+        "start": "18:45",
+        "labelEn": "Free practice",
+        "labelFr": "Essais libres"
+      },
+      {
+        "end": "00:00",
+        "key": "briefing",
+        "start": "00:00",
+        "labelEn": "Free practice 2 - Briefing (Discord)",
+        "labelFr": "Essais libres 2 - Briefing (Discord)"
+      },
+      {
+        "end": "21:15",
+        "key": "qualifying",
+        "start": "21:00",
+        "labelEn": "Qualifying",
+        "labelFr": "Qualifications"
+      },
+      {
+        "end": "22:45",
+        "key": "race",
+        "start": "21:15",
+        "labelEn": "Race",
+        "labelFr": "Course"
+      }
+    ],
+    "status": "registration_open"
+  },
+  {
+    "slug": "2026-10-25-redbull-ring-daily-race-redbull-ring-21ac5563",
+    "title_fr": "Daily Race REDBULL RING",
+    "title_en": "Daily Race REDBULL RING",
+    "description_fr": null,
+    "description_en": null,
+    "circuit_name": "REDBULL RING",
+    "starts_at": "2026-10-25T12:45:00+00:00",
+    "duration_minutes": 90,
+    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2026-10-25/c1db1820-87af-4f83-bf71-fcf49d64c7f1.jpg",
+    "simgrid_url": "https://www.thesimgrid.com/championships/28030",
+    "competition_code": null,
+    "format_code": null,
+    "site_registration_enabled": false,
+    "mandatory_stop_count": null,
+    "car_class": "GT3",
+    "result_publication_state": "provisional",
+    "event_schedule": [
+      {
+        "end": "15:00",
+        "key": "practice_1",
+        "start": "13:45",
+        "labelEn": "Free practice",
+        "labelFr": "Essais libres"
+      },
+      {
+        "end": "15:00",
+        "key": "briefing",
+        "start": "14:50",
+        "labelEn": "Free practice 2 - Briefing (Discord)",
+        "labelFr": "Essais libres 2 - Briefing (Discord)"
+      },
+      {
+        "end": "15:15",
+        "key": "qualifying",
+        "start": "15:00",
+        "labelEn": "Qualifying",
+        "labelFr": "Qualifications"
+      },
+      {
+        "end": "16:45",
+        "key": "race",
+        "start": "15:15",
+        "labelEn": "Race",
+        "labelFr": "Course"
+      }
+    ],
+    "status": "registration_open"
+  },
+  {
+    "slug": "2026-10-30-watkins-glen-american-dream-d71ddeac",
+    "title_fr": "WGT: AMERICAN DREAM MANCHE 4",
+    "title_en": "WGT: AMERICAN DREAM MANCHE 4",
+    "description_fr": null,
+    "description_en": null,
+    "circuit_name": "Watkins Glen",
+    "starts_at": "2026-10-30T17:45:00+00:00",
+    "duration_minutes": 90,
+    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2026-10-30/191e285d-afbf-42bc-96ed-27736a5590f8.jpg",
+    "simgrid_url": "https://www.thesimgrid.com/championships/27979/races",
+    "competition_code": null,
+    "format_code": null,
+    "site_registration_enabled": false,
+    "mandatory_stop_count": null,
+    "car_class": "GT3",
+    "result_publication_state": "provisional",
+    "event_schedule": [
+      {
+        "end": "21:00",
+        "key": "practice_1",
+        "start": "18:45",
+        "labelEn": "Free practice",
+        "labelFr": "Essais libres"
+      },
+      {
+        "end": "00:00",
+        "key": "briefing",
+        "start": "00:00",
+        "labelEn": "Free practice 2 - Briefing (Discord)",
+        "labelFr": "Essais libres 2 - Briefing (Discord)"
+      },
+      {
+        "end": "21:15",
+        "key": "qualifying",
+        "start": "21:00",
+        "labelEn": "Qualifying",
+        "labelFr": "Qualifications"
+      },
+      {
+        "end": "22:45",
+        "key": "race",
+        "start": "21:15",
+        "labelEn": "Race",
+        "labelFr": "Course"
+      }
+    ],
+    "status": "registration_open"
+  },
+  {
+    "slug": "2026-11-15-silverstone-endu-1-000-km-silverstone-0767b68c",
+    "title_fr": "WGT: 1.000 Km Silverstone",
+    "title_en": "WGT: 1.000 Km Silverstone",
+    "description_fr": null,
+    "description_en": null,
+    "circuit_name": "Silverstone",
+    "starts_at": "2026-11-15T07:00:00+00:00",
+    "duration_minutes": 350,
+    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2026-11-15/f23a72e5-eb92-4757-85e7-752c77b1172b.jpg",
+    "simgrid_url": "https://www.thesimgrid.com/championships/27601",
+    "competition_code": null,
+    "format_code": null,
+    "site_registration_enabled": false,
+    "mandatory_stop_count": null,
+    "car_class": "GT3",
+    "result_publication_state": "provisional",
+    "event_schedule": [
+      {
+        "end": "10:00",
+        "key": "practice_1",
+        "start": "08:00",
+        "labelEn": "Free practice",
+        "labelFr": "Essais libres"
+      },
+      {
+        "end": "10:20",
+        "key": "briefing",
+        "start": "10:00",
+        "labelEn": "Free practice 2 - Briefing (Discord)",
+        "labelFr": "Essais libres 2 - Briefing (Discord)"
+      },
+      {
+        "end": "10:50",
+        "key": "qualifying",
+        "start": "10:20",
+        "labelEn": "Qualifying",
+        "labelFr": "Qualifications"
+      },
+      {
+        "end": "16:40",
+        "key": "race",
+        "start": "10:50",
+        "labelEn": "Race",
+        "labelFr": "Course"
+      }
+    ],
+    "status": "registration_open"
+  },
+  {
+    "slug": "2026-12-13-nurburgring-gp-sprint-atx-racing-gtworld-s1-manche-1-06bebef5",
+    "title_fr": "WGT: ATX RACING - Manche 1",
+    "title_en": "WGT: ATX RACING - Race 1",
+    "description_fr": null,
+    "description_en": null,
+    "circuit_name": "Nurburgring GP",
+    "starts_at": "2026-12-13T13:00:00+00:00",
+    "duration_minutes": 60,
+    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2026-12-13/ef784cf2-ed6b-4147-b0c4-5586c0eff1dd.jpg",
+    "simgrid_url": "https://www.thesimgrid.com/championships/27625",
+    "competition_code": null,
+    "format_code": null,
+    "site_registration_enabled": false,
+    "mandatory_stop_count": null,
+    "car_class": "GT3",
+    "result_publication_state": "provisional",
+    "event_schedule": [
+      {
+        "end": "14:40",
+        "key": "practice_1",
+        "start": "14:10",
+        "labelEn": "Free practice",
+        "labelFr": "Essais libres"
+      },
+      {
+        "end": "14:10",
+        "key": "briefing",
+        "start": "14:00",
+        "labelEn": "Free practice 2 - Briefing (Discord)",
+        "labelFr": "Essais libres 2 - Briefing (Discord)"
+      },
+      {
+        "end": "15:00",
+        "key": "qualifying",
+        "start": "14:40",
+        "labelEn": "Qualifying",
+        "labelFr": "Qualifications"
+      },
+      {
+        "end": "17:00",
+        "key": "race",
+        "start": "15:00",
+        "labelEn": "Race",
+        "labelFr": "Course"
+      }
+    ],
+    "status": "registration_open"
+  },
+  {
+    "slug": "2027-01-17-watkins-glen-wgt-600-miles-watkins-glen-b2c97403",
+    "title_fr": "WGT: 600 MILES WATKINS GLEN",
+    "title_en": "WGT: 600 MILES WATKINS GLEN",
+    "description_fr": null,
+    "description_en": null,
+    "circuit_name": "WATKINS GLEN",
+    "starts_at": "2027-01-17T07:00:00+00:00",
+    "duration_minutes": 320,
+    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2027-01-17/9297996d-3323-4d1a-bfdf-7ff42c9e4bc5.jpg",
+    "simgrid_url": "https://www.thesimgrid.com/championships/27670",
+    "competition_code": null,
+    "format_code": null,
+    "site_registration_enabled": false,
+    "mandatory_stop_count": null,
+    "car_class": "GT3",
+    "result_publication_state": "provisional",
+    "event_schedule": [
+      {
+        "end": "10:00",
+        "key": "practice_1",
+        "start": "08:00",
+        "labelEn": "Free practice",
+        "labelFr": "Essais libres"
+      },
+      {
+        "end": "10:20",
+        "key": "briefing",
+        "start": "10:00",
+        "labelEn": "Free practice 2 - Briefing (Discord)",
+        "labelFr": "Essais libres 2 - Briefing (Discord)"
+      },
+      {
+        "end": "10:40",
+        "key": "qualifying",
+        "start": "10:20",
+        "labelEn": "Qualifying",
+        "labelFr": "Qualifications"
+      },
+      {
+        "end": "16:00",
+        "key": "race",
+        "start": "10:40",
+        "labelEn": "Race",
+        "labelFr": "Course"
+      }
+    ],
+    "status": "registration_open"
+  },
+  {
+    "slug": "2027-05-02-brands-hach-sprint-atx-racing-gtworld-s1-manche-2-5d126963",
+    "title_fr": "WGT: ATX RACING - Manche 2",
+    "title_en": "WGT: ATX RACING - Race 2",
+    "description_fr": null,
+    "description_en": null,
+    "circuit_name": "Brands Hach",
+    "starts_at": "2027-05-02T12:00:00+00:00",
+    "duration_minutes": 60,
+    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2027-05-02/4ae3503d-a180-4210-9a4f-162a4791e01a.jpg",
+    "simgrid_url": "https://www.thesimgrid.com/championships/27625",
+    "competition_code": null,
+    "format_code": null,
+    "site_registration_enabled": false,
+    "mandatory_stop_count": null,
+    "car_class": "GT3",
+    "result_publication_state": "provisional",
+    "event_schedule": [
+      {
+        "end": "14:40",
+        "key": "practice_1",
+        "start": "14:10",
+        "labelEn": "Free practice",
+        "labelFr": "Essais libres"
+      },
+      {
+        "end": "14:10",
+        "key": "briefing",
+        "start": "14:00",
+        "labelEn": "Free practice 2 - Briefing (Discord)",
+        "labelFr": "Essais libres 2 - Briefing (Discord)"
+      },
+      {
+        "end": "15:00",
+        "key": "qualifying",
+        "start": "14:40",
+        "labelEn": "Qualifying",
+        "labelFr": "Qualifications"
+      },
+      {
+        "end": "17:00",
+        "key": "race",
+        "start": "15:00",
+        "labelEn": "Race",
+        "labelFr": "Course"
+      }
+    ],
+    "status": "registration_open"
+  },
+  {
+    "slug": "2027-07-18-misano-sprint-atx-racing-gtworld-s1-manche-3-8dbd0500",
+    "title_fr": "WGT: ATX RACING - Manche 3",
+    "title_en": "WGT: ATX RACING - Race 3",
+    "description_fr": null,
+    "description_en": null,
+    "circuit_name": "Misano",
+    "starts_at": "2027-07-18T12:00:00+00:00",
+    "duration_minutes": 60,
+    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2027-07-18/bcb2408c-c0b1-43ec-8205-b5d1050a76af.jpg",
+    "simgrid_url": "https://www.thesimgrid.com/championships/27625",
+    "competition_code": null,
+    "format_code": null,
+    "site_registration_enabled": false,
+    "mandatory_stop_count": null,
+    "car_class": "GT3",
+    "result_publication_state": "provisional",
+    "event_schedule": [
+      {
+        "end": "14:40",
+        "key": "practice_1",
+        "start": "14:10",
+        "labelEn": "Free practice",
+        "labelFr": "Essais libres"
+      },
+      {
+        "end": "14:10",
+        "key": "briefing",
+        "start": "14:00",
+        "labelEn": "Free practice 2 - Briefing (Discord)",
+        "labelFr": "Essais libres 2 - Briefing (Discord)"
+      },
+      {
+        "end": "15:00",
+        "key": "qualifying",
+        "start": "14:40",
+        "labelEn": "Qualifying",
+        "labelFr": "Qualifications"
+      },
+      {
+        "end": "17:00",
+        "key": "race",
+        "start": "15:00",
+        "labelEn": "Race",
+        "labelFr": "Course"
+      }
+    ],
+    "status": "registration_open"
+  },
+  {
+    "slug": "2027-09-19-zandvoort-sprint-atx-racing-gtworld-s1-manche-4-a459a73a",
+    "title_fr": "WGT: ATX RACING - Manche 4",
+    "title_en": "WGT: ATX RACING - Race 4",
+    "description_fr": null,
+    "description_en": null,
+    "circuit_name": "Zandvoort",
+    "starts_at": "2027-09-19T12:00:00+00:00",
+    "duration_minutes": 60,
+    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2027-09-19/3ac0ebae-1af9-4983-9e95-4930ecf6936c.jpg",
+    "simgrid_url": "https://www.thesimgrid.com/championships/27625",
+    "competition_code": null,
+    "format_code": null,
+    "site_registration_enabled": false,
+    "mandatory_stop_count": null,
+    "car_class": "GT3",
+    "result_publication_state": "provisional",
+    "event_schedule": [
+      {
+        "end": "14:40",
+        "key": "practice_1",
+        "start": "14:10",
+        "labelEn": "Free practice",
+        "labelFr": "Essais libres"
+      },
+      {
+        "end": "14:10",
+        "key": "briefing",
+        "start": "14:00",
+        "labelEn": "Free practice 2 - Briefing (Discord)",
+        "labelFr": "Essais libres 2 - Briefing (Discord)"
+      },
+      {
+        "end": "15:00",
+        "key": "qualifying",
+        "start": "14:40",
+        "labelEn": "Qualifying",
+        "labelFr": "Qualifications"
+      },
+      {
+        "end": "17:00",
+        "key": "race",
+        "start": "15:00",
+        "labelEn": "Race",
+        "labelFr": "Course"
+      }
+    ],
+    "status": "registration_open"
+  },
+  {
+    "slug": "2027-10-03-hungaroring-sprint-atx-racing-gtworld-s1-manche-5-77e3aa92",
+    "title_fr": "WGT: ATX RACING - Manche 5",
+    "title_en": "WGT: ATX RACING - Race 5",
+    "description_fr": null,
+    "description_en": null,
+    "circuit_name": "Hungaroring",
+    "starts_at": "2027-10-03T12:00:00+00:00",
+    "duration_minutes": 60,
+    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2027-10-03/345e5848-b9a5-459d-bebb-d784a2344f1b.jpg",
+    "simgrid_url": "https://www.thesimgrid.com/championships/27625",
+    "competition_code": null,
+    "format_code": null,
+    "site_registration_enabled": false,
+    "mandatory_stop_count": null,
+    "car_class": "GT3",
+    "result_publication_state": "provisional",
+    "event_schedule": [
+      {
+        "end": "14:40",
+        "key": "practice_1",
+        "start": "14:10",
+        "labelEn": "Free practice",
+        "labelFr": "Essais libres"
+      },
+      {
+        "end": "14:10",
+        "key": "briefing",
+        "start": "14:00",
+        "labelEn": "Free practice 2 - Briefing (Discord)",
+        "labelFr": "Essais libres 2 - Briefing (Discord)"
+      },
+      {
+        "end": "15:00",
+        "key": "qualifying",
+        "start": "14:40",
+        "labelEn": "Qualifying",
+        "labelFr": "Qualifications"
+      },
+      {
+        "end": "17:00",
+        "key": "race",
+        "start": "15:00",
+        "labelEn": "Race",
+        "labelFr": "Course"
+      }
+    ],
+    "status": "registration_open"
+  },
+  {
+    "slug": "atx-2a7e7a6514414582a32141c7",
+    "title_fr": "ATX SERIES: MONZA",
+    "title_en": "ATX SERIES: MONZA",
+    "description_fr": "test",
+    "description_en": "tes",
+    "circuit_name": "monza",
+    "starts_at": "2026-10-12T12:00:00+00:00",
+    "duration_minutes": 45,
+    "image_url": "https://backoffice.gpt-worldwide.com/uploads/1599471039_3845352C-C193-4733-9A84-1138251A6D44.jpeg",
+    "simgrid_url": null,
+    "competition_code": "ATXS",
+    "format_code": "ATXS",
+    "site_registration_enabled": true,
+    "mandatory_stop_count": 0,
+    "car_class": "GT3",
+    "result_publication_state": "provisional",
+    "event_schedule": [
+      {
+        "end": "14:02",
+        "key": "practice_1",
+        "start": "14:00",
+        "labelEn": "Free practice",
+        "labelFr": "Essais libres"
+      },
+      {
+        "end": "14:17",
+        "key": "qualifying",
+        "start": "14:02",
+        "labelEn": "Qualifying",
+        "labelFr": "Qualifications"
+      },
+      {
+        "end": "15:02",
+        "key": "race",
+        "start": "14:17",
+        "labelEn": "Race",
+        "labelFr": "Course"
+      }
+    ],
+    "status": "registration_open"
+  }
+]

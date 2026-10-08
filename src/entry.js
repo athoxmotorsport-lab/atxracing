@@ -28,7 +28,7 @@
    data=await response.json();
   }
   status.textContent=data.driver?.profile_confirmed_at?'Profil confirmé. Ouverture du paddock… / Profile confirmed. Opening the paddock…':'Profil à compléter. Votre ingénieur de course vous accompagne… / Complete your profile. Your race engineer will guide you…';
-  return data.driver?.profile_confirmed_at?paddock:onboarding;
+  if(data.driver?.profile_confirmed_at){let target;try{target=sessionStorage.getItem('atx-after-login');sessionStorage.removeItem('atx-after-login');}catch{}if(target?.startsWith(base)&&!target.startsWith('//')&&!/[\r\n]/.test(target))return target;return paddock;}return onboarding;
  }
  async function start(){
   if(code){

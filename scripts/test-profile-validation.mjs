@@ -24,3 +24,8 @@ test('stores one catalogue GT3, at most three known circuits and one race format
  const result=validateProfile({...valid,preferredGt3:'Porsche 992 GT3 R',favoriteCircuits:['spa','monza','zolder'],preferredRaceFormat:'sprint_90'});
  assert.equal(result.preferred_gt3,'Porsche 992 GT3 R');assert.deepEqual(result.favorite_circuits,['spa','monza','zolder']);assert.equal(result.preferred_race_format,'sprint_90');
 });
+
+test('multiple format preferences round-trip and invalid or duplicate choices are rejected',()=>{
+ const result=validateProfile({...valid,preferredRaceFormats:['sprint_60','sprint_90','endurance']});assert.deepEqual(result.preferred_race_formats,['sprint_60','sprint_90','endurance']);assert.equal(result.preferred_race_format,'sprint_60');
+ for(const value of [['sprint_60','sprint_60'],['24h'],'endurance',null]){assert.throws(()=>validateProfile({...valid,preferredRaceFormats:value}));}
+});

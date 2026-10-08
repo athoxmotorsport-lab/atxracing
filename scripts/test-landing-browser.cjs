@@ -43,7 +43,7 @@ let browser;
  assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
  await page.screenshot({path:path.join(output,'steam-entry-mobile.png'),fullPage:true});
  await page.setViewportSize({width:1440,height:900});
- await page.goto(origin+'/atxracing/fr/acc/');await page.waitForURL(origin+'/atxracing/');
+ await page.goto(origin+'/atxracing/fr/acc/');await page.locator('.league-overview').waitFor();assert(new URL(page.url()).pathname.endsWith('/fr/acc/'));await page.goto(origin+'/atxracing/');
  await page.goto(origin+'/atxracing/fr/acc/profile.html#steam_code=test-code');await page.waitForURL(origin+'/atxracing/fr/');
  await page.locator('.paddock-game').first().waitFor();
  assert.equal(await page.locator('.side-dock a').count(),7);

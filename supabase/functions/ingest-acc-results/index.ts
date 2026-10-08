@@ -1,3 +1,4 @@
+import {linkedRaceSlug,validateLinkedRace} from './race-link.mjs';
 import { adminClient } from "../_shared/auth.ts";
 
 type DriverPayload = {
@@ -200,6 +201,12 @@ const resolveEvent = async (payload: ImportPayload): Promise<EventRow> => {
     ? payload.dateSession
     : new Date().toISOString().slice(0, 10);
   const key = circuitKey(payload.circuit);
+  const linkedSlug=linkedRaceSlug(payload.nomServeur);
+  if(linkedSlug){
+    const {data:linked,error:linkedError}=await supabase.from('events').select('*').eq('slug',linkedSlug).maybeSingle();
+    if(linkedError)throw linkedError;
+    return validateLinkedRace(linked,key,payload.debutCourse,payload.dateSession) as EventRow;
+  }
   let sourceEventKey = payload.cleCourse?.trim() ?? "";
   if (sourceEventKey && !/^[a-z0-9][a-z0-9_-]{7,119}$/.test(sourceEventKey)) {
     throw new Error("Invalid ACC race key");
@@ -437,6 +444,8 @@ const ingest = async (payload: ImportPayload, rawJson: string) => {
       )[0];
       const fastestSteamId = fastestResult?.steamId ?? null;
 
+      const {error: beginImportError}=await supabase.from('events').update({results_import_in_progress:true}).eq('id',event.id);
+      if(beginImportError)throw beginImportError;
       const { error: clearResultsError } = await supabase.from("results").delete().eq("event_id", event.id);
       if (clearResultsError) throw clearResultsError;
       const { error: clearSafetyError } = await supabase.from("safety_stats").delete().eq("event_id", event.id);
@@ -528,11 +537,13 @@ const ingest = async (payload: ImportPayload, rawJson: string) => {
         }
       }
 
-      await supabase.from("events").update({
+      const {error: finishImportError}=await supabase.from("events").update({
+        results_import_in_progress: false,
         status: "completed",
         is_public: true,
         published_at: new Date().toISOString(),
       }).eq("id", event.id);
+      if(finishImportError)throw finishImportError;
     }
 
     await supabase.from("ingestion_batches").update({

@@ -8,9 +8,11 @@
   location.replace(base+location.search+location.hash);
   return;
  }
+ const page=document.body.dataset.page,publicProfile=page==='profile'&&/^[0-9a-f-]{36}$/i.test(new URLSearchParams(location.search).get('driver')||'');
+ const publicPage=!['home','admin','messages','profile'].includes(page)||publicProfile;
  let token;
  try{token=sessionStorage.getItem(key);}catch{}
- if(!token){location.replace(base);return;}
+ if(!token){if(publicPage){document.body.classList.remove('site-locked');const login=document.querySelector('[data-steam-link]');if(login){login.href=base;login.onclick=()=>{try{sessionStorage.setItem('atx-after-login',location.pathname+location.search);}catch{}};}return;}try{sessionStorage.setItem('atx-after-login',location.pathname+location.search);}catch{}location.replace(base);return;}
  const api='https://twjpjzalyvbsdpbzhqln.supabase.co/functions/v1/';
  // Static public pages can paint while the server checks the session.
  // Private endpoints still authenticate every request; no session result is cached.
@@ -44,6 +46,7 @@
  }).catch(error=>{
   if(error.status===401||error.status===403){
    try{sessionStorage.removeItem(key);}catch{}
+   if(publicPage){window.ATX_SESSION_AUTH=null;document.body.classList.remove('site-locked');return;}
    location.replace(base);return;
   }
   // A temporary network failure does not mean the account has signed out.

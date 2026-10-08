@@ -8,7 +8,7 @@ let browser;
  const driver={id:'11111111-1111-4111-8111-111111111111',display_name:'Test',profile_confirmed_at:'2026-10-07T00:00:00Z'};
  async function context(baseline=false,status=200,confirmed=true){
   const c=await browser.newContext({viewport:{width:1440,height:900}});await c.addInitScript(()=>{if(location.pathname.includes('.html'))sessionStorage.setItem('atx-racing-session','test-token');});const counts={auth:0,feed:0,inbox:0,full:0,externalFonts:0};
-  if(baseline)await c.route('**/assets/gate.min.js*',r=>r.fulfill({contentType:'text/javascript',body:oldGate}));
+  if(baseline){await c.route('**/assets/gate.min.js*',r=>r.fulfill({contentType:'text/javascript',body:oldGate}));await c.route('**/fr/acc/courses.html',r=>r.fulfill({contentType:'text/html',body:fs.readFileSync(path.join(root,'fr/acc/courses.html'),'utf8').replace('class="" data-game','class="site-locked" data-game')}));}
   await c.route('https://**/*',async r=>{const req=r.request(),u=new URL(req.url()),name=u.pathname.split('/').pop(),headers={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'authorization,content-type','Access-Control-Allow-Methods':'GET,POST,OPTIONS'};if(req.method()==='OPTIONS')return r.fulfill({status:204,headers});let data={},responseStatus=200;
    if(u.hostname.startsWith('fonts.')){counts.externalFonts++;return r.abort();}
    if(name==='auth-session'){counts.auth++;if(u.searchParams.get('view')!=='identity')counts.full++;await new Promise(resolve=>setTimeout(resolve,1200));responseStatus=status;data=status===200?{driver:{...driver,profile_confirmed_at:confirmed?driver.profile_confirmed_at:null}}:{error:'unavailable'};}
@@ -26,7 +26,7 @@ let browser;
   await c.close();
  }
  assert.ok(times[0]>=1200,'baseline waits for remote session');console.log(`Controlled 1200 ms Steam response: public page visible in ${times[0]} ms before, ${times[1]} ms after.`);
- {const {c}=await context(false,401),p=await c.newPage();await p.goto(origin+'/atxracing/fr/acc/courses.html');await p.waitForURL(origin+'/atxracing/');assert.equal(await p.evaluate(()=>sessionStorage.getItem('atx-racing-session')),null);await c.close();}
+ {const {c}=await context(false,401),p=await c.newPage();await p.goto(origin+'/atxracing/fr/acc/courses.html');await p.waitForFunction(()=>!sessionStorage.getItem('atx-racing-session'));assert.equal(await p.evaluate(()=>sessionStorage.getItem('atx-racing-session')),null);assert.ok(await p.locator('.format-card').first().isVisible());await c.close();}
  {const {c}=await context(false,503),p=await c.newPage();await p.goto(origin+'/atxracing/fr/acc/courses.html');await p.locator('.session-retry').waitFor();assert.equal(await p.evaluate(()=>sessionStorage.getItem('atx-racing-session')),'test-token');assert.ok(await p.locator('.format-card').first().isVisible());await c.close();}
  {const {c}=await context(false,200,false),p=await c.newPage();await p.goto(origin+'/atxracing/fr/acc/courses.html');await p.waitForURL('**/profile.html?onboarding=1');await c.close();}
  console.log('PASS: public paint, shared feed, fresh Steam checks, lightweight badge, expiry redirect, transient retry and required onboarding.');

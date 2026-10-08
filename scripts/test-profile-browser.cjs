@@ -24,7 +24,7 @@ let browser;
   if(req.method()==='OPTIONS')return route.fulfill({status:204,headers});
   if(name==='auth-session'){if(sessionFailure){status=503;body={error:'offline'};}else {const {roles,...identity}=driver;body={driver:identity,access_token:'test-token'};}}
   if(name==='driver-profile'){
-   if(req.method()==='POST'){if(failSave){status=503;body={error:'offline'};}else{saved=req.postDataJSON();driver={...driver,acc_first_name:saved.accFirstName,acc_last_name:saved.accLastName,acc_short_name:saved.accShortName,display_name:saved.displayName,nickname:saved.nickname,team_name:saved.teamName||null,preferred_gt3:saved.preferredGt3||null,favorite_circuits:saved.favoriteCircuits,preferred_race_format:saved.preferredRaceFormat||null,car_number:saved.carNumber||null,games_played:saved.gamesPlayed,games_to_discover:saved.gamesToDiscover,profile_confirmed_at:'2026-09-28T12:00:00Z'};body={driver};}}else body={driver};
+   if(req.method()==='POST'){if(failSave){status=503;body={error:'offline'};}else{saved=req.postDataJSON();driver={...driver,acc_first_name:saved.accFirstName,acc_last_name:saved.accLastName,acc_short_name:saved.accShortName,display_name:saved.displayName,nickname:saved.nickname,team_name:saved.teamName||null,preferred_gt3:saved.preferredGt3||null,favorite_circuits:saved.favoriteCircuits,preferred_race_format:saved.preferredRaceFormats?.[0]||null,preferred_race_formats:saved.preferredRaceFormats||[],car_number:saved.carNumber||null,games_played:saved.gamesPlayed,games_to_discover:saved.gamesToDiscover,profile_confirmed_at:'2026-09-28T12:00:00Z'};body={driver};}}else body={driver};
   }
   if(name==='public-leaderboard')body={drivers:[{driver_id:driver.id,profile_id:driver.id,display_name:driver.display_name,team_name:driver.team_name,performance_class:'alien',safety_class:'gold',safety_score:84,races:1,wins:0,points:25}]};
   if(name==='public-driver')body={driver};
@@ -97,7 +97,7 @@ let browser;
  failSave=true;await page.getByRole('button',{name:'Confirm and save',exact:true}).click();await page.getByText('Could not save. Your answers have been kept; please try again.',{exact:true}).waitFor();
  failSave=false;await page.getByRole('button',{name:'Confirm and save',exact:true}).click();await page.getByText('Profile saved to your account.',{exact:true}).waitFor();
  assert.equal(await page.getByRole('link',{name:'ATX Racing administration',exact:true}).getAttribute('href'),'/atxracing/en/acc/admin.html');
- assert.equal(saved.nickname,'Mon pseudo');assert.deepEqual(saved.gamesPlayed,['acc']);assert.equal(saved.teamName,'');assert.equal(saved.preferredGt3,'Porsche 992 GT3 R');assert.deepEqual(saved.favoriteCircuits,['monza','spa','zolder']);assert.equal(saved.preferredRaceFormat,'sprint_90');
+ assert.equal(saved.nickname,'Mon pseudo');assert.deepEqual(saved.gamesPlayed,['acc']);assert.equal(saved.teamName,'');assert.equal(saved.preferredGt3,'Porsche 992 GT3 R');assert.deepEqual(saved.favoriteCircuits,['monza','spa','zolder']);assert.deepEqual(saved.preferredRaceFormats,['sprint_90']);
  assert.equal(await page.locator('.account-card .driver-car-photo').count(),0);
  assert.equal(await page.locator('.account-history .profile-race-card').count(),1);
  assert.equal(await page.locator('#driver-search').count(),0);

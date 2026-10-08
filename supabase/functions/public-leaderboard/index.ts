@@ -228,7 +228,7 @@ const buildLeaderboard = async (request: Request): Promise<Response> => {
       supabase.from("drivers").select("id, display_name, custom_display_name, avatar_url, custom_avatar_url, team_name, is_profile_public").eq("is_profile_public",true),
       supabase.from("driver_identities").select("driver_id, steam_id64, steam_persona_name, steam_profile_url, steam_avatar_url, last_login_at"),
       readPages(from=>supabase.from("results")
-        .select("driver_id, status, finish_position, points, best_lap_ms, car_model_name, created_at, event:events!inner(id, circuit_key, circuit_name, starts_at, is_public, server_name, title_fr, title_en, competition_code)")
+        .select("driver_id, status, finish_position, points, best_lap_ms, car_model_name, created_at, event:events!inner(id, circuit_key, circuit_name, starts_at, is_public, server_name, title_fr, title_en, competition_code,status,result_publication_state)")
         .eq("event.is_public",true).order("created_at",{ascending:true}).range(from,from+999)),
       readPages(from=>supabase.from("acc_session_results")
         .select("driver_id, best_lap_ms, car_model_name, created_at, session:acc_sessions!inner(session_type, session_date, published_at, created_at, event:events!inner(circuit_key, circuit_name, starts_at, is_public, status, is_official, server_name, title_fr, title_en, competition_code))")
@@ -255,6 +255,7 @@ const buildLeaderboard = async (request: Request): Promise<Response> => {
 
     const generalResults = results.filter((result) => publicDriverIds.has(String(result.driver_id ?? ""))
       && eventRow(result.event)?.status !== "draft"
+      && eventRow(result.event)?.result_publication_state === "official"
       && (category === "ALL" || raceCategory(result.event) === category));
     const wgtRawResults = generalResults.filter((result) => raceCategory(result.event) === "WGT");
     const wgtEventIds = [...new Set(wgtRawResults.map((result) => String(eventRow(result.event)?.id ?? "")).filter(Boolean))];
