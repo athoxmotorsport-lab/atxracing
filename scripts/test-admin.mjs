@@ -85,3 +85,11 @@ test('published events list filters Collector sessions at the database boundary'
  let eventQuery='';globalThis.fetch=async(input)=>{const url=String(input);if(url.includes('/auth_sessions?'))return Response.json([{driver_id:id}]);if(url.includes('/driver_roles?'))return Response.json([{role:'admin'}]);if(url.includes('/events?'))eventQuery=url;return Response.json([]);};
  const response=await handler(new Request('https://edge.test',{headers}));assert.equal(response.status,200);assert(eventQuery.includes('publication_origin=eq.organizer'));assert(eventQuery.includes('deleted_at=is.null'));globalThis.fetch=originalFetch;
 });
+
+
+test('YouTube publication accepts an optional race, canonical slug or site race link and rejects unclear race names',async()=>{
+ let written=[];globalThis.fetch=async(input,options)=>{const url=String(input);if(url.includes('/auth_sessions?'))return Response.json([{driver_id:id}]);if(url.includes('/driver_roles?'))return Response.json([{role:'admin'}]);if(url.endsWith('/atx_media')){const media=JSON.parse(options.body);written.push(media);return Response.json([{id,...media}]);}throw Error(url);};
+ const submit=eventSlug=>handler(new Request('https://edge.test',{method:'POST',headers,body:JSON.stringify({action:'save_media',media:{mediaType:'replay',titleFr:'Replay test',titleEn:'Test replay',url:'https://www.youtube.com/watch?v=synthetic',eventSlug}})}));
+ for(const [value,expected] of [['',null],['daily-race-monza','daily-race-monza'],['https://athoxmotorsport-lab.github.io/atxracing/fr/acc/course.html?slug=daily-race-monza','daily-race-monza'],['https://athoxmotorsport-lab.github.io/atxracing/en/acc/races/daily-race-monza.html','daily-race-monza']]){const response=await submit(value);assert.equal(response.status,201);assert.equal(written.at(-1).event_slug,expected);}
+ const count=written.length;for(const value of ['Daily Race Monza','https://example.test/atxracing/fr/acc/course.html?slug=monza','https://athoxmotorsport-lab.github.io/atxracing/fr/acc/index.html','x'.repeat(121)]){const response=await submit(value);assert.equal(response.status,400);assert.equal((await response.json()).error,'invalid_event_slug');}assert.equal(written.length,count);globalThis.fetch=originalFetch;
+});
