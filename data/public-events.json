@@ -150,56 +150,6 @@
     "status": "completed"
   },
   {
-    "slug": "2026-10-09-circuit-of-the-americas-indianapolis-laguna-seca-watkins-g-american-dream-9ea786cf",
-    "title_fr": "WGT: AMERICAN DREAM MANCHE 1",
-    "title_en": "WGT: AMERICAN DREAM MANCHE 1",
-    "description_fr": null,
-    "description_en": null,
-    "circuit_name": "Circuit of the Americas",
-    "starts_at": "2026-10-09T16:45:00+00:00",
-    "duration_minutes": 90,
-    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2026-10-09/cedd74c1-4bda-4a1e-b136-b911db80f991.jpg",
-    "simgrid_url": "https://www.thesimgrid.com/championships/27979/races",
-    "competition_code": null,
-    "format_code": null,
-    "championship_code": "WGT_AMERICAN_DREAM",
-    "site_registration_enabled": false,
-    "mandatory_stop_count": null,
-    "car_class": "GT3",
-    "result_publication_state": "provisional",
-    "event_schedule": [
-      {
-        "end": "21:00",
-        "key": "practice_1",
-        "start": "18:45",
-        "labelEn": "Free practice",
-        "labelFr": "Essais libres"
-      },
-      {
-        "end": "00:00",
-        "key": "briefing",
-        "start": "00:00",
-        "labelEn": "Free practice 2 - Briefing (Discord)",
-        "labelFr": "Essais libres 2 - Briefing (Discord)"
-      },
-      {
-        "end": "21:15",
-        "key": "qualifying",
-        "start": "21:00",
-        "labelEn": "Qualifying",
-        "labelFr": "Qualifications"
-      },
-      {
-        "end": "22:45",
-        "key": "race",
-        "start": "21:15",
-        "labelEn": "Race",
-        "labelFr": "Course"
-      }
-    ],
-    "status": "registration_open"
-  },
-  {
     "slug": "2026-10-10-monza-endu-1-000-km-monza-6ecdb1e4",
     "title_fr": "WGT: 1.000 Km Monza",
     "title_en": "WGT: 1.000 Km Monza",
