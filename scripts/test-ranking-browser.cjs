@@ -31,7 +31,9 @@ let browser;
  assert((await page.locator('.standing-row').nth(2).innerText()).includes('Pro · 105,99%'));
  assert((await page.locator('.standing-row').first().innerText()).includes('84 / 100'));
  await page.locator('[data-category=ATXS]').click();await page.locator('#ranking-content .empty').waitFor();assert(scopes.includes('ATXS'));
- await page.locator('[data-category=WGT]').click();await page.locator('.standing-row').first().waitFor();
+ assert.equal(await page.locator('.ranking-category').count(),5);
+ for(const code of ['WGT_ENDURANCE','WGT_AMERICAN_DREAM','WGT_SPRINT']){await page.locator('[data-category='+code+']').click();await page.locator('[data-category='+code+'][aria-pressed=true]').waitFor();assert(scopes.includes(code));}
+ await page.locator('[data-category=WGT_SPRINT]').click();await page.locator('.standing-row').first().waitFor();
  await page.locator('[data-view=team]').click();await page.locator('.standing-identity>a').waitFor();
  await page.locator('.standing-identity>a').click();await page.getByRole('heading',{name:'Composition des pilotes'}).waitFor();
  assert.equal(await page.locator('.standing-list').nth(1).locator('.ranking-name').count(),2);
@@ -44,5 +46,6 @@ let browser;
  assert((await page.locator('.standing-tier[data-level=rookie]').innerText()).includes('108%+'));
  assert((await page.locator('.standing-tier[data-level=challenger]').innerText()).includes('106–107.99%'));
  assert((await page.locator('.standing-row[data-level=challenger]').innerText()).includes('Pro · 105.99%'));
- assert.deepEqual(errors,[]);console.log('PASS: two views, three categories, neutral unknown driver, pace/Safe, ATXS isolation, team links and roster, mobile');
+ for(const code of ['WGT_SPRINT','WGT_ENDURANCE','WGT_AMERICAN_DREAM'])assert.equal(await page.locator('[data-category='+code+']').count(),1);
+ assert.deepEqual(errors,[]);console.log('PASS: two views, five categories and three separate WGT championships, neutral unknown driver, pace/Safe, ATXS isolation, team links and roster, mobile');
 })().catch(e=>{console.error(e);process.exitCode=1}).finally(async()=>{await browser?.close();server.close()});

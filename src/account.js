@@ -78,7 +78,7 @@
  }
  if(['event','course'].includes(page)&&/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(params.get('slug')||params.get('event')||''))preserved.set('slug',params.get('slug')||params.get('event'));
  if(page==='profile'&&/^[0-9a-f-]{36}$/i.test(params.get('driver')||''))preserved.set('driver',params.get('driver'));
- if(['calendar','ranking'].includes(page)&&['WGT','DR','BA'].includes(params.get('type')?.toUpperCase()))preserved.set('type',params.get('type').toUpperCase());
+ if(['calendar','ranking'].includes(page)&&['WGT','WGT_SPRINT','WGT_ENDURANCE','WGT_AMERICAN_DREAM','DR','ATXS','BA'].includes(params.get('type')?.toUpperCase()))preserved.set('type',params.get('type').toUpperCase());
  document.querySelectorAll('.header-languages a,.footer-languages a').forEach(a=>{if(preserved.size)a.search=preserved.toString();});
  if(page==='profile')document.querySelectorAll('.game-switch a').forEach(a=>{a.href=base+lang+'/'+a.textContent.trim().toLowerCase()+'/profile.html'+(preserved.has('driver')?'?'+preserved:'');});
  const loginHref=header?.href;

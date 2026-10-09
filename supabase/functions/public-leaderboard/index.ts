@@ -1,5 +1,5 @@
 import { adminClient } from "../_shared/auth.ts";
-import { worldGTPoints } from "../_shared/worldgt-scoring.ts";
+import { worldGTPoints, worldGTChampionship } from "../_shared/worldgt-scoring.ts";
 
 const cors = {
   "Access-Control-Allow-Origin": "https://athoxmotorsport-lab.github.io",
@@ -38,7 +38,7 @@ const normaliseSessionType = (value: unknown): "FP" | "Q" | "R" | null => {
   return type === "FP" || type === "Q" || type === "R" ? type : null;
 };
 
-type RaceCategory = "WGT" | "DR" | "ATXS" | "OL";
+type RaceCategory = "WGT" | "WGT_SPRINT" | "WGT_ENDURANCE" | "WGT_AMERICAN_DREAM" | "DR" | "ATXS" | "OL";
 type RankingScope = RaceCategory | "ALL";
 type SteamIdentity = {
   driver_id: string;
@@ -165,6 +165,8 @@ const eventRow = (event: unknown): Record<string, unknown> | null => {
 
 const raceCategory = (event: unknown): RaceCategory => {
   const row = eventRow(event);
+  const championship = worldGTChampionship(row);
+  if (championship) return championship;
   const explicit = String(row?.competition_code ?? "").toUpperCase();
   if (["WGT", "DR", "ATXS", "OL"].includes(explicit)) return explicit as RaceCategory;
   if (explicit === "BATX" || explicit === "BA") return "DR";
@@ -212,7 +214,7 @@ const buildLeaderboard = async (request: Request): Promise<Response> => {
   try {
     const supabase = adminClient();
     const requestedCategory = new URL(request.url).searchParams.get("category")?.toUpperCase();
-    const category: RankingScope = requestedCategory === "WGT" || requestedCategory === "ATXS" || requestedCategory === "OL" || requestedCategory === "ALL" ? requestedCategory : "DR";
+    const category: RankingScope = ["WGT_SPRINT","WGT_ENDURANCE","WGT_AMERICAN_DREAM","ATXS","OL","ALL"].includes(requestedCategory ?? "") ? requestedCategory as RankingScope : requestedCategory === "WGT" ? "WGT_SPRINT" : "DR";
 
     // Circuit rankings are based on imported ACC timing data, not on whether a
     // driver has made their profile public. Privacy only controls profile links.
@@ -228,10 +230,10 @@ const buildLeaderboard = async (request: Request): Promise<Response> => {
       supabase.from("drivers").select("id, display_name, custom_display_name, avatar_url, custom_avatar_url, team_name, is_profile_public").eq("is_profile_public",true),
       supabase.from("driver_identities").select("driver_id, steam_id64, steam_persona_name, steam_profile_url, steam_avatar_url, last_login_at"),
       readPages(from=>supabase.from("results")
-        .select("driver_id, status, finish_position, points, best_lap_ms, car_model_name, created_at, event:events!inner(id, circuit_key, circuit_name, starts_at, is_public, server_name, title_fr, title_en, competition_code,status,result_publication_state)")
+        .select("driver_id, status, finish_position, points, best_lap_ms, car_model_name, created_at, event:events!inner(id, circuit_key, circuit_name, starts_at, is_public, server_name, title_fr, title_en, competition_code,format_code,championship_code,event_type,status,result_publication_state)")
         .eq("event.is_public",true).order("created_at",{ascending:true}).range(from,from+999)),
       readPages(from=>supabase.from("acc_session_results")
-        .select("driver_id, best_lap_ms, car_model_name, created_at, session:acc_sessions!inner(session_type, session_date, published_at, created_at, event:events!inner(circuit_key, circuit_name, starts_at, is_public, status, is_official, server_name, title_fr, title_en, competition_code))")
+        .select("driver_id, best_lap_ms, car_model_name, created_at, session:acc_sessions!inner(session_type, session_date, published_at, created_at, event:events!inner(circuit_key, circuit_name, starts_at, is_public, status, is_official, server_name, title_fr, title_en, competition_code,format_code,championship_code,event_type))")
         .order("created_at",{ascending:true}).range(from,from+999)),
     ]);
     if(driverResponse.error)throw driverResponse.error;if(identityResponse.error)throw identityResponse.error;
@@ -257,7 +259,7 @@ const buildLeaderboard = async (request: Request): Promise<Response> => {
       && eventRow(result.event)?.status !== "draft" && eventRow(result.event)?.status !== "cancelled"
       && eventRow(result.event)?.result_publication_state === "official"
       && (category === "ALL" || raceCategory(result.event) === category));
-    const wgtRawResults = generalResults.filter((result) => raceCategory(result.event) === "WGT");
+    const wgtRawResults = generalResults.filter((result) => raceCategory(result.event).startsWith("WGT"));
     const wgtEventIds = [...new Set(wgtRawResults.map((result) => String(eventRow(result.event)?.id ?? "")).filter(Boolean))];
     let wgtRegistrations: Array<{event_id:string; driver_id:string; team_name:string|null}> = [];
     if (wgtEventIds.length) {
@@ -272,11 +274,11 @@ const buildLeaderboard = async (request: Request): Promise<Response> => {
       status: String(result.status ?? ""),
       finish_position: result.finish_position as number | null,
       best_lap_ms: result.best_lap_ms as number | null,
-    })), wgtRegistrations);
+    })), wgtRegistrations, new Map(wgtRawResults.flatMap(result => {const e=eventRow(result.event);const c=worldGTChampionship(e);return c ? [[String(e?.id),c] as const] : [];})));
     const wgtEntryForResult = (result: Record<string, unknown>) =>
       wgtScore.driverPoints.get(String(eventRow(result.event)?.id ?? "") + "|" + String(result.driver_id));
     const pointsForResult = (result: Record<string, unknown>): number => {
-      if (raceCategory(result.event) !== "WGT") return Number(result.points ?? 0);
+      if (!raceCategory(result.event).startsWith("WGT")) return Number(result.points ?? 0);
       return wgtEntryForResult(result)?.points ?? 0;
     };
 
@@ -377,8 +379,8 @@ const buildLeaderboard = async (request: Request): Promise<Response> => {
         primary_car: carsUsed[0] ?? null,
         cars_used: carsUsed,
         races: driverResults.length,
-        wins: driverResults.filter((result) => result.status === "classified" && (raceCategory(result.event) === "WGT" ? wgtEntryForResult(result)?.finish_position === 1 : result.finish_position === 1)).length,
-        podiums: driverResults.filter((result) => result.status === "classified" && (raceCategory(result.event) === "WGT" ? (wgtEntryForResult(result)?.finish_position ?? 999) <= 3 : Number(result.finish_position) <= 3)).length,
+        wins: driverResults.filter((result) => result.status === "classified" && (raceCategory(result.event).startsWith("WGT") ? wgtEntryForResult(result)?.finish_position === 1 : result.finish_position === 1)).length,
+        podiums: driverResults.filter((result) => result.status === "classified" && (raceCategory(result.event).startsWith("WGT") ? (wgtEntryForResult(result)?.finish_position ?? 999) <= 3 : Number(result.finish_position) <= 3)).length,
         points: driverResults.reduce((total, result) => total + pointsForResult(result), 0),
         points_per_race: driverResults.length ? driverResults.reduce((total, result) => total + pointsForResult(result), 0) / driverResults.length : 0,
         circuits: circuitPaces.length,
@@ -424,7 +426,7 @@ const buildLeaderboard = async (request: Request): Promise<Response> => {
     });
 
     const teamGroups = new Map<string, { team_name: string; points: number; races: number; wins: number; podiums: number; member_ids: Set<string>; pace_scores: number[] }>();
-    if (category === "WGT") {
+    if (category.startsWith("WGT")) {
       // One line per racing team; a two-driver crew contributes its points once.
       const paceByDriver = new Map(rows.map((driver) => [driver.driver_id, driver.performance_score]));
       for (const entry of wgtScore.entries) {
@@ -492,7 +494,7 @@ const pendingBuilds = new Map<string, Promise<Response>>();
 Deno.serve(async (request) => {
   if (request.method !== "GET") return buildLeaderboard(request);
   const requested = new URL(request.url).searchParams.get("category")?.toUpperCase() ?? "DR";
-  const key = ["WGT", "ATXS", "OL", "ALL"].includes(requested) ? requested : "DR";
+  const key = ["WGT_SPRINT","WGT_ENDURANCE","WGT_AMERICAN_DREAM","ATXS","OL","ALL"].includes(requested) ? requested : requested === "WGT" ? "WGT_SPRINT" : "DR";
   const cached = responseCache.get(key);
   if (cached && cached.until > Date.now()) return cached.response.clone();
   let pending = pendingBuilds.get(key);

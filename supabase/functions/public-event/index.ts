@@ -1,5 +1,5 @@
 import { adminClient } from "../_shared/auth.ts";
-import { worldGTPoints } from "../_shared/worldgt-scoring.ts";
+import { worldGTPoints, worldGTChampionship } from "../_shared/worldgt-scoring.ts";
 import {competitiveRace} from '../_shared/race-visibility.mjs';
 import {nativeCounts} from './counts.ts';
 import { eventFeed } from './feed.ts';
@@ -30,7 +30,7 @@ Deno.serve(async (request) => {
   const publicDriverIds = new Set((publicDrivers ?? []).map((driver) => driver.id));
   if (!slug) {
     const { data: events, error } = await supabase.from("events")
-      .select("id, slug, event_type, status, title_fr, title_en, description_fr, description_en, circuit_name, starts_at, duration_minutes, max_drivers, simgrid_url, image_url, car_class, schedule_timezone_label, event_schedule, mandatory_pit_stop, mandatory_tyre_change, mandatory_refuelling, fixed_refuelling_seconds, time_multiplier, server_name, competition_code, format_code, mandatory_stop_count, server_opens_at, registered_snapshot, site_registration_enabled,publication_origin,deleted_at,result_publication_state,results_validated_at")
+      .select("id, slug, event_type, status, title_fr, title_en, description_fr, description_en, circuit_name, starts_at, duration_minutes, max_drivers, simgrid_url, image_url, car_class, schedule_timezone_label, event_schedule, mandatory_pit_stop, mandatory_tyre_change, mandatory_refuelling, fixed_refuelling_seconds, time_multiplier, server_name, competition_code, format_code, championship_code, mandatory_stop_count, server_opens_at, registered_snapshot, site_registration_enabled,publication_origin,deleted_at,result_publication_state,results_validated_at")
       .eq("is_public", true).neq("status", "draft").order("starts_at", { ascending: false }).limit(100);
     if (error) return json({ error: "server_error" }, 500);
     const ids = (events ?? []).map((event) => event.id);
@@ -93,7 +93,7 @@ Deno.serve(async (request) => {
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return json({ error: "invalid_slug" }, 400);
 
   const { data: event, error } = await supabase.from("events")
-    .select("id, slug, title_fr, title_en, description_fr, description_en, event_type, status, circuit_name, starts_at, duration_minutes, max_drivers, simgrid_url, image_url, server_name, is_official, car_class, schedule_timezone_label, event_schedule, mandatory_pit_stop, mandatory_tyre_change, mandatory_refuelling, fixed_refuelling_seconds, time_multiplier, competition_code, format_code, mandatory_stop_count, server_opens_at, registered_snapshot, site_registration_enabled,publication_origin,deleted_at,result_publication_state,results_validated_at")
+    .select("id, slug, title_fr, title_en, description_fr, description_en, event_type, status, circuit_name, starts_at, duration_minutes, max_drivers, simgrid_url, image_url, server_name, is_official, car_class, schedule_timezone_label, event_schedule, mandatory_pit_stop, mandatory_tyre_change, mandatory_refuelling, fixed_refuelling_seconds, time_multiplier, competition_code, format_code, championship_code, mandatory_stop_count, server_opens_at, registered_snapshot, site_registration_enabled,publication_origin,deleted_at,result_publication_state,results_validated_at")
     .eq("slug", slug).eq("is_public", true).neq("status", "draft").maybeSingle();
   if (error) return json({ error: "server_error" }, 500);
   if (!event || event.deleted_at || !competitiveRace(event)) return json({ error: "event_not_found" }, 404);
@@ -130,6 +130,7 @@ Deno.serve(async (request) => {
         finish_position: result.finish_position, best_lap_ms: result.best_lap_ms,
       })),
       (registrations ?? []).filter((registration) => publicDriverIds.has(registration.driver_id)),
+      new Map([[event.id,worldGTChampionship(event) ?? "WGT_ENDURANCE"]]),
     );
     teamAssignmentsComplete = visibleResults.filter((row) =>
       row.status !== "dns" && row.status !== "dsq"

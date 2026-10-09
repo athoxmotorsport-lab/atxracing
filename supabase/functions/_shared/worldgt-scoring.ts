@@ -16,13 +16,32 @@ export type WorldGTEntry = {
   best_lap_ms: number | null; fastest_lap_bonus: number; points: number;
   driver_ids: string[];
 };
-const pointsByPosition = new Map<number, number>([[1,50],[2,36],[3,30],[4,24],[5,20],[6,16],[7,12],[8,8],[9,4],[10,2]]);
+export type WorldGTChampionship = 'WGT_SPRINT' | 'WGT_ENDURANCE' | 'WGT_AMERICAN_DREAM';
+export const worldGTChampionship = (event: Record<string, unknown> | null | undefined): WorldGTChampionship | null => {
+  if (!event) return null;
+  const explicit = String(event.championship_code ?? '').toUpperCase();
+  if (['WGT_SPRINT','WGT_ENDURANCE','WGT_AMERICAN_DREAM'].includes(explicit)) return explicit as WorldGTChampionship;
+  const competition = String(event.competition_code ?? '').toUpperCase();
+  if (competition && competition !== 'WGT') return null;
+  const text = [event.title_fr,event.title_en,event.server_name].join(' ');
+  const wgt = competition === 'WGT' || /(?:^|[^a-z0-9])WGT(?=$|[^a-z0-9])|WORLD\s*GT/i.test(text);
+  if (!wgt && !/\b(SPRINT|ENDU)\b/i.test(text)) return null;
+  if (/AMERICAN[ _-]+DREAM/i.test(text)) return 'WGT_AMERICAN_DREAM';
+  if (event.format_code === 'WGT_ENDURANCE' || event.event_type === 'endurance' || /\bENDU(?:RANCE)?\b/i.test(text)) return 'WGT_ENDURANCE';
+  if (event.format_code === 'WGT_SPRINT' || event.event_type === 'sprint' || /\bSPRINT\b/i.test(text)) return 'WGT_SPRINT';
+  return null;
+};
+export const worldGTPositionPoints = (championship: WorldGTChampionship, position: number | null): number => {
+  const points = championship === 'WGT_ENDURANCE' ? [50,36,30,24,20,16,12,8,4,2] : [25,18,15,12,10,8,6,4,2,1];
+  return position === null || position < 1 ? 0 : points[position-1] ?? 0;
+};
 const validNumber = (value: unknown): number | null => {
   const n = Number(value);
   return value !== null && value !== undefined && Number.isFinite(n) && n > 0 ? n : null;
 };
 export const worldGTPoints = (
   results: WorldGTResult[], registrations: WorldGTRegistration[],
+  championships: Map<string, WorldGTChampionship> = new Map(),
 ): {entries: WorldGTEntry[]; driverPoints: Map<string, WorldGTEntry>} => {
   const registrationByDriver = new Map<string, string>();
   for (const row of registrations) {
@@ -64,7 +83,7 @@ export const worldGTPoints = (
   }
   const driverPoints = new Map<string, WorldGTEntry>();
   for (const entry of entries) {
-    entry.points = entry.finish_position === null ? 0 : (pointsByPosition.get(entry.finish_position) ?? 0);
+    entry.points = entry.finish_position === null ? 0 : worldGTPositionPoints(championships.get(entry.event_id) ?? 'WGT_ENDURANCE', entry.finish_position);
     entry.fastest_lap_bonus = entry.finish_position !== null && entry.best_lap_ms !== null &&
       entry.best_lap_ms === fastestByEvent.get(entry.event_id) ? 2 : 0;
     entry.points += entry.fastest_lap_bonus;

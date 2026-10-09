@@ -31,7 +31,7 @@
   try{for(let i=sessionStorage.length-1;i>=0;i--){const key=sessionStorage.key(i);if(key?.startsWith('atx-public-leaderboard-v1:'))sessionStorage.removeItem(key);}}catch{}
  };
  window.ATX_PUBLIC_LEADERBOARD=async category=>{
-  const scope=['WGT','ATXS','OL','ALL'].includes(category)?category:'DR';
+  const scope=['WGT_SPRINT','WGT_ENDURANCE','WGT_AMERICAN_DREAM','ATXS','OL','ALL'].includes(category)?category:category==='WGT'?'WGT_SPRINT':'DR';
   const key='atx-public-leaderboard-v1:'+scope;
   try{const entry=JSON.parse(sessionStorage.getItem(key));const age=Date.now()-entry?.at;if(entry?.data&&age>=0&&age<lifetime)return entry.data;}catch{}
   if(pending.has(scope))return pending.get(scope);

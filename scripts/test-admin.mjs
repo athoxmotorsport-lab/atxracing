@@ -100,3 +100,9 @@ test('draft deletion is restricted to unpublished drafts and cannot delete a pub
  let removed=false;globalThis.fetch=async(input,options)=>{const target=String(input);if(target.includes('/auth_sessions?'))return Response.json([{driver_id:id}]);if(target.includes('/driver_roles?'))return Response.json([{role:'admin'}]);if(target.includes('/atx_event_drafts?')){assert(target.includes('&status=eq.draft'));assert.equal(options.method,'DELETE');return Response.json(removed?[]:(removed=true,[{id}]));}throw Error(target);};
  const request=()=>new Request('https://edge.test',{method:'POST',headers,body:JSON.stringify({action:'delete_draft',id})});assert.equal((await handler(request())).status,200);assert.equal((await handler(request())).status,404);globalThis.fetch=originalFetch;
 });
+
+test('WGT drafts retain an explicit championship independently of their race format',async()=>{
+ mockDatabase({id,status:'draft'});
+ for(const championshipCode of ['WGT_SPRINT','WGT_ENDURANCE','WGT_AMERICAN_DREAM']){const response=await handler(new Request('https://edge.test',{method:'POST',headers,body:JSON.stringify({action:'save',draft:{...draft,competition:'WGT',format:'WGT_ENDURANCE',championshipCode}})}));assert.equal(response.status,201);assert.equal((await response.json()).draft.draft.championshipCode,championshipCode);}
+ const denied=await handler(new Request('https://edge.test',{method:'POST',headers,body:JSON.stringify({action:'save',draft:{...draft,competition:'WGT',format:'WGT_SPRINT',championshipCode:'UNKNOWN'}})}));assert.equal(denied.status,400);globalThis.fetch=originalFetch;
+});
