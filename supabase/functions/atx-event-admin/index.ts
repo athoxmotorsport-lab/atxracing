@@ -57,6 +57,11 @@ Deno.serve(async request=>{const headers=new Headers({'Content-Type':'applicatio
    else rows=await rest('atx_event_drafts',{method:'POST',body:JSON.stringify({draft,source_key:draft.sourceKey||null,created_by:admin})});
    return rows.length?reply({draft:rows[0]},request.method==='POST'?201:200):reply({error:'draft_not_found'},404);
   }
+  if(action==='delete_draft'&&request.method==='POST'){
+   const id=clean(body.id,36);if(!/^[0-9a-f-]{36}$/i.test(id))return reply({error:'invalid_id'},400);
+   const rows=await rest('atx_event_drafts?id=eq.'+id+'&status=eq.draft',{method:'DELETE'});
+   return rows.length?reply({deleted:true}):reply({error:'draft_not_found'},404);
+  }
   if(action==='delete_event'&&request.method==='POST'){
    const id=clean(body.id,36);if(!/^[0-9a-f-]{36}$/i.test(id))return reply({error:'invalid_id'},400);
    const event=await rest('events?id=eq.'+id+'&publication_origin=eq.organizer&select=id,result_publication_state&limit=1');

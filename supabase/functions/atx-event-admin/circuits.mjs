@@ -31,4 +31,4 @@ const photos={
   "zolder": "assets/circuits/zolder.webp",
   "redbull_ring": "assets/circuits/red-bull-ring.jpg"
 };
-export function circuitPhoto(name,siteUrl){const key=String(name||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"");const aliases={bathurst:"mount_panorama",nurburgringgp:"nurburgring",spa_francorchamps:"spa"};const image=photos[aliases[key]||key];return image?new URL(image,siteUrl.endsWith("/")?siteUrl:siteUrl+"/").href:"";}
+export function circuitPhoto(name,siteUrl){const key=String(name||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"");const aliases={bathurst:"mount_panorama",nurburgringgp:"nurburgring",spa_francorchamps:"spa"};const image=photos[aliases[key]||key];const base=new URL(siteUrl.endsWith("/")?siteUrl:siteUrl+"/");if(base.hostname==="athoxmotorsport-lab.github.io")base.pathname="/atxracing/";return image?new URL(image,base).href:"";}

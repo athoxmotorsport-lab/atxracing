@@ -49,55 +49,6 @@
     "status": "completed"
   },
   {
-    "slug": "2026-09-24-watkins-glen-dr-watkins-glen-7d897e8c",
-    "title_fr": "ATXRACING |  DR Watkins Glen",
-    "title_en": "ATXRACING |  DR Watkins Glen",
-    "description_fr": null,
-    "description_en": null,
-    "circuit_name": "WATKINS GLEN",
-    "starts_at": "2026-09-24T20:40:12+00:00",
-    "duration_minutes": 60,
-    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2026-09-24/336ddf4c-3ea4-4377-a34d-4c06893bba80.jpg",
-    "simgrid_url": "https://www.thesimgrid.com/championships/27665",
-    "competition_code": "DR",
-    "format_code": null,
-    "site_registration_enabled": false,
-    "mandatory_stop_count": null,
-    "car_class": "GT3",
-    "result_publication_state": "official",
-    "event_schedule": [
-      {
-        "end": "21:00",
-        "key": "practice_1",
-        "start": "20:45",
-        "labelEn": "Free practice",
-        "labelFr": "Essais libres"
-      },
-      {
-        "end": "00:00",
-        "key": "briefing",
-        "start": "00:00",
-        "labelEn": "Free practice 2 - Briefing (Discord)",
-        "labelFr": "Essais libres 2 - Briefing (Discord)"
-      },
-      {
-        "end": "21:30",
-        "key": "qualifying",
-        "start": "21:00",
-        "labelEn": "Qualifying",
-        "labelFr": "Qualifications"
-      },
-      {
-        "end": "22:30",
-        "key": "race",
-        "start": "21:30",
-        "labelEn": "Race",
-        "labelFr": "Course"
-      }
-    ],
-    "status": "completed"
-  },
-  {
     "slug": "2026-09-27-valencia-dr-valencia-d85f64a0",
     "title_fr": "ATXRACING |  DR Valencia",
     "title_en": "ATXRACING |  DR Valencia",
@@ -917,6 +868,48 @@
         "end": "15:02",
         "key": "race",
         "start": "14:17",
+        "labelEn": "Race",
+        "labelFr": "Course"
+      }
+    ],
+    "status": "registration_open"
+  },
+  {
+    "slug": "atx-7d9b1331c8fa4536b0b2b6e8",
+    "title_fr": "ATX Series · Spa",
+    "title_en": "ATX Series · Spa",
+    "description_fr": "Rendez-vous toutes les 90 minutes : 2 minutes d’essais, 15 minutes de qualifications et 45 minutes de course. Inscription sur le site obligatoire, classement ATXS.",
+    "description_en": "Rendezvous every 90 minutes: 2 minutes of practice, 15 minutes of qualifying and a 45-minute race. Website registration required, ATXS standings.",
+    "circuit_name": "Spa",
+    "starts_at": "2026-11-13T12:00:00+00:00",
+    "duration_minutes": 45,
+    "image_url": "https://athoxmotorsport-lab.github.io/atxracing/assets/circuits/spa.webp",
+    "simgrid_url": null,
+    "competition_code": "ATXS",
+    "format_code": "ATXS",
+    "site_registration_enabled": true,
+    "mandatory_stop_count": 0,
+    "car_class": "GT3",
+    "result_publication_state": "provisional",
+    "event_schedule": [
+      {
+        "end": "13:02",
+        "key": "practice_1",
+        "start": "13:00",
+        "labelEn": "Free practice",
+        "labelFr": "Essais libres"
+      },
+      {
+        "end": "13:17",
+        "key": "qualifying",
+        "start": "13:02",
+        "labelEn": "Qualifying",
+        "labelFr": "Qualifications"
+      },
+      {
+        "end": "14:02",
+        "key": "race",
+        "start": "13:17",
         "labelEn": "Race",
         "labelFr": "Course"
       }
