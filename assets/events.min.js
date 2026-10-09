@@ -24,7 +24,7 @@
   '2026-09-11-nurburgring-gp-gring-gp-203915-01375e5d':'nurburgring-gp-2026-09-11.webp'
  };
  const archivePoster=event=>archivedRacePosters[event.slug]?base+'assets/events/'+archivedRacePosters[event.slug]:null;
- function poster(event,cls){const sources=[external(event.image_url)||localImage(event.image_url),archivePoster(event)].filter(Boolean);if(!sources.length)return null;const photo=el('img',cls);photo.src=sources.shift();photo.alt='';photo.loading='lazy';photo.onerror=()=>{if(sources.length)photo.src=sources.shift();else photo.remove()};return photo}
+ function poster(event,cls){const sources=[external(event.image_url)||localImage(event.image_url),archivePoster(event)].filter(Boolean);if(!sources.length)return null;const photo=el('img',cls);photo.src=sources.shift();photo.alt='';photo.loading='lazy';if(event.competition_code==='ATXS')window.ATX_CIRCUIT_FRAME?.(photo,event.circuit_key,event.circuit_name);photo.onerror=()=>{if(sources.length)photo.src=sources.shift();else photo.remove()};return photo}
  const type=e=>{if(e.competition_code)return {DR:'DR',BATX:'BA',WGT:'WGT',ATXS:'ATXS'}[e.competition_code]||null;const s=[e.server_name,e.title_fr,e.title_en,e.event_type].join(' ').toUpperCase();return /\bBATX\b|BALLADE\s+ATX/.test(s)?'BA':/\bWGT\b|WORLD\s?GT|ENDURANCE|SPRINT/.test(s)?'WGT':/\bDR\b|DAILY[_ ]?RACE/.test(s)?'DR':null};
  const href=e=>base+lang+'/acc/'+((window.ATX_PUBLIC_RACE_SLUGS||[]).includes(e.slug)?'races/'+encodeURIComponent(e.slug)+'.html':'course.html?slug='+encodeURIComponent(e.slug));
  const name=e=>e['title_'+lang]||e.title_en||e.title_fr||e.circuit_name||'ATXRACING';

@@ -112,7 +112,8 @@ for language in ('fr','en'):
  assert 'id="admin-app"' in admin and BASE+'assets/admin.min.js' in admin
  for section in ('calendar','archives','event','course'):
   assert BASE+'assets/events.min.js' in (ROOT/language/'acc'/f'{section}.html').read_text()
-  assert BASE+'assets/circuit-images.min.js' not in (ROOT/language/'acc'/f'{section}.html').read_text()
+  html=(ROOT/language/'acc'/f'{section}.html').read_text()
+  assert html.index(BASE+'assets/circuit-images.min.js')<html.index(BASE+'assets/events.min.js')
  for section in ('worldgt','worldgt-sprint','worldgt-endurance','daily-race','atx-series'):
   assert BASE+'assets/events.min.js' in (ROOT/language/'acc'/f'{section}.html').read_text()
 for language in ('de','es','it'):
