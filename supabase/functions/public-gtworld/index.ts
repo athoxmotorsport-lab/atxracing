@@ -33,7 +33,7 @@ Deno.serve(async (request) => {
     if (!ids.length) return json({ season, category, points_system: { positions: positions, fastest_lap: 2 }, standings: [], events: [] });
 
     const { data: results, error: resultsError } = await supabase.from("results")
-      .select("event_id, driver_id, status, finish_position, best_lap_ms, driver:drivers!inner(display_name)")
+      .select("event_id, driver_id, status, finish_position, points, best_lap_ms, driver:drivers!inner(display_name)")
       .in("event_id", ids);
     if (resultsError) throw resultsError;
     const { data: publicDrivers, error: driversError } = await supabase.from("drivers").select("id").eq("is_profile_public", true);
@@ -42,6 +42,12 @@ Deno.serve(async (request) => {
     const officialIds=new Set(gtEvents.filter(e=>e.result_publication_state==="official").map(e=>e.id));
     const visibleResults = (results ?? []).filter((result) => officialIds.has(result.event_id)&&publicDriverIds.has(result.driver_id));
 
+    if(category==='WGT_AMERICAN_DREAM'){
+      const totals=new Map<string,any>();
+      for(const r of visibleResults){const driver=Array.isArray(r.driver)?r.driver[0]:r.driver;const d=totals.get(r.driver_id)||{driver_id:r.driver_id,display_name:driver?.display_name||'ACC',points:0,races:0,wins:0,podiums:0};d.points+=Number(r.points||0);d.races++;if(r.status==='classified'&&r.finish_position===1)d.wins++;if(r.status==='classified'&&r.finish_position!=null&&r.finish_position<=3)d.podiums++;totals.set(r.driver_id,d);}
+      const standings=[...totals.values()].sort((a,b)=>b.points-a.points||b.wins-a.wins).map((d,i)=>({...d,rank:i+1}));
+      return json({generated_at:new Date().toISOString(),season,category,entry_mode:'solo',points_system:{positions,fastest_lap:2},standings,events:gtEvents.map(e=>({...e,drivers:visibleResults.filter(r=>r.event_id===e.id)}))});
+    }
     const { data: registrations, error: registrationsError } = await supabase.from("registrations")
       .select("event_id, driver_id, team_name").in("event_id", ids);
     if (registrationsError) throw registrationsError;

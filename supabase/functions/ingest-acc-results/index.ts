@@ -209,7 +209,7 @@ const resolveEvent = async (payload: ImportPayload): Promise<EventRow> => {
       .gte('starts_at',new Date(day-86400000).toISOString())
       .lt('starts_at',new Date(day+2*86400000).toISOString());
     if(matchError)throw matchError;
-    const published=matchPublishedRace(candidates,code,key,payload.debutCourse,payload.dateSession);
+    const published=matchPublishedRace(candidates,code,key,payload.debutCourse,payload.dateSession,payload.nomServeur);
     if(published)return published as EventRow;
     // Never attach a coded session to a different competition on the same day.
     if(candidates?.some(e=>e.site_registration_enabled&&e.is_public&&e.status!=='draft'&&e.status!=='cancelled'))throw Error('ACC session outside published race window');

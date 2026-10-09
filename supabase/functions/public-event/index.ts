@@ -113,8 +113,8 @@ Deno.serve(async (request) => {
     return [result.driver_id, driver];
   }));
   const wgtTitle = [event.server_name, event.title_fr, event.title_en].join(" | ");
-  const isWorldGT = event.competition_code === "WGT" || /(?:^|[^a-z0-9])WGT(?=$|[^a-z0-9])|WORLD\\s*GT/i.test(wgtTitle)
-    || (["sprint","endurance"].includes(String(event.event_type)) && /\\b(SPRINT|ENDU)\\b/i.test(wgtTitle));
+  const isWorldGT = worldGTChampionship(event)!=="WGT_AMERICAN_DREAM" && (event.competition_code === "WGT" || /(?:^|[^a-z0-9])WGT(?=$|[^a-z0-9])|WORLD\\s*GT/i.test(wgtTitle)
+    || (["sprint","endurance"].includes(String(event.event_type)) && /\\b(SPRINT|ENDU)\\b/i.test(wgtTitle)));
   let teamResults: Array<{
     team_name: string; finish_position: number | null; best_lap_ms: number | null;
     points: number; fastest_lap_bonus: number; members: string[]; car_model_name: string | null; laps_completed: number;

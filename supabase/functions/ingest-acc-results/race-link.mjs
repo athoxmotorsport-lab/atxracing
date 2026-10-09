@@ -5,7 +5,7 @@ export function competitionCode(serverName){
  if(unique.length>1)throw Error('Ambiguous ACC competition code');
  return unique[0]||null;
 }
-export function matchPublishedRace(events,code,key,stamp,date){
+export function matchPublishedRace(events,code,key,stamp,date,serverName){
  if(!code)return null;
  const instant=Date.parse(stamp||'');
  const candidates=(events||[]).filter(e=>e.is_public&&e.status!=='draft'&&e.status!=='cancelled'&&e.competition_code===code&&e.circuit_key===key).filter(e=>{
@@ -14,7 +14,11 @@ export function matchPublishedRace(events,code,key,stamp,date){
   const schedule=(e.event_schedule||[]).reduce((n,s)=>n+Number(s.durationMinutes||s.duration_minutes||0),0);
   return instant>=opens-30*60000&&instant<=start+(Math.max(schedule,Number(e.duration_minutes)||0)+90)*60000;
  });
- if(!candidates.length)return null;
+ if(!candidates.length){
+  // Named WGT round exports may use the file time instead of the session start.
+  if(code==='WGT'&&serverName){const clean=v=>String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');const source=clean(serverName);const named=(events||[]).filter(e=>e.is_public&&e.status!=='draft'&&e.status!=='cancelled'&&e.competition_code===code&&e.circuit_key===key&&String(e.starts_at||'').slice(0,10)===date).filter(e=>[e.title_fr,e.title_en].some(t=>clean(t).length>=8&&source.includes(clean(t))));if(named.length>1)throw Error('Ambiguous named WGT race');if(named.length===1)return named[0];}
+  return null;
+ }
  if(candidates.length===1)return candidates[0];
  if(!Number.isFinite(instant))throw Error('ACC session time required to distinguish recurring races');
  candidates.sort((a,b)=>Math.abs(Date.parse(a.starts_at)-instant)-Math.abs(Date.parse(b.starts_at)-instant));

@@ -15,7 +15,7 @@ Les classements pilotes et équipes séparent WGT Sprint, WGT Endurance et WGT A
 | 9 | 2 | 4 |
 | 10 | 1 | 2 |
 
-Le bonus existant du meilleur tour reste de 2 points. Un équipage gagne ses points une seule fois ; chaque pilote participant reçoit ces mêmes points. Les équipages non identifiés restent sans points WGT jusqu’à leur identification. Seuls les résultats officiels alimentent les classements.
+Le bonus existant du meilleur tour reste de 2 points. American Dream est une compétition solo : les résultats et points individuels validés alimentent son classement, sans inscription d’équipage. Sprint et Endurance attribuent les points une seule fois par équipage ; chaque pilote participant reçoit ces mêmes points. Les équipages non identifiés restent sans points dans ces deux championnats jusqu’à leur identification. Seuls les résultats officiels alimentent les classements.
 
 Dans l’administration, le champ « Championnat WGT » définit le classement de la course, indépendamment de son format. `events.championship_code` conserve cette affectation ; les changements de titre ne déplacent pas une course vers un autre classement. La publication du brouillon transmet ce champ dans la même transaction.
 

@@ -259,7 +259,7 @@ const buildLeaderboard = async (request: Request): Promise<Response> => {
       && eventRow(result.event)?.status !== "draft" && eventRow(result.event)?.status !== "cancelled"
       && eventRow(result.event)?.result_publication_state === "official"
       && (category === "ALL" || raceCategory(result.event) === category));
-    const wgtRawResults = generalResults.filter((result) => raceCategory(result.event).startsWith("WGT"));
+    const wgtRawResults = generalResults.filter((result) => (raceCategory(result.event).startsWith("WGT") && raceCategory(result.event)!=="WGT_AMERICAN_DREAM"));
     const wgtEventIds = [...new Set(wgtRawResults.map((result) => String(eventRow(result.event)?.id ?? "")).filter(Boolean))];
     let wgtRegistrations: Array<{event_id:string; driver_id:string; team_name:string|null}> = [];
     if (wgtEventIds.length) {
@@ -278,7 +278,7 @@ const buildLeaderboard = async (request: Request): Promise<Response> => {
     const wgtEntryForResult = (result: Record<string, unknown>) =>
       wgtScore.driverPoints.get(String(eventRow(result.event)?.id ?? "") + "|" + String(result.driver_id));
     const pointsForResult = (result: Record<string, unknown>): number => {
-      if (!raceCategory(result.event).startsWith("WGT")) return Number(result.points ?? 0);
+      if (!(raceCategory(result.event).startsWith("WGT") && raceCategory(result.event)!=="WGT_AMERICAN_DREAM")) return Number(result.points ?? 0);
       return wgtEntryForResult(result)?.points ?? 0;
     };
 
@@ -379,8 +379,8 @@ const buildLeaderboard = async (request: Request): Promise<Response> => {
         primary_car: carsUsed[0] ?? null,
         cars_used: carsUsed,
         races: driverResults.length,
-        wins: driverResults.filter((result) => result.status === "classified" && (raceCategory(result.event).startsWith("WGT") ? wgtEntryForResult(result)?.finish_position === 1 : result.finish_position === 1)).length,
-        podiums: driverResults.filter((result) => result.status === "classified" && (raceCategory(result.event).startsWith("WGT") ? (wgtEntryForResult(result)?.finish_position ?? 999) <= 3 : Number(result.finish_position) <= 3)).length,
+        wins: driverResults.filter((result) => result.status === "classified" && ((raceCategory(result.event).startsWith("WGT") && raceCategory(result.event)!=="WGT_AMERICAN_DREAM") ? wgtEntryForResult(result)?.finish_position === 1 : result.finish_position === 1)).length,
+        podiums: driverResults.filter((result) => result.status === "classified" && ((raceCategory(result.event).startsWith("WGT") && raceCategory(result.event)!=="WGT_AMERICAN_DREAM") ? (wgtEntryForResult(result)?.finish_position ?? 999) <= 3 : Number(result.finish_position) <= 3)).length,
         points: driverResults.reduce((total, result) => total + pointsForResult(result), 0),
         points_per_race: driverResults.length ? driverResults.reduce((total, result) => total + pointsForResult(result), 0) / driverResults.length : 0,
         circuits: circuitPaces.length,
@@ -426,7 +426,7 @@ const buildLeaderboard = async (request: Request): Promise<Response> => {
     });
 
     const teamGroups = new Map<string, { team_name: string; points: number; races: number; wins: number; podiums: number; member_ids: Set<string>; pace_scores: number[] }>();
-    if (category.startsWith("WGT")) {
+    if (category.startsWith("WGT") && category!=="WGT_AMERICAN_DREAM") {
       // One line per racing team; a two-driver crew contributes its points once.
       const paceByDriver = new Map(rows.map((driver) => [driver.driver_id, driver.performance_score]));
       for (const entry of wgtScore.entries) {
