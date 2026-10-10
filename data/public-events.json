@@ -200,56 +200,6 @@
     "status": "completed"
   },
   {
-    "slug": "2026-10-10-monza-endu-1-000-km-monza-6ecdb1e4",
-    "title_fr": "WGT: 1.000 Km Monza",
-    "title_en": "WGT: 1.000 Km Monza",
-    "description_fr": null,
-    "description_en": null,
-    "circuit_name": "Monza",
-    "starts_at": "2026-10-10T06:00:00+00:00",
-    "duration_minutes": 520,
-    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2026-10-10/d47e210e-00d6-4a0d-8b69-62961a603c43.jpg",
-    "simgrid_url": "https://www.thesimgrid.com/championships/27590",
-    "competition_code": "WGT",
-    "format_code": null,
-    "championship_code": "WGT_ENDURANCE",
-    "site_registration_enabled": false,
-    "mandatory_stop_count": null,
-    "car_class": "GT3",
-    "result_publication_state": "provisional",
-    "event_schedule": [
-      {
-        "end": "10:00",
-        "key": "practice_1",
-        "start": "08:00",
-        "labelEn": "Free practice",
-        "labelFr": "Essais libres"
-      },
-      {
-        "end": "10:20",
-        "key": "briefing",
-        "start": "10:00",
-        "labelEn": "Free practice 2 - Briefing (Discord)",
-        "labelFr": "Essais libres 2 - Briefing (Discord)"
-      },
-      {
-        "end": "10:50",
-        "key": "qualifying",
-        "start": "10:20",
-        "labelEn": "Qualifying",
-        "labelFr": "Qualifications"
-      },
-      {
-        "end": "16:10",
-        "key": "race",
-        "start": "10:50",
-        "labelEn": "Race",
-        "labelFr": "Course"
-      }
-    ],
-    "status": "registration_open"
-  },
-  {
     "slug": "2026-10-16-indianapolis-american-dream-eb79a30c",
     "title_fr": "WGT: AMERICAN DREAM MANCHE 2",
     "title_en": "WGT: AMERICAN DREAM MANCHE 2",
