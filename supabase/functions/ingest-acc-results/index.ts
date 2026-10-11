@@ -1,3 +1,6 @@
+import {expandCrews,loadSimgridTeams} from './crews.mjs';
+import {worldGTChampionship} from '../_shared/worldgt-scoring.ts';
+import {competitiveRace} from '../_shared/race-visibility.mjs';
 import {competitionCode,matchPublishedRace} from './race-link.mjs';
 import { adminClient } from "../_shared/auth.ts";
 
@@ -13,6 +16,9 @@ type DriverPayload = {
   numeroVoiture?: number | null;
   groupeVoiture?: string | null;
   statut?: string;
+  teamName?: string;
+  personalBestLapMs?: number | null;
+  personalSplits?: Array<number | null>;
 };
 
 type ImportPayload = {
@@ -46,7 +52,7 @@ type ImportPayload = {
   }>;
 };
 
-const PROCESSOR_VERSION = "acc-v5";
+const PROCESSOR_VERSION = "acc-v6-crews";
 const MAX_VALID_ACC_LAP_TIME_MS = 3_600_000;
 
 type EventRow = {
@@ -345,6 +351,25 @@ const ingest = async (payload: ImportPayload, rawJson: string) => {
       if(error)throw error;
       return {duplicate:false,locked:true,batch_id:batchId,event_slug:event.slug,imported_drivers:0};
     }
+    const championship=worldGTChampionship(event);
+    if(payload.typeSession==='R'&&championship&&event.championship_code!==championship){
+      const {error:championshipError}=await supabase.from('events').update({championship_code:championship,competition_code:'WGT'}).eq('id',event.id);
+      if(championshipError)throw championshipError;
+      event.championship_code=championship;event.competition_code='WGT';
+    }
+    const crewRace=payload.typeSession==='R' && ['WGT_SPRINT','WGT_ENDURANCE'].includes(championship ?? '');
+    if(crewRace){
+      const raw=JSON.parse(rawJson);
+      const teams=await loadSimgridTeams(event.simgrid_url);
+      const {data:existingRegistrations,error:registrationError}=await supabase.from('registrations').select('race_number,team_name').eq('event_id',event.id);
+      if(registrationError)throw registrationError;
+      for(const row of existingRegistrations??[])if(row.team_name?.trim()&&!teams.has(row.race_number))teams.set(row.race_number,row.team_name.trim());
+      payload={...payload,resultats:expandCrews(payload.resultats,raw,teams)};
+    }
+    const {data:cars,error:carsError}=await supabase.from('atx_acc_cars').select('car_model_id,name');
+    if(carsError)throw carsError;
+    const names=new Map((cars??[]).map(car=>[car.car_model_id,car.name]));
+    payload={...payload,resultats:payload.resultats.map(result=>({...result,nomVoiture:names.get(result.modeleVoiture)??result.nomVoiture??({15:"Lexus RC F GT3",23:"Porsche 911 II GT3 Cup"}[result.modeleVoiture??-1])??`Modèle ACC ${result.modeleVoiture}`}))};
     const storagePath = `${payload.dateSession || "unknown-date"}/${payload.empreinte}-${slugPart(payload.nomFichier) || "result"}.json`;
     const { error: storageError } = await supabase.storage.from("acc-results").upload(
       storagePath,
@@ -378,15 +403,19 @@ const ingest = async (payload: ImportPayload, rawJson: string) => {
       const displayName = (result.pilote.pseudo || "ACC Driver").trim().slice(0, 64);
       const driverId = await resolveDriver(steamId, displayName);
       driverIds.set(steamId, driverId);
+      if(crewRace){
+        const {error:crewError}=await supabase.from('registrations').upsert({event_id:event.id,driver_id:driverId,status:'confirmed',race_number:result.numeroVoiture,car_model:result.nomVoiture,team_name:result.teamName,external_source:'acc-collector'},{onConflict:'event_id,driver_id'});
+        if(crewError)throw crewError;
+      }
       const values = {
         session_id: session.id,
         driver_id: driverId,
         position: result.position ?? null,
         laps_completed: result.tours ?? 0,
-        best_lap_ms: lapTimeOrNull(result.meilleurTourMs),
-        best_split_1_ms: result.secteurs?.[0] ?? null,
-        best_split_2_ms: result.secteurs?.[1] ?? null,
-        best_split_3_ms: result.secteurs?.[2] ?? null,
+        best_lap_ms: lapTimeOrNull(crewRace ? result.personalBestLapMs : result.meilleurTourMs),
+        best_split_1_ms: (crewRace ? result.personalSplits : result.secteurs)?.[0] ?? null,
+        best_split_2_ms: (crewRace ? result.personalSplits : result.secteurs)?.[1] ?? null,
+        best_split_3_ms: (crewRace ? result.personalSplits : result.secteurs)?.[2] ?? null,
         total_time_ms: positiveOrNull(result.tempsTotalMs),
         car_model_id: result.modeleVoiture ?? null,
         car_model_name: result.nomVoiture ?? null,
@@ -526,7 +555,9 @@ const ingest = async (payload: ImportPayload, rawJson: string) => {
         for (const { bestLapMs, steamId } of timedResults) {
           const driverId = driverIds.get(steamId);
           if (!driverId) continue;
-          const score = Number(((bestLapMs / reference) * 100).toFixed(3));
+          const personal=crewRace ? payload.resultats.find(result=>normalizeSteamId(result.pilote.steamId)===steamId)?.personalBestLapMs : bestLapMs;
+          if(!personal)continue;
+          const score = Number(((personal / reference) * 100).toFixed(3));
           const driverLaps = (payload.tours ?? []).filter((lap) => normalizeSteamId(lap.steamId) === steamId);
           const valid = driverLaps.filter((lap) => lap.valide !== false).length;
           const safeScore = driverLaps.length ? Number(((valid / driverLaps.length) * 100).toFixed(3)) : 0;
@@ -557,6 +588,10 @@ const ingest = async (payload: ImportPayload, rawJson: string) => {
         published_at: new Date().toISOString(),
       }).eq("id", event.id);
       if(finishImportError)throw finishImportError;
+      if(competitiveRace(event)&&!payload.modeTest){
+        const {error:publicationError}=await supabase.rpc('atx_finalize_import',{p_event:event.id});
+        if(publicationError)throw publicationError;
+      }
     }
 
     await supabase.from("ingestion_batches").update({

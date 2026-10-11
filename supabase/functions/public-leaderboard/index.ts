@@ -375,7 +375,7 @@ const buildLeaderboard = async (request: Request): Promise<Response> => {
         profile_id: publicProfileId(driver.id),
         display_name: driver.display_name,
         avatar_url: driver.avatar_url,
-        team_name: driver.team_name,
+        team_name: ['WGT_SPRINT','WGT_ENDURANCE'].includes(category) ? [...new Set(driverResults.map(result=>wgtEntryForResult(result)?.team_name).filter(Boolean))].join(' / ') || null : driver.team_name,
         primary_car: carsUsed[0] ?? null,
         cars_used: carsUsed,
         races: driverResults.length,
