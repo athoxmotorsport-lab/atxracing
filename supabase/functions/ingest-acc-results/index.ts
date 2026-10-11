@@ -518,16 +518,16 @@ const ingest = async (payload: ImportPayload, rawJson: string) => {
           start_position: qualifyingPositions.get(driverId) ?? null,
           finish_position: result.position ?? null,
           laps_completed: result.tours ?? 0,
-          best_lap_ms: lapTimeOrNull(result.meilleurTourMs),
+          best_lap_ms: lapTimeOrNull(crewRace ? result.personalBestLapMs : result.meilleurTourMs),
           total_time_ms: positiveOrNull(result.tempsTotalMs),
           points: (classified ? pointsForPosition(result.position) : 0) + (steamId === fastestSteamId ? 2 : 0),
           imported_at: new Date().toISOString(),
           car_model_id: result.modeleVoiture ?? null,
           car_model_name: result.nomVoiture ?? null,
           race_number: result.numeroVoiture ?? null,
-          best_split_1_ms: result.secteurs?.[0] ?? null,
-          best_split_2_ms: result.secteurs?.[1] ?? null,
-          best_split_3_ms: result.secteurs?.[2] ?? null,
+          best_split_1_ms: (crewRace ? result.personalSplits : result.secteurs)?.[0] ?? null,
+          best_split_2_ms: (crewRace ? result.personalSplits : result.secteurs)?.[1] ?? null,
+          best_split_3_ms: (crewRace ? result.personalSplits : result.secteurs)?.[2] ?? null,
         }, { onConflict: "event_id,driver_id" });
         if (error) throw error;
 
