@@ -2,6 +2,7 @@ import { adminClient } from "../_shared/auth.ts";
 import { worldGTPoints, worldGTChampionship } from "../_shared/worldgt-scoring.ts";
 import {competitiveRace} from '../_shared/race-visibility.mjs';
 import {nativeCounts} from './counts.ts';
+import { raceParticipants } from './participants.mjs';
 import { eventFeed } from './feed.ts';
 
 const cors = {
@@ -153,8 +154,10 @@ Deno.serve(async (request) => {
   }
   const {data:decisionRows,error:decisionError}=await supabase.from('atx_result_decisions').select('reason_fr,reason_en,before_value,after_value,created_at').eq('event_id',event.id).order('created_at',{ascending:false}).limit(50);
   if(decisionError)return json({error:'decisions_unavailable'},500);
+  let participants;
+  try {participants=await raceParticipants(supabase,event,publicDriverIds);} catch {return json({error:'participants_unavailable'},500);}
   return json({
-    event:(await nativeCounts(supabase,[event]))[0], decisions:decisionRows??[], results: visibleResults, team_results: teamResults,
+    participants, event:(await nativeCounts(supabase,[event]))[0], decisions:decisionRows??[], results: visibleResults, team_results: teamResults,
     is_worldgt: isWorldGT, team_assignments_complete: teamAssignmentsComplete,
     honours: visibleHonours.map((honour) => ({ ...honour, driver: driverById.get(honour.driver_id) ?? null })),
   });

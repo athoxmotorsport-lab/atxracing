@@ -14,7 +14,7 @@
   const label=document.createElement('span');label.textContent=canonical[model]||model;wrap.append(image,label);return wrap;
  }
  window.ATX_CAR_IMAGES={create:visual,file:model=>lookup.get(String(model).toLowerCase())||null};
- const excluded='script,style,textarea,select,option,svg,code,pre,[contenteditable],.car-model-visual,.driver-favourite-car,.registration-car-option';
+ const excluded='script,style,textarea,select,option,svg,code,pre,[contenteditable],.car-model-visual,.driver-favourite-car,.registration-car-option,.race-participant-car';
  function enhanceText(text){
   const parent=text.parentElement;if(!parent||parent.closest(excluded))return;
   if(parent.closest('label')?.querySelector('img[src*="/gt3/"]'))return;
