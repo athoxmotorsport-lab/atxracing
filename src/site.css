@@ -259,3 +259,10 @@ body[data-page=profile]{--profile-level:#aeb5be}body[data-page=profile][data-dri
 .entry-discovery{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin:18px 0;font-size:.85rem;color:#c6cbd4}.entry-discovery a{text-decoration:underline;text-underline-offset:4px}.entry-discovery a:hover{color:#fff}
 
 .media-video-card{padding:0;overflow:hidden;border-radius:8px}.media-copy{padding:22px}.media-card:not(.media-video-card) .media-copy{padding:0}.media-preview{display:block;position:relative;aspect-ratio:16/9;background:linear-gradient(135deg,#242830,#080c12);overflow:hidden}.media-preview img{width:100%;height:100%;object-fit:cover;transition:transform .2s}.media-preview:hover img{transform:scale(1.035)}.media-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:grid;place-items:center;width:64px;height:46px;padding-left:3px;border-radius:12px;background:#e52232;box-shadow:0 4px 25px #0008;color:#fff;font-size:23px}.media-preview:focus-visible{outline:3px solid #fff;outline-offset:-3px}
+/* One consistent vehicle treatment across results, profiles and controls. */
+.car-model-visual{display:inline-flex;align-items:center;gap:8px;max-width:100%;vertical-align:middle;white-space:normal;line-height:1.25}
+.car-model-visual>img{width:100px;height:56px;flex:0 0 100px;object-fit:contain;filter:drop-shadow(0 4px 7px #0008)}
+.car-model-visual>span{min-width:0;font-size:.85em}
+.car-select-preview{display:flex;margin-top:8px}
+.profile-race-info .car-model-visual{display:flex;margin-top:5px}
+@media(max-width:600px){.car-model-visual>img{width:78px;height:44px;flex-basis:78px}.car-model-visual{gap:5px}}
