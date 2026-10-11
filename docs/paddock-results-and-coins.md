@@ -55,3 +55,7 @@ Dans Administration → Événements publiés, « Modifier l’événement » pe
 `publication_origin` distingue les événements publiés par l’organisation des supports techniques créés pour les imports Collector. Seuls les événements d’origine organisateur apparaissent dans la gestion des événements publiés. Les Hotlaps, entraînements et free practices restent des sources de chronos pour les profils et circuits ; ils n’alimentent pas les points de championnat. Les résultats historiques Daily Race restent accessibles comme résultats de compétition.
 
 La suppression depuis l’administration retire l’événement du calendrier, supprime ses inscriptions et sa file d’attente et rembourse les Coins de participation non encore remboursés. Le support technique et les sessions ACC sont conservés pour préserver les chronos. Les résultats officiels validés sont verrouillés et ne peuvent pas être supprimés par ce bouton.
+
+## Arrivée et distinctions
+
+Fast Driver, Gentleman Driver et les récompenses de course sont réservés aux pilotes classés ayant franchi l’arrivée. DNF, DNS et DSQ sont exclus. Le Collector compare le dernier passage complet de chaque voiture à l’arrivée du leader ; les pilotes ayant terminé avec des tours de retard restent éligibles. En équipage, le statut d’arrivée de la voiture s’applique à ses pilotes participants. Les chronos personnels des abandons restent disponibles dans les profils et les records des circuits.

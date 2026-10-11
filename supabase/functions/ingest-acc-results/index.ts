@@ -1,3 +1,4 @@
+import {raceStatuses,resultStatus} from './finish-status.mjs';
 import {expandCrews,loadSimgridTeams} from './crews.mjs';
 import {worldGTChampionship} from '../_shared/worldgt-scoring.ts';
 import {competitiveRace} from '../_shared/race-visibility.mjs';
@@ -52,7 +53,7 @@ type ImportPayload = {
   }>;
 };
 
-const PROCESSOR_VERSION = "acc-v6-crews";
+const PROCESSOR_VERSION = "acc-v7-finishers";
 const MAX_VALID_ACC_LAP_TIME_MS = 3_600_000;
 
 type EventRow = {
@@ -121,11 +122,7 @@ const slugPart = (value: string): string => value
   .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
   .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
-const statusFromAcc = (value?: string): "classified" | "dnf" | "dns" | "dsq" => {
-  if (value === "disqualifie") return "dsq";
-  if (value === "non_classe") return "dns";
-  return "classified";
-};
+const statusFromAcc = (value?: string): 'classified' | 'dnf' | 'dns' | 'dsq' => resultStatus(value);
 
 const pointsForPosition = (position?: number | null): number => {
   const points = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1];
@@ -351,6 +348,10 @@ const ingest = async (payload: ImportPayload, rawJson: string) => {
       if(error)throw error;
       return {duplicate:false,locked:true,batch_id:batchId,event_slug:event.slug,imported_drivers:0};
     }
+    const rawSource=JSON.parse(rawJson);
+    if(payload.typeSession==='R'&&rawSource.sessionType!=='R')throw Error('ACC race session required');
+    const finishes=raceStatuses(rawSource);
+    if(payload.typeSession==='R')payload={...payload,resultats:payload.resultats.map(result=>({...result,statut:resultStatus(result.statut,finishes.get(Number(result.numeroVoiture)))}))};
     const championship=worldGTChampionship(event);
     if(payload.typeSession==='R'&&championship&&event.championship_code!==championship){
       const {error:championshipError}=await supabase.from('events').update({championship_code:championship,competition_code:'WGT'}).eq('id',event.id);
@@ -359,7 +360,7 @@ const ingest = async (payload: ImportPayload, rawJson: string) => {
     }
     const crewRace=payload.typeSession==='R' && ['WGT_SPRINT','WGT_ENDURANCE'].includes(championship ?? '');
     if(crewRace){
-      const raw=JSON.parse(rawJson);
+      const raw=rawSource;
       const teams=await loadSimgridTeams(event.simgrid_url);
       const {data:existingRegistrations,error:registrationError}=await supabase.from('registrations').select('race_number,team_name').eq('event_id',event.id);
       if(registrationError)throw registrationError;
@@ -478,7 +479,7 @@ const ingest = async (payload: ImportPayload, rawJson: string) => {
       const timedResults = payload.resultats.flatMap((result) => {
         const bestLapMs = lapTimeOrNull(result.meilleurTourMs);
         const steamId = normalizeSteamId(result.pilote?.steamId);
-        return bestLapMs && steamId ? [{ result, bestLapMs, steamId }] : [];
+        return bestLapMs && steamId && statusFromAcc(result.statut)==="classified" ? [{ result, bestLapMs, steamId }] : [];
       });
       const fastestResult = [...timedResults].sort((first, second) =>
         first.bestLapMs - second.bestLapMs ||
@@ -520,7 +521,7 @@ const ingest = async (payload: ImportPayload, rawJson: string) => {
           laps_completed: result.tours ?? 0,
           best_lap_ms: lapTimeOrNull(crewRace ? result.personalBestLapMs : result.meilleurTourMs),
           total_time_ms: positiveOrNull(result.tempsTotalMs),
-          points: (classified ? pointsForPosition(result.position) : 0) + (steamId === fastestSteamId ? 2 : 0),
+          points: (classified ? pointsForPosition(result.position) : 0) + (classified && steamId === fastestSteamId ? 2 : 0),
           imported_at: new Date().toISOString(),
           car_model_id: result.modeleVoiture ?? null,
           car_model_name: result.nomVoiture ?? null,

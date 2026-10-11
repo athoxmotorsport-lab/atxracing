@@ -138,7 +138,7 @@ Deno.serve(async (request) => {
     teamResults = entries.map((entry) => {
       const memberRows = visibleResults.filter((result) => entry.driver_ids.includes(result.driver_id));
       return {
-        team_name: entry.team_name, finish_position: entry.finish_position,
+        team_name: entry.team_name, finish_position: entry.finish_position, status: entry.finish_position===null?'dnf':'classified',
         best_lap_ms: entry.best_lap_ms, points: entry.points,
         fastest_lap_bonus: entry.fastest_lap_bonus,
         members: memberRows.map((row) => {
