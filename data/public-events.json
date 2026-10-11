@@ -50,56 +50,6 @@
     "status": "completed"
   },
   {
-    "slug": "2026-09-27-valencia-dr-valencia-d85f64a0",
-    "title_fr": "ATXRACING |  DR Valencia",
-    "title_en": "ATXRACING |  DR Valencia",
-    "description_fr": null,
-    "description_en": null,
-    "circuit_name": "VALENCIA",
-    "starts_at": "2026-09-27T15:24:53+00:00",
-    "duration_minutes": 60,
-    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2026-09-27/937fa1f0-66ea-48b1-986d-26fb7ba527ce.jpg",
-    "simgrid_url": "https://www.thesimgrid.com/championships/27664",
-    "competition_code": "DR",
-    "format_code": null,
-    "championship_code": null,
-    "site_registration_enabled": false,
-    "mandatory_stop_count": null,
-    "car_class": "GT3",
-    "result_publication_state": "official",
-    "event_schedule": [
-      {
-        "end": "16:00",
-        "key": "practice_1",
-        "start": "15:45",
-        "labelEn": "Free practice",
-        "labelFr": "Essais libres"
-      },
-      {
-        "end": "00:00",
-        "key": "briefing",
-        "start": "00:00",
-        "labelEn": "Free practice 2 - Briefing (Discord)",
-        "labelFr": "Essais libres 2 - Briefing (Discord)"
-      },
-      {
-        "end": "16:30",
-        "key": "qualifying",
-        "start": "16:00",
-        "labelEn": "Qualifying",
-        "labelFr": "Qualifications"
-      },
-      {
-        "end": "17:30",
-        "key": "race",
-        "start": "16:30",
-        "labelEn": "Race",
-        "labelFr": "Course"
-      }
-    ],
-    "status": "completed"
-  },
-  {
     "slug": "2026-10-04-nurburgring-24h-la-bataille-de-l-enfer-vert-ac366094",
     "title_fr": "ATXRACING |  Daily Race Nurburgring 24h",
     "title_en": "ATXRACING |  Daily Race Nurburgring 24h",
@@ -850,6 +800,49 @@
     "status": "registration_open"
   },
   {
+    "slug": "atx-163f89d660a74223a04dc831",
+    "title_fr": "ATX Series · Hungaroring",
+    "title_en": "ATX Series · Hungaroring",
+    "description_fr": "Rendez-vous toutes les 90 minutes : 2 minutes d’essais, 15 minutes de qualifications et 45 minutes de course. Inscription sur le site obligatoire, classement ATXS.",
+    "description_en": "Rendezvous every 90 minutes: 2 minutes of practice, 15 minutes of qualifying and a 45-minute race. Website registration required, ATXS standings.",
+    "circuit_name": "Hungaroring",
+    "starts_at": "2026-10-14T15:30:00+00:00",
+    "duration_minutes": 45,
+    "image_url": "https://athoxmotorsport-lab.github.io/atxracing/assets/circuits/hungaroring.webp",
+    "simgrid_url": null,
+    "competition_code": "ATXS",
+    "format_code": "ATXS",
+    "championship_code": null,
+    "site_registration_enabled": true,
+    "mandatory_stop_count": 0,
+    "car_class": "GT3",
+    "result_publication_state": "provisional",
+    "event_schedule": [
+      {
+        "end": "17:32",
+        "key": "practice_1",
+        "start": "17:30",
+        "labelEn": "Free practice",
+        "labelFr": "Essais libres"
+      },
+      {
+        "end": "17:47",
+        "key": "qualifying",
+        "start": "17:32",
+        "labelEn": "Qualifying",
+        "labelFr": "Qualifications"
+      },
+      {
+        "end": "18:32",
+        "key": "race",
+        "start": "17:47",
+        "labelEn": "Race",
+        "labelFr": "Course"
+      }
+    ],
+    "status": "registration_open"
+  },
+  {
     "slug": "atx-2a7e7a6514414582a32141c7",
     "title_fr": "Serveur: ATXRACING |  ATX SERIES",
     "title_en": "Serveur: ATXRACING |  ATX SERIES",
@@ -893,13 +886,13 @@
     "status": "completed"
   },
   {
-    "slug": "atx-7d9b1331c8fa4536b0b2b6e8",
-    "title_fr": "ATX Series · Spa",
-    "title_en": "ATX Series · Spa",
+    "slug": "atx-58ba0a1c83d247c6bc2e854b",
+    "title_fr": "ATX Series",
+    "title_en": "ATX Series",
     "description_fr": "Rendez-vous toutes les 90 minutes : 2 minutes d’essais, 15 minutes de qualifications et 45 minutes de course. Inscription sur le site obligatoire, classement ATXS.",
     "description_en": "Rendezvous every 90 minutes: 2 minutes of practice, 15 minutes of qualifying and a 45-minute race. Website registration required, ATXS standings.",
-    "circuit_name": "Spa",
-    "starts_at": "2026-11-13T12:00:00+00:00",
+    "circuit_name": "spa francorchamps",
+    "starts_at": "2026-10-14T11:00:00+00:00",
     "duration_minutes": 45,
     "image_url": "https://athoxmotorsport-lab.github.io/atxracing/assets/circuits/spa.webp",
     "simgrid_url": null,
@@ -929,6 +922,92 @@
         "end": "14:02",
         "key": "race",
         "start": "13:17",
+        "labelEn": "Race",
+        "labelFr": "Course"
+      }
+    ],
+    "status": "registration_open"
+  },
+  {
+    "slug": "atx-6bca95f7b3d44d6ca43f1ee8",
+    "title_fr": "ATX Series · Silverstone",
+    "title_en": "ATX Series · Silverstone",
+    "description_fr": "Rendez-vous toutes les 90 minutes : 2 minutes d’essais, 15 minutes de qualifications et 45 minutes de course. Inscription sur le site obligatoire, classement ATXS.",
+    "description_en": "Rendezvous every 90 minutes: 2 minutes of practice, 15 minutes of qualifying and a 45-minute race. Website registration required, ATXS standings.",
+    "circuit_name": "Silverstone",
+    "starts_at": "2026-10-14T14:00:00+00:00",
+    "duration_minutes": 45,
+    "image_url": "https://athoxmotorsport-lab.github.io/atxracing/assets/circuits/silverstone.webp",
+    "simgrid_url": null,
+    "competition_code": "ATXS",
+    "format_code": "ATXS",
+    "championship_code": null,
+    "site_registration_enabled": true,
+    "mandatory_stop_count": 0,
+    "car_class": "GT3",
+    "result_publication_state": "provisional",
+    "event_schedule": [
+      {
+        "end": "16:02",
+        "key": "practice_1",
+        "start": "16:00",
+        "labelEn": "Free practice",
+        "labelFr": "Essais libres"
+      },
+      {
+        "end": "16:17",
+        "key": "qualifying",
+        "start": "16:02",
+        "labelEn": "Qualifying",
+        "labelFr": "Qualifications"
+      },
+      {
+        "end": "17:02",
+        "key": "race",
+        "start": "16:17",
+        "labelEn": "Race",
+        "labelFr": "Course"
+      }
+    ],
+    "status": "registration_open"
+  },
+  {
+    "slug": "atx-ccdc6c2c05114783bdf2e5cd",
+    "title_fr": "ATX Series · Monza",
+    "title_en": "ATX Series · Monza",
+    "description_fr": "Rendez-vous toutes les 90 minutes : 2 minutes d’essais, 15 minutes de qualifications et 45 minutes de course. Inscription sur le site obligatoire, classement ATXS.",
+    "description_en": "Rendezvous every 90 minutes: 2 minutes of practice, 15 minutes of qualifying and a 45-minute race. Website registration required, ATXS standings.",
+    "circuit_name": "Monza",
+    "starts_at": "2026-10-14T12:30:00+00:00",
+    "duration_minutes": 45,
+    "image_url": "https://backoffice.gpt-worldwide.com/uploads/1599471039_3845352C-C193-4733-9A84-1138251A6D44.jpeg",
+    "simgrid_url": null,
+    "competition_code": "ATXS",
+    "format_code": "ATXS",
+    "championship_code": null,
+    "site_registration_enabled": true,
+    "mandatory_stop_count": 0,
+    "car_class": "GT3",
+    "result_publication_state": "provisional",
+    "event_schedule": [
+      {
+        "end": "14:32",
+        "key": "practice_1",
+        "start": "14:30",
+        "labelEn": "Free practice",
+        "labelFr": "Essais libres"
+      },
+      {
+        "end": "14:47",
+        "key": "qualifying",
+        "start": "14:32",
+        "labelEn": "Qualifying",
+        "labelFr": "Qualifications"
+      },
+      {
+        "end": "15:32",
+        "key": "race",
+        "start": "14:47",
         "labelEn": "Race",
         "labelFr": "Course"
       }
