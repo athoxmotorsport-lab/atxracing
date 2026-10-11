@@ -178,6 +178,9 @@ const resolveDriver = async (steamId: string, displayName: string): Promise<stri
     .select("driver_id").eq("steam_id64", steamId).maybeSingle();
   if (identityError) throw identityError;
   if (identity?.driver_id) {
+    const {data:merge,error:mergeError}=await supabase.from('driver_import_merges').select('target_driver_id').eq('source_driver_id',identity.driver_id).maybeSingle();
+    if(mergeError)throw mergeError;
+    if(merge)return merge.target_driver_id;
     const { data: driver } = await supabase.from("drivers")
       .select("display_name").eq("id", identity.driver_id).single();
     if (driver?.display_name === "Steam Driver") {
