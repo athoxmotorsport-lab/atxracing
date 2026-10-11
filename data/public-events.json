@@ -851,12 +851,12 @@
   },
   {
     "slug": "atx-2a7e7a6514414582a32141c7",
-    "title_fr": "ATX SERIES: MONZA",
-    "title_en": "ATX SERIES: MONZA",
+    "title_fr": "Serveur: ATXRACING |  ATX SERIES",
+    "title_en": "Serveur: ATXRACING |  ATX SERIES",
     "description_fr": "test",
     "description_en": "test",
     "circuit_name": "monza",
-    "starts_at": "2026-10-11T12:00:00+00:00",
+    "starts_at": "2026-10-11T13:19:09+00:00",
     "duration_minutes": 45,
     "image_url": "https://backoffice.gpt-worldwide.com/uploads/1599471039_3845352C-C193-4733-9A84-1138251A6D44.jpeg",
     "simgrid_url": null,
@@ -866,7 +866,7 @@
     "site_registration_enabled": true,
     "mandatory_stop_count": 0,
     "car_class": "GT3",
-    "result_publication_state": "provisional",
+    "result_publication_state": "official",
     "event_schedule": [
       {
         "end": "14:02",
@@ -890,7 +890,7 @@
         "labelFr": "Course"
       }
     ],
-    "status": "registration_open"
+    "status": "completed"
   },
   {
     "slug": "atx-7d9b1331c8fa4536b0b2b6e8",
