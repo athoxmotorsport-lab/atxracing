@@ -1,0 +1,878 @@
+{
+  "game": "ACE",
+  "source_url": "https://assettocorsa.gg/assetto-corsa-evo/",
+  "checked_at": "2026-10-12",
+  "availability_note": "Official website catalogue; verify the installed release before opening registrations.",
+  "cars": [
+    {
+      "key": "abarth-695-biposto-2022",
+      "name": "Abarth 695 Biposto (2022)",
+      "category": "road",
+      "image": "evo/cars/abarth-695-biposto-2022.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "alfa-romeo-75-1-8-turbo-evoluzione-1987",
+      "name": "Alfa Romeo 75 1.8 Turbo Evoluzione (1987)",
+      "category": "road",
+      "image": "evo/cars/alfa-romeo-75-1-8-turbo-evoluzione-1987.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "alfa-romeo-giulia-gtam-2021",
+      "name": "Alfa Romeo Giulia GTAm (2021)",
+      "category": "road",
+      "image": "evo/cars/alfa-romeo-giulia-gtam-2021.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "alfa-romeo-junior-elettrica-veloce-2024",
+      "name": "Alfa Romeo Junior Elettrica Veloce (2024)",
+      "category": "road",
+      "image": "evo/cars/alfa-romeo-junior-elettrica-veloce-2024.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "alpine-a110-s-2020",
+      "name": "Alpine A110 S (2020)",
+      "category": "road",
+      "image": "evo/cars/alpine-a110-s-2020.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "alpine-a290-2023",
+      "name": "Alpine A290_β (2023)",
+      "category": "road",
+      "image": "evo/cars/alpine-a290-2023.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "audi-rs-3-sportback-2022",
+      "name": "Audi RS 3 Sportback (2022)",
+      "category": "road",
+      "image": "evo/cars/audi-rs-3-sportback-2022.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "audi-r8-v10-performance-quattro",
+      "name": "Audi R8 V10 performance quattro",
+      "category": "road",
+      "image": "evo/cars/audi-r8-v10-performance-quattro.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "audi-sport-quattro-1983",
+      "name": "Audi Sport quattro (1983)",
+      "category": "road",
+      "image": "evo/cars/audi-sport-quattro-1983.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "bmw-m3-e46-csl-2003",
+      "name": "BMW M3 E46 CSL (2003)",
+      "category": "road",
+      "image": "evo/cars/bmw-m3-e46-csl-2003.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "audi-rs-6-avant",
+      "name": "Audi RS 6 Avant",
+      "category": "road",
+      "image": "evo/cars/audi-rs-6-avant.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "bmw-m2-coupe-g87",
+      "name": "BMW M2 Coupe (G87)",
+      "category": "road",
+      "image": "evo/cars/bmw-m2-coupe-g87.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "bmw-m4-csl-g82-2022",
+      "name": "BMW M4 CSL G82 (2022)",
+      "category": "road",
+      "image": "evo/cars/bmw-m4-csl-g82-2022.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "bmw-m8-competition-2022",
+      "name": "BMW M8 Competition (2022)",
+      "category": "road",
+      "image": "evo/cars/bmw-m8-competition-2022.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "bmw-m3-sport-evo-e30",
+      "name": "BMW M3 Sport Evo (E30)",
+      "category": "road",
+      "image": "evo/cars/bmw-m3-sport-evo-e30.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "caterham-485-csr",
+      "name": "Caterham 485 CSR",
+      "category": "road",
+      "image": "evo/cars/caterham-485-csr.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "chevrolet-camaro-zl1-2022",
+      "name": "Chevrolet Camaro ZL1 (2022)",
+      "category": "road",
+      "image": "evo/cars/chevrolet-camaro-zl1-2022.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "dallara-exp",
+      "name": "Dallara EXP",
+      "category": "road",
+      "image": "evo/cars/dallara-exp.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "dallara-stradale",
+      "name": "Dallara Stradale",
+      "category": "road",
+      "image": "evo/cars/dallara-stradale.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "ferrari-288-gto",
+      "name": "Ferrari 288 GTO",
+      "category": "road",
+      "image": "evo/cars/ferrari-288-gto.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "ferrari-296-gtb-2021",
+      "name": "Ferrari 296 GTB (2021)",
+      "category": "road",
+      "image": "evo/cars/ferrari-296-gtb-2021.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "ferrari-daytona-sp3-2021",
+      "name": "Ferrari Daytona SP3 (2021)",
+      "category": "road",
+      "image": "evo/cars/ferrari-daytona-sp3-2021.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "ford-escort-rs-cosworth-1994",
+      "name": "Ford Escort RS Cosworth (1994)",
+      "category": "road",
+      "image": "evo/cars/ford-escort-rs-cosworth-1994.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "honda-nsx-r-1992",
+      "name": "Honda NSX-R (1992)",
+      "category": "road",
+      "image": "evo/cars/honda-nsx-r-1992.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "honda-s-2000-2003",
+      "name": "Honda S-2000 (2003)",
+      "category": "road",
+      "image": "evo/cars/honda-s-2000-2003.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "hyundai-i30-n-hatchback-2021",
+      "name": "Hyundai i30 N Hatchback (2021)",
+      "category": "road",
+      "image": "evo/cars/hyundai-i30-n-hatchback-2021.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "lamborghini-countach",
+      "name": "Lamborghini Countach",
+      "category": "road",
+      "image": "evo/cars/lamborghini-countach.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "lamborghini-huracan-sto-2021",
+      "name": "Lamborghini Huracán STO (2021)",
+      "category": "road",
+      "image": "evo/cars/lamborghini-huracan-sto-2021.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "lancia-delta-hf-integrale-evoluzione-2-1993",
+      "name": "Lancia Delta HF Integrale “Evoluzione 2” (1993)",
+      "category": "road",
+      "image": "evo/cars/lancia-delta-hf-integrale-evoluzione-2-1993.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "lotus-emira-2021",
+      "name": "Lotus Emira (2021)",
+      "category": "road",
+      "image": "evo/cars/lotus-emira-2021.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "lotus-exige-v6-cup-2014",
+      "name": "Lotus Exige V6 Cup (2014)",
+      "category": "road",
+      "image": "evo/cars/lotus-exige-v6-cup-2014.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "mazda-mx-5-na-1994",
+      "name": "Mazda MX-5 NA (1994)",
+      "category": "road",
+      "image": "evo/cars/mazda-mx-5-na-1994.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "mazda-rx-7-fd",
+      "name": "Mazda RX-7 FD",
+      "category": "road",
+      "image": "evo/cars/mazda-rx-7-fd.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "mini-john-cooper-s-mk-vi-1990",
+      "name": "Mini John Cooper S Mk VI (1990)",
+      "category": "road",
+      "image": "evo/cars/mini-john-cooper-s-mk-vi-1990.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "mercedes-benz-190e-amg-2-5-16-evo-ii",
+      "name": "Mercedes-Benz 190E AMG 2.5-16 Evo II",
+      "category": "road",
+      "image": "evo/cars/mercedes-benz-190e-amg-2-5-16-evo-ii.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "nissan-datsun-240z-s30",
+      "name": "Nissan Datsun 240Z (S30)",
+      "category": "road",
+      "image": "evo/cars/nissan-datsun-240z-s30.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "nissan-datsun-240z-s30-tuned",
+      "name": "Nissan Datsun 240Z (S30) – Tuned",
+      "category": "road",
+      "image": "evo/cars/nissan-datsun-240z-s30-tuned.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "porsche-718-cayman-gt4-rs-2024",
+      "name": "Porsche 718 Cayman GT4 RS (2024)",
+      "category": "road",
+      "image": "evo/cars/porsche-718-cayman-gt4-rs-2024.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "porsche-911-turbo-3-6-964-1993",
+      "name": "Porsche 911 Turbo 3.6 [964] (1993)",
+      "category": "road",
+      "image": "evo/cars/porsche-911-turbo-3-6-964-1993.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "porsche-911-992-gt3-rs",
+      "name": "Porsche 911 (992) GT3 RS",
+      "category": "road",
+      "image": "evo/cars/porsche-911-992-gt3-rs.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "peugeot-205-t16-1984",
+      "name": "Peugeot 205 T16 (1984)",
+      "category": "road",
+      "image": "evo/cars/peugeot-205-t16-1984.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "renault-5-gt-turbo-1990",
+      "name": "Renault 5 GT Turbo (1990)",
+      "category": "road",
+      "image": "evo/cars/renault-5-gt-turbo-1990.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "toyota-ae86",
+      "name": "Toyota AE86",
+      "category": "road",
+      "image": "evo/cars/toyota-ae86.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "toyota-ae86-tuned",
+      "name": "Toyota AE86 Tuned",
+      "category": "road",
+      "image": "evo/cars/toyota-ae86-tuned.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "toyota-gr86-2024",
+      "name": "Toyota GR86 (2024)",
+      "category": "road",
+      "image": "evo/cars/toyota-gr86-2024.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "toyota-supra-turbo-rz-1998",
+      "name": "Toyota Supra Turbo RZ (1998)",
+      "category": "road",
+      "image": "evo/cars/toyota-supra-turbo-rz-1998.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "toyota-supra-turbo-rz-v2-drift",
+      "name": "Toyota Supra Turbo RZ V2 DRIFT",
+      "category": "road",
+      "image": "evo/cars/toyota-supra-turbo-rz-v2-drift.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "volkswagen-golf-8-gti-clubsport-2022",
+      "name": "Volkswagen Golf 8 GTI Clubsport (2022)",
+      "category": "road",
+      "image": "evo/cars/volkswagen-golf-8-gti-clubsport-2022.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "volkswagen-golf-8-r",
+      "name": "Volkswagen Golf 8 R",
+      "category": "road",
+      "image": "evo/cars/volkswagen-golf-8-r.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "volkswagen-golf-gti-mk1",
+      "name": "Volkswagen Golf GTI MK1",
+      "category": "road",
+      "image": "evo/cars/volkswagen-golf-gti-mk1.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "alfa-romeo-giulia-sprint-gta-1965",
+      "name": "Alfa Romeo Giulia Sprint GTA (1965)",
+      "category": "racing",
+      "image": "evo/cars/alfa-romeo-giulia-sprint-gta-1965.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "audi-r8-lms-gt2",
+      "name": "Audi R8 LMS GT2",
+      "category": "racing",
+      "image": "evo/cars/audi-r8-lms-gt2.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "audi-r8-lms-gt3-evo-ii",
+      "name": "Audi R8 LMS GT3 Evo II",
+      "category": "racing",
+      "image": "gt3/audi-r8-lms-gt3-evo-2.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "audi-r8-lms-gt4-evo",
+      "name": "Audi R8 LMS GT4 Evo",
+      "category": "racing",
+      "image": "evo/cars/audi-r8-lms-gt4-evo.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "bmw-m4-gt3-evo",
+      "name": "BMW M4 GT3 EVO",
+      "category": "racing",
+      "image": "evo/cars/bmw-m4-gt3-evo.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "bmw-m2-cs-racing-2020",
+      "name": "BMW M2 CS Racing (2020)",
+      "category": "racing",
+      "image": "evo/cars/bmw-m2-cs-racing-2020.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "caterham-seven-academy-racer",
+      "name": "Caterham Seven Academy Racer",
+      "category": "racing",
+      "image": "evo/cars/caterham-seven-academy-racer.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "ferrari-296-gt3",
+      "name": "Ferrari 296 GT3",
+      "category": "racing",
+      "image": "gt3/ferrari-296-gt3.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "ferrari-488-challenge-evo-2021",
+      "name": "Ferrari 488 Challenge Evo (2021)",
+      "category": "racing",
+      "image": "evo/cars/ferrari-488-challenge-evo-2021.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "ferrari-f40-lm-1993",
+      "name": "Ferrari F40 LM (1993)",
+      "category": "racing",
+      "image": "evo/cars/ferrari-f40-lm-1993.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "ferrari-f2004",
+      "name": "Ferrari F2004",
+      "category": "racing",
+      "image": "evo/cars/ferrari-f2004.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "ferrari-sf-25-2025",
+      "name": "Ferrari SF-25 (2025)",
+      "category": "racing",
+      "image": "evo/cars/ferrari-sf-25-2025.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "ford-mustang-gt3",
+      "name": "Ford Mustang GT3",
+      "category": "racing",
+      "image": "gt3/ford-mustang-gt3.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "ktm-x-bow-gt2",
+      "name": "KTM X-BOW GT2",
+      "category": "racing",
+      "image": "evo/cars/ktm-x-bow-gt2.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "ktm-x-bow-gt4",
+      "name": "KTM X-BOW GT4",
+      "category": "racing",
+      "image": "evo/cars/ktm-x-bow-gt4.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "lamborghini-huracan-super-trofeo-evo2",
+      "name": "Lamborghini Huracán Super Trofeo EVO2",
+      "category": "racing",
+      "image": "evo/cars/lamborghini-huracan-super-trofeo-evo2.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "maserati-gt2-2023",
+      "name": "Maserati GT2 (2023)",
+      "category": "racing",
+      "image": "evo/cars/maserati-gt2-2023.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "mazda-mx5-nd-cup-2017",
+      "name": "Mazda MX5 ND Cup (2017)",
+      "category": "racing",
+      "image": "evo/cars/mazda-mx5-nd-cup-2017.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "mercedes-amg-gt2-2023",
+      "name": "Mercedes-AMG GT2 (2023)",
+      "category": "racing",
+      "image": "evo/cars/mercedes-amg-gt2-2023.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "porsche-718-cayman-gt4-clubsport",
+      "name": "Porsche 718 Cayman GT4 Clubsport",
+      "category": "racing",
+      "image": "evo/cars/porsche-718-cayman-gt4-clubsport.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "porsche-935",
+      "name": "Porsche 935",
+      "category": "racing",
+      "image": "evo/cars/porsche-935.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "porsche-911-gt3-cup-992-2021",
+      "name": "Porsche 911 GT3 Cup [992] (2021)",
+      "category": "racing",
+      "image": "evo/cars/porsche-911-gt3-cup-992-2021.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "porsche-991ii-gt2-rs-clubsport-evo",
+      "name": "Porsche 991II GT2 RS Clubsport Evo",
+      "category": "racing",
+      "image": "evo/cars/porsche-991ii-gt2-rs-clubsport-evo.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "porsche-992-gt3-r-rennsport",
+      "name": "Porsche 992 GT3 R Rennsport",
+      "category": "racing",
+      "image": "evo/cars/porsche-992-gt3-r-rennsport.webp",
+      "artwork_kind": "generated-illustration",
+      "availability": "catalogued"
+    }
+  ],
+  "circuits": [
+    {
+      "key": "bathurst",
+      "name": "Bathurst",
+      "country": "AUS",
+      "colors": [
+        "#012169",
+        "#fff",
+        "#e4002b"
+      ],
+      "layouts": [],
+      "image": "circuits/mount_panorama.webp",
+      "artwork_kind": "existing-track-photo",
+      "availability": "catalogued"
+    },
+    {
+      "key": "brands-hatch",
+      "name": "Brands Hatch",
+      "country": "GBR",
+      "colors": [
+        "#012169",
+        "#fff",
+        "#c8102e"
+      ],
+      "layouts": [],
+      "image": "circuits/brands_hatch.webp",
+      "artwork_kind": "existing-track-photo",
+      "availability": "catalogued"
+    },
+    {
+      "key": "cota",
+      "name": "Circuit of the Americas",
+      "country": "USA",
+      "colors": [
+        "#b31942",
+        "#fff",
+        "#0a3161"
+      ],
+      "layouts": [],
+      "image": "circuits/cota.webp",
+      "artwork_kind": "existing-track-photo",
+      "availability": "catalogued"
+    },
+    {
+      "key": "donington",
+      "name": "Donington Park",
+      "country": "GBR",
+      "colors": [
+        "#012169",
+        "#fff",
+        "#c8102e"
+      ],
+      "layouts": [],
+      "image": "circuits/donington.webp",
+      "artwork_kind": "existing-track-photo",
+      "availability": "catalogued"
+    },
+    {
+      "key": "fuji",
+      "name": "Fuji Speedway",
+      "country": "JPN",
+      "colors": [
+        "#fff",
+        "#bc002d",
+        "#fff"
+      ],
+      "layouts": [],
+      "image": "evo/circuits/fuji.webp",
+      "artwork_kind": "generated-location-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "imola",
+      "name": "Imola",
+      "country": "ITA",
+      "colors": [
+        "#009246",
+        "#fff",
+        "#ce2b37"
+      ],
+      "layouts": [],
+      "image": "circuits/imola.webp",
+      "artwork_kind": "existing-track-photo",
+      "availability": "catalogued"
+    },
+    {
+      "key": "kyalami",
+      "name": "Kyalami",
+      "country": "ZAF",
+      "colors": [
+        "#007a4d",
+        "#ffb612",
+        "#de3831"
+      ],
+      "layouts": [],
+      "image": "circuits/kyalami.webp",
+      "artwork_kind": "existing-track-photo",
+      "availability": "catalogued"
+    },
+    {
+      "key": "laguna-seca",
+      "name": "Laguna Seca",
+      "country": "USA",
+      "colors": [
+        "#b31942",
+        "#fff",
+        "#0a3161"
+      ],
+      "layouts": [],
+      "image": "evo/circuits/laguna-seca.webp",
+      "artwork_kind": "generated-location-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "monza",
+      "name": "Monza",
+      "country": "ITA",
+      "colors": [
+        "#009246",
+        "#fff",
+        "#ce2b37"
+      ],
+      "layouts": [],
+      "image": "evo/circuits/monza.webp",
+      "artwork_kind": "generated-location-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "nurburgring",
+      "name": "Nürburgring",
+      "country": "DEU",
+      "colors": [
+        "#000",
+        "#dd0000",
+        "#ffce00"
+      ],
+      "layouts": [
+        "GP",
+        "Sprint",
+        "24h"
+      ],
+      "image": "circuits/nurburgring.webp",
+      "artwork_kind": "existing-track-photo",
+      "availability": "catalogued"
+    },
+    {
+      "key": "nordschleife",
+      "name": "Nordschleife",
+      "country": "DEU",
+      "colors": [
+        "#000",
+        "#dd0000",
+        "#ffce00"
+      ],
+      "layouts": [
+        "Standard",
+        "Touristenfahrten"
+      ],
+      "image": "evo/circuits/nordschleife.webp",
+      "artwork_kind": "generated-location-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "oulton-park",
+      "name": "Oulton Park",
+      "country": "GBR",
+      "colors": [
+        "#012169",
+        "#fff",
+        "#c8102e"
+      ],
+      "layouts": [
+        "GP",
+        "Fosters"
+      ],
+      "image": "circuits/oulton_park.webp",
+      "artwork_kind": "existing-track-photo",
+      "availability": "catalogued"
+    },
+    {
+      "key": "paul-ricard",
+      "name": "Paul Ricard",
+      "country": "FRA",
+      "colors": [
+        "#0055a4",
+        "#fff",
+        "#ef4135"
+      ],
+      "layouts": [],
+      "image": "circuits/paul_ricard.webp",
+      "artwork_kind": "existing-track-photo",
+      "availability": "catalogued"
+    },
+    {
+      "key": "red-bull-ring",
+      "name": "Red Bull Ring",
+      "country": "AUT",
+      "colors": [
+        "#ed2939",
+        "#fff",
+        "#ed2939"
+      ],
+      "layouts": [],
+      "image": "circuits/red-bull-ring.jpg",
+      "artwork_kind": "existing-track-photo",
+      "availability": "catalogued"
+    },
+    {
+      "key": "road-atlanta",
+      "name": "Road Atlanta",
+      "country": "USA",
+      "colors": [
+        "#b31942",
+        "#fff",
+        "#0a3161"
+      ],
+      "layouts": [],
+      "image": "evo/circuits/road-atlanta.webp",
+      "artwork_kind": "generated-location-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "sebring",
+      "name": "Sebring",
+      "country": "USA",
+      "colors": [
+        "#b31942",
+        "#fff",
+        "#0a3161"
+      ],
+      "layouts": [],
+      "image": "evo/circuits/sebring.webp",
+      "artwork_kind": "generated-location-illustration",
+      "availability": "catalogued"
+    },
+    {
+      "key": "spa",
+      "name": "Spa-Francorchamps",
+      "country": "BEL",
+      "colors": [
+        "#000",
+        "#ffd90c",
+        "#ef3340"
+      ],
+      "layouts": [],
+      "image": "circuits/spa.webp",
+      "artwork_kind": "existing-track-photo",
+      "availability": "catalogued"
+    },
+    {
+      "key": "suzuka",
+      "name": "Suzuka",
+      "country": "JPN",
+      "colors": [
+        "#fff",
+        "#bc002d",
+        "#fff"
+      ],
+      "layouts": [],
+      "image": "circuits/suzuka.webp",
+      "artwork_kind": "existing-track-photo",
+      "availability": "catalogued"
+    },
+    {
+      "key": "watkins-glen",
+      "name": "Watkins Glen",
+      "country": "USA",
+      "colors": [
+        "#b31942",
+        "#fff",
+        "#0a3161"
+      ],
+      "layouts": [],
+      "image": "circuits/watkins_glen.webp",
+      "artwork_kind": "existing-track-photo",
+      "availability": "catalogued"
+    }
+  ]
+}

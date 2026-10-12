@@ -6,6 +6,7 @@ import re
 import shutil
 import json
 from prerender_events import render_events
+from evo_catalogue import render as render_evo_catalogue
 from format_visuals import card as format_card, detail as format_detail
 from content import COPY, RANKING_UI, EXTRA, RULES, PENALTIES, FORMATS, PRIVACY
 R=Path(__file__).parent/'dist'
@@ -19,6 +20,8 @@ for photo in (Path(__file__).parent/'media'/'gt3').glob('*.webp'):
 (R/'assets'/'gt3'/'thumbs').mkdir(parents=True,exist_ok=True)
 for photo in (Path(__file__).parent/'media'/'gt3'/'thumbs').glob('*.webp'):
  shutil.copy2(photo,R/'assets'/'gt3'/'thumbs'/photo.name)
+shutil.copytree(Path(__file__).parent/'media/evo',R/'assets/evo',dirs_exist_ok=True)
+shutil.copy2(Path(__file__).parent/'data/evo-catalogue.json',R/'assets/evo/catalogue.json')
 for folder in ('circuits','events','fonts'):
  (R/'assets'/folder).mkdir(parents=True,exist_ok=True)
  for photo in (Path(__file__).parent/'media'/folder).iterdir():
@@ -90,6 +93,9 @@ def selector(game):
  write(R/game/'index.html',out)
 def page(lang,game,section):
  t={**T[lang], **EXTRA[lang], **{key:value[0] for key,value in FORMATS[lang].items()},'privacy':PRIVACY[lang]['title']}; v={**COPY[lang], **RANKING_UI[lang], **EXTRA[lang], **{key+'_lead':value[1] for key,value in FORMATS[lang].items()},'privacy_lead':PRIVACY[lang]['lead']}; t['course']=t['courses'];v['course_lead']=v['courses_lead'];v['pilots_lead']=t['pilots_desc'];t['about']='À propos' if lang=='fr' else 'About';t['circuits']='Circuits';v['circuits_lead']='Découvrez les circuits ACC et leurs meilleurs tours validés.' if lang=='fr' else 'Explore ACC circuits and their validated best laps.';t['live']='Live & Replay';v['live_lead']='Suivez les prochaines diffusions ATXRACING et retrouvez les replays liés aux épreuves.' if lang=='fr' else 'Watch upcoming ATXRACING broadcasts and find event replays.';t['admin']='Administration ATX Racing' if lang=='fr' else 'ATX Racing administration';v['admin_lead']='Gérez vos courses, le calendrier et les diffusions.' if lang=='fr' else 'Manage your races, calendar and broadcasts.';t['messages']='Messages privés' if lang=='fr' else 'Private messages';v['messages_lead']='Échangez directement avec les autres pilotes connectés à Steam.' if lang=='fr' else 'Talk directly with other Steam-connected drivers.';title=t.get(section,t['choose']); root='/' if not game else f'/{lang}/{game}/'
+ if game=='ace':
+  v['circuits_lead']='Découvrez les circuits du catalogue Assetto Corsa EVO et leurs variantes.' if lang=='fr' else 'Explore the Assetto Corsa EVO track catalogue and its layouts.'
+  v['courses_lead']='Découvrez les voitures routières et de course du catalogue Assetto Corsa EVO.' if lang=='fr' else 'Explore road and race cars in the Assetto Corsa EVO catalogue.'
  root=f'/{lang}/{game or "acc"}/'
  nav=dock(lang,game,section,t)
  switch=f'<nav class="game-switch" aria-label="Jeu / Game"><a href="/{lang}/acc/" '+('aria-current="true"' if game=='acc' else '')+f'>ACC</a><a href="/{lang}/ace/" '+('aria-current="true"' if game=='ace' else '')+'>ACE</a></nav>'
@@ -138,7 +144,9 @@ def page(lang,game,section):
     engineer=('Votre ingénieur de course a retrouvé votre identité Steam. Vérifiez les informations connues puis complétez les éléments manquants.' if lang=='fr' else 'Your race engineer found your Steam identity. Review the known information, then complete anything missing.')
     main+=f'<aside class="race-engineer" data-profile-engineer hidden><span class="race-engineer-mark" aria-hidden="true">IE</span><div><strong>{"INGÉNIEUR DE COURSE" if lang=="fr" else "RACE ENGINEER"}</strong><p>{engineer}</p></div></aside><figure class="driver-levels" data-driver-levels><div class="driver-levels-art"><img class="driver-levels-base" src="/assets/driver-levels-cutout.webp" alt="" width="1774" height="887"><div class="driver-levels-reveal" aria-hidden="true"><img src="/assets/driver-levels-cutout.webp" alt="" width="1774" height="887"></div></div><figcaption><div class="driver-levels-caption"><span data-level-status>{level_wait}</span><span class="driver-levels-current" data-level-current>—</span></div><span class="driver-levels-track" role="progressbar" aria-label="{level_label}" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0" aria-valuetext="{level_wait}"><span class="driver-levels-fill"></span></span><span class="driver-levels-steps" aria-hidden="true"><span>ROOKIE</span><span>CHALLENGER</span><span>PRO</span><span>ELITE</span><span>ALIEN</span></span></figcaption></figure><section id="account-app" class="account-app" aria-live="polite"><p>{intro}</p></section><noscript><p>{"Activez JavaScript pour vous connecter et modifier votre profil." if lang=="fr" else "Enable JavaScript to sign in and edit your profile."}</p></noscript>'
    if section=='privacy':main+='<div class="privacy-sections">'+''.join(f'<article><span class="meta">{str(i).zfill(2)}</span><h2>{escape(heading)}</h2><p>{escape(copy)}</p></article>' for i,(heading,copy) in enumerate(PRIVACY[lang]['parts'],1))+'</div><p><a class="pill" href="mailto:athoxmotorsport@gmail.com">athoxmotorsport@gmail.com</a></p>'
-   elif game=='ace' and section not in ('profile','messages'): main+=f'<section class="status-panel"><span class="eyebrow">ACE / {escape(v["published"])}</span><h2>{escape(v["league_ace"])}</h2><p>{escape(v["ace_pending"])}</p><a class="pill" href="/{lang}/acc/">{escape(v["back_acc"])} ↗</a></section>'
+   elif game=='ace' and section not in ('profile','messages'):
+    if section in ('courses','circuits'):main+=render_evo_catalogue(lang,'cars' if section=='courses' else 'circuits')
+    main+=f'<section class="status-panel"><span class="eyebrow">ACE / {escape(v["published"])}</span><h2>{escape(v["league_ace"])}</h2><p>{escape(v["ace_pending"])}</p><a class="pill" href="/{lang}/acc/">{escape(v["back_acc"])} ↗</a></section>'
    else:
     if section=='courses':
      main+=f'<div class="section-intro"><span class="eyebrow">01 / {escape(v["formats"])}</span><h2>{escape(v["formats"])}</h2></div><div class="format-grid">'+''.join(format_card(lang,key,name,i) for i,(key,(name,description)) in enumerate(zip(("worldgt-sprint","worldgt-endurance","daily-race","atx-series"),v["formats_items"]),1))+'</div>'
