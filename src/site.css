@@ -274,7 +274,8 @@ body[data-page=profile]{--profile-level:#aeb5be}body[data-page=profile][data-dri
 .evo-circuit-card img.circuit-country-frame{border:4px solid transparent;border-image:var(--country-frame) 1;box-sizing:border-box}
 /* Keep all editorial media cards geometrically consistent, regardless of source image dimensions. */
 .event-poster,.record-photo,.driver-car-photo,.profile-race-photo,.profile-lap-photo{aspect-ratio:16/9;height:auto;min-height:0}
-.event-poster img,.record-photo img,.driver-car-photo img,.profile-race-photo,.profile-lap-photo{display:block;width:100%;height:100%;max-height:none;object-fit:cover;object-position:center}
+.event-poster img,.record-photo img,.driver-car-photo img{display:block;width:100%;height:100%;max-height:none;object-fit:cover;object-position:center}
+.profile-race-photo,.profile-lap-photo{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;object-position:center}
 .event-detail-visual,.race-poster{width:100%;aspect-ratio:16/9;overflow:hidden}
 .event-detail-visual img,.race-poster{height:100%;max-height:none;object-fit:cover;object-position:center}
 .account-avatar,.ranking-avatar{aspect-ratio:1/1}
