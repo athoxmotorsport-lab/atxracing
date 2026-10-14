@@ -29,3 +29,18 @@
 @media(max-width:1349px){.atx-honours-rail{position:static;width:auto;max-height:none;margin:22px auto 90px;max-width:900px;grid-template-columns:repeat(2,minmax(0,1fr))}.atx-rail-title,.atx-hall-link,.atx-honours-note{grid-column:1/-1}}
 @media(max-width:650px){.atx-honours-rail{margin:18px 14px 100px}.atx-ticker-live{padding:12px 9px}.atx-ticker-item{font-size:12px}.atx-honours-rail{grid-template-columns:1fr}.atx-rail-title,.atx-hall-link,.atx-honours-note{grid-column:auto}}
 @media(prefers-reduced-motion:reduce){.atx-ticker-track{animation:none;max-width:100%;width:100%;overflow:auto}.atx-ticker-item[aria-hidden=true]{display:none}}
+
+/* Official race podium; top three are deliberately not repeated in the following table. */
+.atx-race-podium{margin:20px 0 25px;padding:16px;background:linear-gradient(140deg,#131923,#090d15);border:1px solid #a53b4e;border-radius:14px}
+.atx-race-podium>h3{text-align:center;margin:0 0 18px;color:#f8f0e5;letter-spacing:.16em;font-size:17px}
+.atx-podium-stage{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:end}
+.atx-podium-card{min-width:0;display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;color:#f2f2f5;padding:12px 9px 0;border-radius:9px 9px 0 0;background:linear-gradient(150deg,#323b4c,#131820);border:1px solid #ffffff35;border-bottom:0}
+.atx-podium-card img{width:64px;height:64px;object-fit:cover;border-radius:50%;border:2px solid #dee0e5}
+.atx-podium-card strong{font-size:clamp(12px,1.5vw,18px);overflow-wrap:anywhere}
+.atx-podium-card small{font-size:12px;color:#d3d6df;overflow-wrap:anywhere}
+.atx-podium-rank{font-weight:900;font-size:21px;color:#dce1e8}
+.atx-podium-step{margin-top:auto;display:grid;place-items:center;width:100%;height:65px;font-size:38px;font-weight:900;background:#646d7b;color:#111720}
+.atx-podium-p1{border-color:#c9a652;background:linear-gradient(150deg,#58421c,#171c27)}.atx-podium-p1 .atx-podium-rank{color:#ffd77c}.atx-podium-p1 .atx-podium-step{height:110px;background:linear-gradient(#f4d78e,#aa8039)}
+.atx-podium-p2 .atx-podium-step{height:80px;background:linear-gradient(#d6dce7,#8f9cab)}
+.atx-podium-p3 .atx-podium-step{height:50px;background:linear-gradient(#c99574,#915d46)}
+@media(max-width:600px){.atx-podium-stage{gap:5px}.atx-podium-card{padding:8px 4px 0;gap:5px}.atx-podium-card img{width:46px;height:46px}.atx-podium-card strong{font-size:11px}.atx-podium-card small{font-size:10px}.atx-podium-step{font-size:26px!important;height:55px}.atx-podium-p1 .atx-podium-step{height:85px}.atx-podium-p2 .atx-podium-step{height:65px}.atx-podium-p3 .atx-podium-step{height:45px}}
