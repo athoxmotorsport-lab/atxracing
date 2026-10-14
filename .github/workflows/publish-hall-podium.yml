@@ -1,0 +1,32 @@
+name: Publish Hall and podium
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/publish-hall-podium.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check src/experience.js
+      - run: node --check src/events.js
+      - run: python3 build.py
+      - run: python3 scripts/verify_site.py
+      - run: |
+          git add -A -- ':!Old Deposit'
+          if ! git diff --cached --quiet; then
+            git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m "build: publish Hall of Fame and official race podium"
+            git push origin HEAD:main
+          fi
