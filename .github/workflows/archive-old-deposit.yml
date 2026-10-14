@@ -1,0 +1,42 @@
+name: Archive legacy ATX Racing repository
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/archive-old-deposit.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out new site
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Check out legacy site
+        uses: actions/checkout@v4
+        with:
+          repository: athoxmotorsport-lab/atx-racing
+          ref: main
+          path: .legacy-source
+          persist-credentials: false
+      - name: Copy old code into archived folder
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -d .legacy-source
+          mkdir -p "Old Deposit"
+          cp -a .legacy-source/. "Old Deposit/"
+          rm -rf .legacy-source
+          test -f "Old Deposit/index.html"
+          test -f "Old Deposit/supabase/config.toml"
+          printf 'Legacy repository: athoxmotorsport-lab/atx-racing\nSnapshot ref: %s\nDate: %s\n' "${{ github.sha }}" "$(date -u +%FT%TZ)" > "Old Deposit/ARCHIVE-INFO.txt"
+          git add -- "Old Deposit"
+          if git diff --cached --quiet; then
+            echo "No changes to archive"
+            exit 0
+          fi
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m "archive: snapshot legacy atx-racing into Old Deposit"
+          git push origin HEAD:main
