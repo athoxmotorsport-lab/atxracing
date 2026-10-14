@@ -29,7 +29,7 @@ jobs:
           test -d .legacy-source
           mkdir -p "Old Deposit"
           cp -a .legacy-source/. "Old Deposit/"
-          rm -rf .legacy-source
+          rm -rf "Old Deposit/.git" .legacy-source
           test -f "Old Deposit/index.html"
           test -f "Old Deposit/supabase/config.toml"
           printf 'Legacy repository: athoxmotorsport-lab/atx-racing\nSnapshot ref: %s\nDate: %s\n' "${{ github.sha }}" "$(date -u +%FT%TZ)" > "Old Deposit/ARCHIVE-INFO.txt"
