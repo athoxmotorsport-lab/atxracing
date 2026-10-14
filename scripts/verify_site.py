@@ -82,6 +82,9 @@ for image in ('site-background.webp','landing-banner.jpg','driver-levels-cutout.
  assert (ROOT/'assets'/image).is_file()
 for image in ('circuits/red-bull-ring.jpg','events/monza-2026-09-09.jpg','events/nurburgring-gp-2026-09-11.webp','events/barcelona-2026-09-13.jpg','events/kyalami-2026-09-20.jpg'):
  assert (ROOT/'assets'/image).is_file()
+for image in ('gt3/aston-martin-v12-vantage-gt3.webp','gt3/thumbs/aston-martin-v12-vantage-gt3.webp'):
+ assert (ROOT/'assets'/image).is_file()
+assert '"Aston Martin V12 Vantage GT3": "aston-martin-v12-vantage-gt3.webp"' in (ROOT/'assets/car-images.min.js').read_text()
 assert '.league-overview{height:480px;' in css
 assert 'font-family:Rajdhani' in css
 assert '.profile-race-photo,.profile-lap-photo{display:block;width:100%;height:auto;aspect-ratio:16/9;' in css
