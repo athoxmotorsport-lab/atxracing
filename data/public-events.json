@@ -886,49 +886,6 @@
     "status": "completed"
   },
   {
-    "slug": "atx-58ba0a1c83d247c6bc2e854b",
-    "title_fr": "ATX Series",
-    "title_en": "ATX Series",
-    "description_fr": "Rendez-vous toutes les 90 minutes : 2 minutes d’essais, 15 minutes de qualifications et 45 minutes de course. Inscription sur le site obligatoire, classement ATXS.",
-    "description_en": "Rendezvous every 90 minutes: 2 minutes of practice, 15 minutes of qualifying and a 45-minute race. Website registration required, ATXS standings.",
-    "circuit_name": "spa francorchamps",
-    "starts_at": "2026-10-14T11:00:00+00:00",
-    "duration_minutes": 45,
-    "image_url": "https://athoxmotorsport-lab.github.io/atxracing/assets/circuits/spa.webp",
-    "simgrid_url": null,
-    "competition_code": "ATXS",
-    "format_code": "ATXS",
-    "championship_code": null,
-    "site_registration_enabled": true,
-    "mandatory_stop_count": 0,
-    "car_class": "GT3",
-    "result_publication_state": "provisional",
-    "event_schedule": [
-      {
-        "end": "13:02",
-        "key": "practice_1",
-        "start": "13:00",
-        "labelEn": "Free practice",
-        "labelFr": "Essais libres"
-      },
-      {
-        "end": "13:17",
-        "key": "qualifying",
-        "start": "13:02",
-        "labelEn": "Qualifying",
-        "labelFr": "Qualifications"
-      },
-      {
-        "end": "14:02",
-        "key": "race",
-        "start": "13:17",
-        "labelEn": "Race",
-        "labelFr": "Course"
-      }
-    ],
-    "status": "registration_open"
-  },
-  {
     "slug": "atx-6bca95f7b3d44d6ca43f1ee8",
     "title_fr": "ATX Series · Silverstone",
     "title_en": "ATX Series · Silverstone",
