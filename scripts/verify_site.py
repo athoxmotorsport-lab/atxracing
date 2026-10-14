@@ -22,7 +22,7 @@ def local_path(url):
  return candidate
 
 race_pages=list(ROOT.glob('*/acc/races/*.html'))
-assert len(list(ROOT.rglob('*.html')))==91+len(race_pages)
+assert len(list(ROOT.rglob('*.html')))==95+len(race_pages)
 for path in ROOT.rglob('*.html'):
  for tag,attrs in page(path.relative_to(ROOT)):
   for key in ('href','src'):
@@ -66,7 +66,7 @@ for lang in ('fr','en'):
  assert not any(a.get('id')=='driver-search' for _,a in profile)
  assert any(a.get('id')=='driver-search' for _,a in pilots)
  for game in ('acc','ace'):
-  for section in ('index.html','courses.html','worldgt.html','worldgt-sprint.html','worldgt-endurance.html','daily-race.html','atx-series.html','calendar.html','ranking.html','records.html','circuits.html','live.html','archives.html','event.html','course.html','rules.html','privacy.html','profile.html','messages.html'):
+  for section in ('index.html','courses.html','worldgt.html','worldgt-sprint.html','worldgt-endurance.html','daily-race.html','atx-series.html','calendar.html','ranking.html','records.html','circuits.html','live.html','archives.html','event.html','course.html','rules.html','privacy.html','profile.html','messages.html','hall-of-fame.html'):
    tags=page(f'{lang}/{game}/{section}')
    assert any(t=='nav' and a.get('class')=='game-switch' for t,a in tags)
    assert any(t=='nav' and a.get('class')=='side-dock' for t,a in tags)
