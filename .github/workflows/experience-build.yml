@@ -6,6 +6,7 @@ on:
       - src/experience.js
       - src/experience.css
       - build.py
+      - scripts/verify_site.py
       - .github/workflows/experience-build.yml
   workflow_dispatch:
 permissions:
