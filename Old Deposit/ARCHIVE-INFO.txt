@@ -1,3 +1,6 @@
 Legacy repository: athoxmotorsport-lab/atx-racing
-Snapshot ref: 75fe7ae8ee965294eda09b561cfafaa14d0707ef
-Date: 2026-10-14T22:20:13Z
+Original branch: main
+Original commit: ee80145097f9525ccc8f5bf29e679459b85729e3
+Snapshot date (UTC): 2026-10-14T22:20:13Z
+Files verified against original: 109/109 (identical Git blob SHAs)
+Note: This is a source-tree snapshot, not a full export of the legacy Git commit history.
