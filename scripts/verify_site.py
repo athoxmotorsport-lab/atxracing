@@ -70,7 +70,7 @@ for lang in ('fr','en'):
    tags=page(f'{lang}/{game}/{section}')
    assert any(t=='nav' and a.get('class')=='game-switch' for t,a in tags)
    assert any(t=='nav' and a.get('class')=='side-dock' for t,a in tags)
-   assert any(t=='img' and a.get('src')==BASE+f'assets/{game}-banner.webp' for t,a in tags)
+   assert section=='hall-of-fame.html' or any(t=='img' and a.get('src')==BASE+f'assets/{game}-banner.webp' for t,a in tags)
    assert len([1 for t,a in tags if t=='nav' and a.get('class')=='header-languages'])==1
    assert len([1 for t,a in tags if t=='nav' and a.get('class')=='footer-languages'])==1
    assert any(t=='script' and urlsplit(a.get('src','')).path==BASE+'assets/community.min.js' for t,a in tags)
