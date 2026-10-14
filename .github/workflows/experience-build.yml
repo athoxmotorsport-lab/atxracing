@@ -6,6 +6,7 @@ on:
       - src/experience.js
       - src/experience.css
       - build.py
+      - .github/workflows/experience-build.yml
   workflow_dispatch:
 permissions:
   contents: write
