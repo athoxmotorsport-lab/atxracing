@@ -44,3 +44,19 @@
 .atx-podium-p2 .atx-podium-step{height:80px;background:linear-gradient(#d6dce7,#8f9cab)}
 .atx-podium-p3 .atx-podium-step{height:50px;background:linear-gradient(#c99574,#915d46)}
 @media(max-width:600px){.atx-podium-stage{gap:5px}.atx-podium-card{padding:8px 4px 0;gap:5px}.atx-podium-card img{width:46px;height:46px}.atx-podium-card strong{font-size:11px}.atx-podium-card small{font-size:10px}.atx-podium-step{font-size:26px!important;height:55px}.atx-podium-p1 .atx-podium-step{height:85px}.atx-podium-p2 .atx-podium-step{height:65px}.atx-podium-p3 .atx-podium-step{height:45px}}
+
+/* Hall of Fame is a curated collection, not an unbroken repeated award list. */
+#atx-hall-gallery{display:grid;grid-template-columns:minmax(0,1fr);gap:38px}
+.atx-hall-section{min-width:0}
+.atx-hall-section>h2{font:800 clamp(21px,2.4vw,31px)/1.1 Rajdhani,Inter,sans-serif;letter-spacing:.065em;color:#f4f3f7;border-left:4px solid #d13b55;padding-left:14px;margin:0 0 17px}
+.atx-hall-card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:15px}
+.atx-hall-card{position:relative;min-height:260px;overflow:hidden;align-content:end;box-shadow:inset 0 0 60px #0005,0 8px 20px #0005;transition:transform .2s,border-color .2s}
+.atx-hall-card:hover,.atx-hall-card:focus-visible{transform:translateY(-4px);border-color:#fff}
+.atx-hall-card .atx-hall-avatar{position:absolute;top:14px;right:14px;width:67px;height:67px;object-fit:cover;border:2px solid #ffffff90;border-radius:50%}
+.atx-hall-endurance_winner{border-color:#d8b052;background:linear-gradient(150deg,#634219,#22180e 48%,#0c111c)}
+.atx-hall-first_victory{border-color:#d36a45;background:linear-gradient(145deg,#522416,#151821 70%)}
+.atx-hall-podium_p2{border-color:#aebacc;background:linear-gradient(145deg,#39485e,#111827)}
+.atx-hall-podium_p3{border-color:#b98e6c;background:linear-gradient(145deg,#4c3029,#10141d)}
+.atx-hall-fast_driver{background:linear-gradient(140deg,#4f112a,#101722)}
+.atx-hall-gentleman_driver{background:linear-gradient(140deg,#173f41,#121a20)}
+@media(max-width:650px){#atx-hall-gallery{gap:26px}.atx-hall-card-grid{display:grid;grid-auto-columns:minmax(72%,1fr);grid-auto-flow:column;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;padding:0 0 12px}.atx-hall-card{scroll-snap-align:start;min-height:290px}.atx-hall-card-grid::-webkit-scrollbar{height:5px}}
