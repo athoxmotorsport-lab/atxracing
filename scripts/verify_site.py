@@ -84,6 +84,8 @@ for image in ('circuits/red-bull-ring.jpg','events/monza-2026-09-09.jpg','events
  assert (ROOT/'assets'/image).is_file()
 assert '.league-overview{height:480px;' in css
 assert 'font-family:Rajdhani' in css
+assert '.profile-race-photo,.profile-lap-photo{display:block;width:100%;height:auto;aspect-ratio:16/9;' in css
+assert '.profile-race-photo,.profile-lap-photo{display:block;width:100%;height:100%;' not in css
 assert 'value="OL"' not in (ROOT/'fr/acc/ranking.html').read_text()
 assert not list((ROOT/'assets').glob('site.js')) and not list((ROOT/'assets').glob('site.css'))
 assert (ROOT/'assets/site.min.js').is_file() and (ROOT/'assets/site.min.css').is_file()
