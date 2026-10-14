@@ -1,0 +1,34 @@
+name: Verify ATX Racing optimized assets
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: atx-assets-verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser test tool
+        run: npm install --no-save --no-package-lock playwright@1.55.0
+      - name: Install test browser
+        run: npx playwright install --with-deps chromium
+      - name: Verify WorldGT scoring and menu journeys
+        run: node --experimental-strip-types scripts/test-worldgt.mjs
+      - name: Verify public API timing visibility
+        run: node scripts/test-security-visibility.mjs
+      - name: Verify minified assets, ranking, profile, navigation and notifications
+        run: node scripts/test-assets.mjs
