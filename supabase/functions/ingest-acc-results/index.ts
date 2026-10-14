@@ -212,6 +212,7 @@ const resolveEvent = async (payload: ImportPayload): Promise<EventRow> => {
     const day=Date.parse(date+'T00:00:00Z');
     const {data:candidates,error:matchError}=await supabase.from('events').select('*')
       .eq('competition_code',code).eq('circuit_key',key)
+      .is('deleted_at',null)
       .gte('starts_at',new Date(day-86400000).toISOString())
       .lt('starts_at',new Date(day+2*86400000).toISOString());
     if(matchError)throw matchError;
@@ -230,7 +231,7 @@ const resolveEvent = async (payload: ImportPayload): Promise<EventRow> => {
   // the external key happens to be identical.
   if (sourceEventKey) {
     const { data: byKey, error: keyError } = await supabase.from("events").select("*")
-      .eq("source_event_key", sourceEventKey).maybeSingle();
+      .eq("source_event_key", sourceEventKey).is("deleted_at", null).maybeSingle();
     if (keyError) throw keyError;
     if (byKey) {
       const eventCircuit = circuitKey(String(byKey.circuit_key ?? byKey.circuit_name ?? ""));
@@ -238,7 +239,7 @@ const resolveEvent = async (payload: ImportPayload): Promise<EventRow> => {
 
       const scopedKey = `${sourceEventKey}_${key}`.slice(0, 120);
       const { data: byScopedKey, error: scopedError } = await supabase.from("events").select("*")
-        .eq("source_event_key", scopedKey).maybeSingle();
+        .eq("source_event_key", scopedKey).is("deleted_at", null).maybeSingle();
       if (scopedError) throw scopedError;
       if (byScopedKey && (!code || byScopedKey.competition_code===code)) return byScopedKey as EventRow;
       sourceEventKey = scopedKey;
@@ -249,6 +250,7 @@ const resolveEvent = async (payload: ImportPayload): Promise<EventRow> => {
   nextDate.setUTCDate(nextDate.getUTCDate() + 1);
   const { data: sameDay, error } = await supabase.from("events").select("*")
     .eq("circuit_key", key)
+    .is("deleted_at", null)
     .gte("starts_at", `${date}T00:00:00Z`)
     .lt("starts_at", nextDate.toISOString())
     .order("starts_at", { ascending: true });
