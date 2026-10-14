@@ -98,15 +98,33 @@
       const gallery=document.querySelector('#atx-hall-gallery');
       if(!gallery)return;
       gallery.replaceChildren();
-      for(const record of records){
-        const card=makeLink('',eventHref(record.slug),'atx-hall-card');
-        card.append(el('span','atx-hall-kind',record.type==='fast_driver'?'FAST DRIVER':'GENTLEMAN DRIVER'));
-        card.append(el('strong','',record.driver));
-        card.append(el('span','',record.event));
-        card.append(el('small','',new Intl.DateTimeFormat(lang,{day:'numeric',month:'short',year:'numeric',timeZone:'Europe/Brussels'}).format(new Date(record.date))));
-        gallery.append(card);
+      const achievements=window.ATX_HALL_ACHIEVEMENTS||[];
+      const categories=[
+        ['endurance_winner',tr('VICTOIRES ENDURANCE','ENDURANCE WINNERS')],
+        ['first_victory',tr('PREMIÈRES VICTOIRES','FIRST VICTORIES')],
+        ['podium_p2',tr('PODIUMS · P2','PODIUMS · P2')],
+        ['podium_p3',tr('PODIUMS · P3','PODIUMS · P3')],
+        ['fast_driver','FAST DRIVERS'],
+        ['gentleman_driver','GENTLEMAN DRIVERS']
+      ];
+      for(const [type,label] of categories){
+        const source=type==='fast_driver'||type==='gentleman_driver'?records:achievements;
+        const items=source.filter(record=>record.type===type);
+        if(!items.length)continue;
+        const section=el('section','atx-hall-section');section.append(el('h2','',label));
+        const grid=el('div','atx-hall-card-grid');
+        for(const record of items){
+          const card=makeLink('',eventHref(record.slug),'atx-hall-card atx-hall-'+type);
+          card.append(el('span','atx-hall-kind',label));
+          if(record.avatar&&/^https:\/\//.test(record.avatar)){const img=el('img','atx-hall-avatar');img.src=record.avatar;img.alt='';img.loading='lazy';card.append(img)}
+          card.append(el('strong','',record.driver));
+          card.append(el('span','',record.event));
+          card.append(el('small','',new Intl.DateTimeFormat(lang,{day:'numeric',month:'short',year:'numeric',timeZone:'Europe/Brussels'}).format(new Date(record.date))));
+          grid.append(card);
+        }
+        section.append(grid);gallery.append(section);
       }
-      if(!records.length)gallery.append(el('p','',tr('Aucune distinction officielle publiée.','No official honours published.')));
+      if(!records.length&&!achievements.length)gallery.append(el('p','',tr('Aucune distinction officielle publiée.','No official honours published.')));
     }
   };
   async function init(){
@@ -120,6 +138,7 @@
       const records=(Array.isArray(payload.honours)?payload.honours:[]).filter(x=>x&&safeSlug(x.slug)&&['fast_driver','gentleman_driver'].includes(x.type)&&x.driver_id&&x.driver).map(x=>({
         ...x,event:x['event_'+lang]||x.event_fr||x.event_en||'ATXRACING'
       }));
+      window.ATX_HALL_ACHIEVEMENTS=(Array.isArray(payload.achievements)?payload.achievements:[]).filter(x=>x&&safeSlug(x.slug)&&x.driver).map(x=>({...x,event:x['event_'+lang]||x.event_fr||x.event_en||'ATXRACING'}));
       const scanned=new Set(records.map(x=>x.slug)).size;
       renderHonours(records,scanned);
     }catch{renderTicker([],[]);renderHonours([],0)}
