@@ -66,7 +66,29 @@
   if(payload.decisions?.length){const history=el('details','race-decisions');history.append(el('summary','',lang==='fr'?'Décisions sportives et corrections':'Sports decisions and corrections'));for(const d of payload.decisions){history.append(el('p','',d['reason_'+lang]||d.reason_fr));if(d.before_value?.position!==undefined||d.before_value?.status!==undefined)history.append(el('small','',(lang==='fr'?'Position ':'Position ')+(d.before_value.position??'—')+' → '+(d.after_value.position??'—')+' · '+String(d.before_value.status||'').toUpperCase()+' → '+String(d.after_value.status||'').toUpperCase()+' · '+(d.before_value.points??'—')+' → '+(d.after_value.points??'—')+' '+dictionary.points));}resultSection.append(history);}
   const awards=Array.isArray(payload.honours)?payload.honours:[];if(awards.length&&state==='official'){const honours=el('div','race-honours');[['fast_driver',details.fast],['gentleman_driver',details.gentleman]].forEach(([kind,label])=>{const award=awards.find(item=>item.award_type===kind);if(!award)return;const pilot=Array.isArray(award.driver)?award.driver[0]:award.driver;const card=el('article','race-honour');card.append(el('small','',label),el('strong','',pilot?.display_name||'ACC Driver'),el('span','',kind==='fast_driver'?lap(award.best_lap_ms):`${award.clean_laps||0} ${details.clean} · ${award.penalty_count||0} ${details.penalties}`));honours.append(card)});resultSection.append(honours)}
   if(crewRace&&results.length)resultSection.append(el('p','race-scoring-note',details.note));
-  if(display.length){const table=el('table','ranking-table');const thead=el('thead'),tr=el('tr'),tbody=el('tbody');['#',teamView?dictionary.team+' / '+details.drivers:dictionary.driver,dictionary.car,details.laps,dictionary.lap,dictionary.points].forEach(h=>tr.append(el('th','',h)));thead.append(tr);display.forEach(r=>{const driver=Array.isArray(r.driver)?r.driver[0]:r.driver;const name=teamView?String(r.team_name||'—')+' · '+(r.members||[]).join(' / '):driver?.display_name||'ACC Driver';const row=el('tr');[r.status&&r.status!=='classified'?String(r.status).toUpperCase():r.finish_position?'P'+r.finish_position:'—',name,r.car_model_name||'—',r.laps_completed??0,lap(r.best_lap_ms),crewRace&&!teamView?'—':Number(r.points||0).toLocaleString(lang)].forEach(value=>row.append(el('td','',value)));tbody.append(row)});table.append(thead,tbody);const wrap=el('div','ranking-table-wrap');wrap.append(table);resultSection.append(wrap)}else resultSection.append(el('p','empty',details.pending));main.append(resultSection);root.replaceChildren(main);document.dispatchEvent(new CustomEvent('atx:event-detail',{detail:e}));
+  if(state==='official'&&display.length){
+    const podiumRows=display.filter(r=>Number.isInteger(Number(r.finish_position))&&Number(r.finish_position)>=1&&Number(r.finish_position)<=3&&r.status!=='dsq'&&r.status!=='dns').sort((a,b)=>Number(a.finish_position)-Number(b.finish_position));
+    if(podiumRows.length){
+      const podium=el('section','atx-race-podium');podium.setAttribute('aria-label',lang==='fr'?'Podium officiel':'Official podium');
+      podium.append(el('h3','',lang==='fr'?'PODIUM OFFICIEL':'OFFICIAL PODIUM'));
+      const stage=el('div','atx-podium-stage');
+      for(const place of [2,1,3]){
+        const r=podiumRows.find(x=>Number(x.finish_position)===place);
+        const card=el('article','atx-podium-card atx-podium-p'+place);
+        if(r){
+          const driver=Array.isArray(r.driver)?r.driver[0]:r.driver;
+          const name=teamView?String(r.team_name||'—'):driver?.display_name||'ACC Driver';
+          if(!teamView&&driver?.avatar_url){const photo=el('img');photo.src=driver.avatar_url;photo.alt='';photo.loading='lazy';card.append(photo)}
+          card.append(el('span','atx-podium-rank','P'+place),el('strong','',name));
+          if(teamView&&r.members?.length)card.append(el('small','',r.members.join(' / ')));
+          card.append(el('small','',r.car_model_name||''),el('span','atx-podium-step',String(place)));
+        }else{card.append(el('span','atx-podium-rank','P'+place),el('span','atx-podium-step',String(place)))}
+        stage.append(card);
+      }
+      podium.append(stage);resultSection.append(podium);
+    }
+  }
+  if(display.length){const table=el('table','ranking-table');const thead=el('thead'),tr=el('tr'),tbody=el('tbody');['#',teamView?dictionary.team+' / '+details.drivers:dictionary.driver,dictionary.car,details.laps,dictionary.lap,dictionary.points].forEach(h=>tr.append(el('th','',h)));thead.append(tr);display.filter(r=>state!=='official'||!Number.isInteger(Number(r.finish_position))||Number(r.finish_position)>3).forEach(r=>{const driver=Array.isArray(r.driver)?r.driver[0]:r.driver;const name=teamView?String(r.team_name||'—')+' · '+(r.members||[]).join(' / '):driver?.display_name||'ACC Driver';const row=el('tr');[r.status&&r.status!=='classified'?String(r.status).toUpperCase():r.finish_position?'P'+r.finish_position:'—',name,r.car_model_name||'—',r.laps_completed??0,lap(r.best_lap_ms),crewRace&&!teamView?'—':Number(r.points||0).toLocaleString(lang)].forEach(value=>row.append(el('td','',value)));tbody.append(row)});table.append(thead,tbody);const wrap=el('div','ranking-table-wrap');wrap.append(table);resultSection.append(wrap)}else resultSection.append(el('p','empty',details.pending));main.append(resultSection);root.replaceChildren(main);document.dispatchEvent(new CustomEvent('atx:event-detail',{detail:e}));
  }
  async function load(){if(!root.hasAttribute('data-prerendered'))root.replaceChildren(el('p','loading',dictionary.loading));try{
   if(page==='event'||page==='course'){const slug=document.body.dataset.eventSlug||new URLSearchParams(location.search).get('slug')||new URLSearchParams(location.search).get('event');if(!slug||!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)){root.replaceChildren(el('p','empty',dictionary.empty));return}const data=window.ATX_PUBLIC_EVENTS?await window.ATX_PUBLIC_EVENTS(slug):await (await fetch(url+'?slug='+encodeURIComponent(slug))).json();if(data.error==='event_not_found'){const error=Error('event_not_found');error.status=404;throw error;}eventDetail(data);return}
