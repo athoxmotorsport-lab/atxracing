@@ -114,22 +114,13 @@
       const data=window.ATX_PUBLIC_EVENTS?await window.ATX_PUBLIC_EVENTS():await (await fetch('https://twjpjzalyvbsdpbzhqln.supabase.co/functions/v1/public-event?view=feed')).json();
       const events=Array.isArray(data.events)?data.events:[];
       renderTicker(events,Array.isArray(data.notifications)?data.notifications:[]);
-      const races=events.filter(isHonouredRace).sort((a,b)=>Date.parse(b.starts_at)-Date.parse(a.starts_at)).slice(0,24);
-      const records=[];let scanned=0;
-      // Bounded, staggered reads; public-event enforces official-event and public-driver visibility.
-      for(let start=0;start<races.length;start+=4){
-        const batch=await Promise.all(races.slice(start,start+4).map(async e=>{
-          try{return await(window.ATX_PUBLIC_EVENTS?window.ATX_PUBLIC_EVENTS(e.slug):fetch('https://twjpjzalyvbsdpbzhqln.supabase.co/functions/v1/public-event?slug='+encodeURIComponent(e.slug)).then(r=>r.ok?r.json():null))}catch{return null}
-        }));
-        batch.forEach((result,i)=>{
-          if(!result||!Array.isArray(result.honours)||result.event?.result_publication_state!=='official')return;
-          const event=races[start+i];scanned++;
-          for(const a of result.honours){
-            if(!['fast_driver','gentleman_driver'].includes(a.award_type)||!a.driver_id||!a.driver?.display_name)continue;
-            records.push({type:a.award_type,driver_id:a.driver_id,driver:a.driver.display_name,avatar:a.driver.avatar_url,slug:event.slug,event:event['title_'+lang]||event.title_fr||event.circuit_name,date:event.starts_at});
-          }
-        });
-      }
+      const response=await fetch('https://twjpjzalyvbsdpbzhqln.supabase.co/functions/v1/public-honours',{signal:AbortSignal.timeout(12000)});
+      if(!response.ok)throw Error('honours_unavailable');
+      const payload=await response.json();
+      const records=(Array.isArray(payload.honours)?payload.honours:[]).filter(x=>x&&safeSlug(x.slug)&&['fast_driver','gentleman_driver'].includes(x.type)&&x.driver_id&&x.driver).map(x=>({
+        ...x,event:x['event_'+lang]||x.event_fr||x.event_en||'ATXRACING'
+      }));
+      const scanned=new Set(records.map(x=>x.slug)).size;
       renderHonours(records,scanned);
     }catch{renderTicker([],[]);renderHonours([],0)}
   }
