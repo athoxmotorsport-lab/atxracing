@@ -3,6 +3,8 @@ const ATX_PROFILE_MEDIA=(()=>{
  const photos={
   'Porsche 992 GT3 R':{image:'/atxracing/assets/gt3/01.jpg',credit:'TaurusEmerald · CC BY-SA 4.0',source:'https://commons.wikimedia.org/wiki/File:AO_Racing_Porsche_992_GT3_R_No._77.jpg'},
   'Aston Martin V8 Vantage GT3':{image:'/atxracing/assets/gt3/02.jpg',credit:'MrWalkr · CC BY-SA 4.0',source:'https://commons.wikimedia.org/wiki/File:2018_Aston_Martin_Vantage_GT3_FOS19.jpg'},
+  'Aston Martin V12 Vantage GT3':{image:'/atxracing/assets/gt3/aston-martin-v12-vantage-gt3.webp',credit:'Création originale ATXRACING assistée par IA',source:'/atxracing/'},
+  'Aston Martin Vantage V12 GT3':{image:'/atxracing/assets/gt3/aston-martin-v12-vantage-gt3.webp',credit:'Création originale ATXRACING assistée par IA',source:'/atxracing/'},
   'Audi R8 LMS GT3':{image:'/atxracing/assets/gt3/03.jpg',credit:'Calreyn88 · CC BY-SA 4.0',source:'https://commons.wikimedia.org/wiki/File:2010_Audi_R8_LMS_GT3.jpg'},
   'Audi R8 LMS GT3 Evo 2':{image:'/atxracing/assets/gt3/04.jpg',credit:'Charles · CC BY 2.0',source:'https://commons.wikimedia.org/wiki/File:Audi_R8_LMS_GT3_Evo_II_(2022)_(52565766187).jpg'},
   'BMW M4 GT3':{image:'/atxracing/assets/gt3/05.jpg',credit:'MrWalkr · CC BY-SA 4.0',source:'https://commons.wikimedia.org/wiki/File:2022_BMW_M4_GT3.jpg'},
