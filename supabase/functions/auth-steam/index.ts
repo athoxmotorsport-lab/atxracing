@@ -4,7 +4,7 @@ const OPENID_ENDPOINT = "https://steamcommunity.com/openid/login";
 const OPENID_NS = "http://specs.openid.net/auth/2.0";
 const IDENTIFIER_SELECT = `${OPENID_NS}/identifier_select`;
 const STEAM_ID_PATTERN = /^https:\/\/steamcommunity\.com\/openid\/id\/(\d{17})$/;
-const OLD_PROFILE = "/atx-racing/profil-pilote.html";
+const OLD_PROFILE = "/atxracing/fr/acc/profile.html";
 // A fixed path allowlist prevents OpenID from becoming an open redirect.
 const allowedReturnPath = (path: string | null): string =>
   path && /^\/atxracing\/(fr|en|de|it|es)\/(acc|ace)\/profile\.html$/.test(path) ? path : OLD_PROFILE;
