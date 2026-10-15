@@ -119,7 +119,7 @@
           if(record.avatar&&/^https:\/\//.test(record.avatar)){const img=el('img','atx-hall-avatar');img.src=record.avatar;img.alt='';img.loading='lazy';card.append(img)}
           card.append(el('strong','',record.driver));
           const context=String(record.circuit_name||record.circuit||record.track_name||record.event||'').trim();
-          if(context&&!/^atx(?:\s*racing|\s*series)?$/i.test(context))card.append(el('span','atx-hall-context',context));
+          if(context&&!/^(?:atx|atx\s*racing|atx\s*series|serveur\s*atx\s*racing)$/i.test(context))card.append(el('span','atx-hall-context',context));
           const performance=type==='fast_driver'&&Number.isFinite(Number(record.best_lap_ms))&&Number(record.best_lap_ms)>0
             ?tr('Meilleur tour','Best lap')+' · '+(Math.floor(Number(record.best_lap_ms)/60000)+':'+String(Math.floor(Number(record.best_lap_ms)%60000/1000)).padStart(2,'0')+'.'+String(Math.floor(Number(record.best_lap_ms)%1000)).padStart(3,'0'))
             :null;
@@ -143,7 +143,7 @@
       const records=(Array.isArray(payload.honours)?payload.honours:[]).filter(x=>x&&safeSlug(x.slug)&&['fast_driver','gentleman_driver'].includes(x.type)&&x.driver_id&&x.driver).map(x=>({
         ...x,event:x['event_'+lang]||x.event_fr||x.event_en||''
       }));
-      window.ATX_HALL_ACHIEVEMENTS=(Array.isArray(payload.achievements)?payload.achievements:[]).filter(x=>x&&safeSlug(x.slug)&&x.driver).map(x=>({...x,event:x['event_'+lang]||x.event_fr||x.event_en||'ATXRACING'}));
+      window.ATX_HALL_ACHIEVEMENTS=(Array.isArray(payload.achievements)?payload.achievements:[]).filter(x=>x&&safeSlug(x.slug)&&x.driver).map(x=>({...x,event:x['event_'+lang]||x.event_fr||x.event_en||''}));
       const scanned=new Set(records.map(x=>x.slug)).size;
       renderHonours(records,scanned);
     }catch{renderTicker([],[]);renderHonours([],0)}
