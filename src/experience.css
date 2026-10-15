@@ -8,6 +8,22 @@
 .atx-ticker-item:hover{text-decoration:underline;color:#ff5d72}
 @keyframes atx-ticker-scroll{to{transform:translateX(-50%)}}
 .atx-honours-rail{position:fixed;z-index:8;top:145px;right:12px;width:232px;max-height:calc(100vh - 165px);overflow:auto;display:grid;gap:11px;padding:13px;border:1px solid #ffffff35;border-radius:14px;background:#080b12e8;box-shadow:0 12px 45px #0009;backdrop-filter:blur(12px)}
+.atx-honours-rail--home{top:160px;right:16px;width:276px;gap:12px;padding:10px;border:3px solid #d7b967;border-radius:12px;background:linear-gradient(145deg,#242936,#090c12 72%);box-shadow:0 0 0 2px #080a0e,0 0 0 4px #715c2d,0 22px 42px #000c;backdrop-filter:none}
+.atx-honours-rail--home::before{content:"ATXRACING · COLLECTORS";display:block;padding:7px 9px;border:1px solid #ffffff38;background:linear-gradient(90deg,#b51e36,#50101e);color:#fff4cf;font:900 9px/1 Inter,sans-serif;letter-spacing:.15em;text-align:center}
+.atx-honours-rail--home .atx-rail-title{padding:4px 5px 2px;color:#fff;font:900 15px/1.1 Rajdhani,sans-serif;letter-spacing:.12em;text-align:center}
+.atx-honours-rail--home .atx-honours-panel{padding:9px;border:1px solid var(--mini-metal,#efc96f);border-radius:7px;background:linear-gradient(145deg,var(--mini-face,#7b1d30),#17101a 78%);box-shadow:inset 0 0 0 2px #ffffff16,0 7px 15px #0007}
+.atx-honours-rail--home .atx-honours-panel:nth-of-type(2){--mini-metal:#b9edf0;--mini-face:#126f82}
+.atx-honours-rail--home .atx-honours-panel h2{margin:0 0 8px;color:#fff3c0;font:900 10px/1 Inter,sans-serif;letter-spacing:.12em}
+.atx-honours-rail--home .atx-honours-panel:nth-of-type(2) h2{color:#d8ffff}
+.atx-honours-rail--home .atx-honours-list{gap:5px}
+.atx-honours-rail--home .atx-honours-entry{display:grid;grid-template-columns:22px 30px minmax(0,1fr) 24px;gap:7px;min-height:38px;padding:4px 6px;border:1px solid #ffffff32;border-radius:4px;background:#070a0ed9;box-shadow:inset 3px 0 var(--mini-metal,#efc96f)}
+.atx-honours-rail--home .atx-honours-entry b{min-width:0;color:var(--mini-metal,#efc96f);font:900 10px/1 Inter,sans-serif}
+.atx-honours-rail--home .atx-honours-entry img{width:30px;height:30px;border:2px solid var(--mini-metal,#efc96f);border-radius:50%;background:#151820}
+.atx-honours-rail--home .atx-honours-entry span{font-weight:800;color:#fff}
+.atx-honours-rail--home .atx-honours-entry strong{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--mini-metal,#efc96f);color:#16130c;font:900 11px/1 Inter,sans-serif}
+.atx-honours-rail--home .atx-hall-link{padding:9px;border:2px solid #d7b967;background:linear-gradient(90deg,#6f1627,#b42139);font-weight:900;letter-spacing:.04em;box-shadow:inset 0 1px #ffffff42}
+.atx-honours-rail--home .atx-hall-link:hover{background:linear-gradient(90deg,#a51d34,#dc314c)}
+.atx-honours-rail--home .atx-honours-note{text-align:center;color:#ccd1d9}
 .atx-rail-title{font-size:11px;letter-spacing:.1em;font-weight:900;color:#e6e6ea}
 .atx-honours-panel{border-top:1px solid #ffffff25;padding-top:10px}
 .atx-honours-panel h2{margin:0 0 10px;font-size:12px;color:#ff576d;letter-spacing:.1em}
