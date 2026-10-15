@@ -1272,7 +1272,7 @@
     "description_fr": "Rendez-vous toutes les 90 minutes : 2 minutes d’essais, 15 minutes de qualifications et 45 minutes de course. Inscription sur le site obligatoire, classement ATXS.",
     "description_en": "Rendezvous every 90 minutes: 2 minutes of practice, 15 minutes of qualifying and a 45-minute race. Website registration required, ATXS standings.",
     "circuit_name": "Imola",
-    "starts_at": "2026-10-20T19:30:00+00:00",
+    "starts_at": "2026-10-20T18:30:00+00:00",
     "duration_minutes": 45,
     "image_url": "https://athoxmotorsport-lab.github.io/atxracing/assets/circuits/imola.webp",
     "simgrid_url": null,
@@ -1285,23 +1285,23 @@
     "result_publication_state": "provisional",
     "event_schedule": [
       {
-        "end": "21:32",
+        "end": "20:32",
         "key": "practice_1",
-        "start": "21:30",
+        "start": "20:30",
         "labelEn": "Free practice",
         "labelFr": "Essais libres"
       },
       {
-        "end": "21:47",
+        "end": "20:47",
         "key": "qualifying",
-        "start": "21:32",
+        "start": "20:32",
         "labelEn": "Qualifying",
         "labelFr": "Qualifications"
       },
       {
-        "end": "22:32",
+        "end": "21:32",
         "key": "race",
-        "start": "21:47",
+        "start": "20:47",
         "labelEn": "Race",
         "labelFr": "Course"
       }
@@ -1315,7 +1315,7 @@
     "description_fr": "Rendez-vous toutes les 90 minutes : 2 minutes d’essais, 15 minutes de qualifications et 45 minutes de course. Inscription sur le site obligatoire, classement ATXS.",
     "description_en": "Rendezvous every 90 minutes: 2 minutes of practice, 15 minutes of qualifying and a 45-minute race. Website registration required, ATXS standings.",
     "circuit_name": "Nurburgring GP",
-    "starts_at": "2026-10-19T19:30:00+00:00",
+    "starts_at": "2026-10-19T18:30:00+00:00",
     "duration_minutes": 45,
     "image_url": "https://athoxmotorsport-lab.github.io/atxracing/assets/circuits/nurburgring.webp",
     "simgrid_url": null,
@@ -1328,23 +1328,23 @@
     "result_publication_state": "provisional",
     "event_schedule": [
       {
-        "end": "21:32",
+        "end": "20:32",
         "key": "practice_1",
-        "start": "21:30",
+        "start": "20:30",
         "labelEn": "Free practice",
         "labelFr": "Essais libres"
       },
       {
-        "end": "21:47",
+        "end": "20:47",
         "key": "qualifying",
-        "start": "21:32",
+        "start": "20:32",
         "labelEn": "Qualifying",
         "labelFr": "Qualifications"
       },
       {
-        "end": "22:32",
+        "end": "21:32",
         "key": "race",
-        "start": "21:47",
+        "start": "20:47",
         "labelEn": "Race",
         "labelFr": "Course"
       }
