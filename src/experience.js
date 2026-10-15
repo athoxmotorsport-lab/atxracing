@@ -68,8 +68,6 @@
     const main=document.querySelector('main');if(main){
       main.append(el('p','atx-hall-intro',tr('Distinctions officielles des pilotes ATXRACING. Chaque carte renvoie vers sa course.','Official ATXRACING driver honours. Each card links to its race.')));
     }
-  }else{
-    document.body.append(rail);
   }
   const renderHonours=(records,scanned)=>{
     const byType=type=>{

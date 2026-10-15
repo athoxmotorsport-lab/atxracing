@@ -25,7 +25,6 @@
 .atx-hall-card{display:grid;gap:12px;min-height:220px;align-content:end;padding:16px;text-decoration:none;color:#fff;background:linear-gradient(145deg,#3a1120,#12141f 60%,#27202c);border:1px solid #a9465d;border-radius:12px}
 .atx-hall-kind{font-weight:800;font-size:12px;color:#ffd17a;letter-spacing:.08em}
 .atx-hall-card strong{font-size:21px}.atx-hall-card small{color:#bac0cb}
-@media(min-width:1350px){body[data-game=acc]:not([data-page=hall-of-fame])>main.content,body[data-game=acc]:not([data-page=hall-of-fame])>main.wrap{margin-right:255px}}
 @media(max-width:1349px){.atx-honours-rail{position:static;width:auto;max-height:none;margin:22px auto 90px;max-width:900px;grid-template-columns:repeat(2,minmax(0,1fr))}.atx-rail-title,.atx-hall-link,.atx-honours-note{grid-column:1/-1}}
 @media(max-width:650px){.atx-honours-rail{margin:18px 14px 100px}.atx-ticker-live{padding:12px 9px}.atx-ticker-item{font-size:12px}.atx-honours-rail{grid-template-columns:1fr}.atx-rail-title,.atx-hall-link,.atx-honours-note{grid-column:auto}}
 @media(prefers-reduced-motion:reduce){.atx-ticker-track{animation:none;max-width:100%;width:100%;overflow:auto}.atx-ticker-item[aria-hidden=true]{display:none}}

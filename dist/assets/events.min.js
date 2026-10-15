@@ -81,7 +81,7 @@
           if(!teamView&&driver?.avatar_url){const photo=el('img');photo.src=driver.avatar_url;photo.alt='';photo.loading='lazy';card.append(photo)}
           card.append(el('span','atx-podium-rank','P'+place),el('strong','',name));
           if(teamView&&r.members?.length)card.append(el('small','',r.members.join(' / ')));
-          card.append(el('small','',r.car_model_name||''),el('span','atx-podium-step',String(place)));
+          card.append(el('span','atx-podium-step',String(place)));
         }else{card.append(el('span','atx-podium-rank','P'+place),el('span','atx-podium-step',String(place)))}
         stage.append(card);
       }
