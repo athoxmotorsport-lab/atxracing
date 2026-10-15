@@ -68,6 +68,12 @@
     const main=document.querySelector('main');if(main){
       main.append(el('p','atx-hall-intro',tr('Distinctions officielles des pilotes ATXRACING. Chaque carte renvoie vers sa course.','Official ATXRACING driver honours. Each card links to its race.')));
     }
+  }else if(document.body.dataset.page==='league'){
+    const cards=document.querySelector('.feature-grid');
+    if(cards){
+      rail.classList.add('atx-honours-rail--inline');
+      cards.insertAdjacentElement('afterend',rail);
+    }
   }
   const renderHonours=(records,scanned)=>{
     const byType=type=>{

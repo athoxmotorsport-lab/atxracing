@@ -8,6 +8,8 @@
 .atx-ticker-item:hover{text-decoration:underline;color:#ff5d72}
 @keyframes atx-ticker-scroll{to{transform:translateX(-50%)}}
 .atx-honours-rail{position:fixed;z-index:8;top:145px;right:12px;width:232px;max-height:calc(100vh - 165px);overflow:auto;display:grid;gap:11px;padding:13px;border:1px solid #ffffff35;border-radius:14px;background:#080b12e8;box-shadow:0 12px 45px #0009;backdrop-filter:blur(12px)}
+.atx-honours-rail--inline{position:static;width:auto;max-height:none;overflow:visible;margin:24px 0;grid-template-columns:repeat(2,minmax(0,1fr))}
+.atx-honours-rail--inline .atx-rail-title,.atx-honours-rail--inline .atx-hall-link,.atx-honours-rail--inline .atx-honours-note{grid-column:1/-1}
 .atx-rail-title{font-size:11px;letter-spacing:.1em;font-weight:900;color:#e6e6ea}
 .atx-honours-panel{border-top:1px solid #ffffff25;padding-top:10px}
 .atx-honours-panel h2{margin:0 0 10px;font-size:12px;color:#ff576d;letter-spacing:.1em}
@@ -26,7 +28,7 @@
 .atx-hall-kind{font-weight:800;font-size:12px;color:#ffd17a;letter-spacing:.08em}
 .atx-hall-card strong{font-size:21px}.atx-hall-card small{color:#bac0cb}
 @media(max-width:1349px){.atx-honours-rail{position:static;width:auto;max-height:none;margin:22px auto 90px;max-width:900px;grid-template-columns:repeat(2,minmax(0,1fr))}.atx-rail-title,.atx-hall-link,.atx-honours-note{grid-column:1/-1}}
-@media(max-width:650px){.atx-honours-rail{margin:18px 14px 100px}.atx-ticker-live{padding:12px 9px}.atx-ticker-item{font-size:12px}.atx-honours-rail{grid-template-columns:1fr}.atx-rail-title,.atx-hall-link,.atx-honours-note{grid-column:auto}}
+@media(max-width:650px){.atx-honours-rail{margin:18px 14px 100px}.atx-honours-rail--inline{margin:18px 0 24px}.atx-ticker-live{padding:12px 9px}.atx-ticker-item{font-size:12px}.atx-honours-rail{grid-template-columns:1fr}.atx-rail-title,.atx-hall-link,.atx-honours-note{grid-column:auto}}
 @media(prefers-reduced-motion:reduce){.atx-ticker-track{animation:none;max-width:100%;width:100%;overflow:auto}.atx-ticker-item[aria-hidden=true]{display:none}}
 
 /* Official race podium; top three are deliberately not repeated in the following table. */
