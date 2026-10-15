@@ -60,24 +60,22 @@
 .atx-hall-gentleman_driver{background:linear-gradient(140deg,#173f41,#121a20)}
 @media(max-width:650px){#atx-hall-gallery{gap:26px}.atx-hall-card-grid{display:grid;grid-auto-columns:minmax(72%,1fr);grid-auto-flow:column;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;padding:0 0 12px}.atx-hall-card{scroll-snap-align:start;min-height:290px}.atx-hall-card-grid::-webkit-scrollbar{height:5px}}
 
-/* Vibrant, accessible award gallery and podium. Decorative layers contain no data. */
-.atx-hall-card{isolation:isolate;min-height:280px;padding:22px;gap:10px;border-radius:16px;border-width:1px;box-shadow:inset 0 1px #ffffff25,0 18px 35px #0006;transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease}
-.atx-hall-card::before{content:"";position:absolute;inset:-25% -40%;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 80% 14%,var(--award-glow,#ffffff33),transparent 57%);opacity:.92}
-.atx-hall-card::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(115deg,transparent 40%,#ffffff13 51%,transparent 61%);transform:translateX(-85%);transition:transform .5s}
-.atx-hall-card:hover::after,.atx-hall-card:focus-visible::after{transform:translateX(80%)}
-.atx-hall-card:hover,.atx-hall-card:focus-visible{transform:translateY(-5px);box-shadow:inset 0 1px #ffffff44,0 24px 42px #0009}
-.atx-hall-card strong{font-size:clamp(23px,2.4vw,32px);line-height:1.04;overflow-wrap:anywhere;text-shadow:0 2px 16px #0007}
-.atx-hall-card .atx-hall-avatar{width:76px;height:76px;border:3px solid #ffffffaa;box-shadow:0 4px 20px #0007}
-.atx-hall-kind{font-size:11px;letter-spacing:.14em;color:#fff;text-shadow:0 1px 9px #000b}
-.atx-hall-context{font-weight:700;color:#f5f4f8;font-size:14px;line-height:1.35}
-.atx-hall-performance{width:fit-content;border:1px solid #ffffff55;background:#0005;padding:6px 9px;border-radius:6px;color:#fff;font:800 12px/1.2 Inter,sans-serif}
-.atx-hall-card small{color:#f0eaf0;font-size:12px}
-.atx-hall-endurance_winner{--award-glow:#ffcc55ad;background:linear-gradient(135deg,#b47b24,#392513 65%,#111923)}
-.atx-hall-first_victory{--award-glow:#ff975a99;background:linear-gradient(135deg,#a73d23,#371a23 66%,#101622)}
-.atx-hall-podium_p2{--award-glow:#afcfff8c;background:linear-gradient(135deg,#647d9c,#2d3b54 65%,#101622)}
-.atx-hall-podium_p3{--award-glow:#eab17a8c;background:linear-gradient(135deg,#936344,#442c2b 65%,#101622)}
-.atx-hall-fast_driver{--award-glow:#ff6b488f;border-color:#f47561;background:linear-gradient(130deg,#c52d42,#671b3a 56%,#171524)}
-.atx-hall-gentleman_driver{--award-glow:#46e4e4a1;border-color:#55d7d9;background:linear-gradient(130deg,#187f95,#145064 55%,#102734)}
+/* Collectible racing cards: crisp Panini-style framing, with the whole card linking to its result. */
+.atx-hall-card{--card-metal:#e5c878;--card-deep:#32101a;isolation:isolate;aspect-ratio:2/3;min-height:330px;padding:16px;gap:10px;align-content:stretch;grid-template-rows:auto 1fr auto auto;border:3px solid var(--card-metal);border-radius:13px;background:linear-gradient(150deg,#ffffff20 0 2%,transparent 2% 9%,#ffffff0d 9% 11%,transparent 11%),linear-gradient(145deg,var(--card-face,#9f263c),var(--card-deep) 72%);box-shadow:0 0 0 2px #090b0f,0 0 0 4px var(--card-metal),0 16px 28px #0009;backdrop-filter:none;filter:none;transition:transform .2s ease,box-shadow .2s ease}
+.atx-hall-card::before{content:"";position:absolute;inset:8px;z-index:-1;pointer-events:none;border:1px solid #fff8;border-radius:7px;background:linear-gradient(135deg,#ffffff18,transparent 22% 78%,#0003)}
+.atx-hall-card::after{content:"ATXRACING";position:absolute;right:11px;bottom:9px;z-index:-1;color:#ffffff16;font:900 24px/1 Rajdhani,sans-serif;letter-spacing:.08em;transform:rotate(-90deg);transform-origin:bottom right;pointer-events:none}
+.atx-hall-card:hover,.atx-hall-card:focus-visible{transform:translateY(-6px) scale(1.015);border-color:#fff0aa;box-shadow:0 0 0 2px #090b0f,0 0 0 4px #fff0aa,0 24px 38px #000c}
+.atx-hall-card strong{align-self:end;text-align:center;font-size:clamp(22px,2vw,29px);line-height:1;overflow-wrap:anywhere;text-transform:uppercase;text-shadow:0 2px 0 #000,0 4px 12px #000}
+.atx-hall-card .atx-hall-avatar{position:static;align-self:center;justify-self:center;width:112px;height:112px;object-fit:cover;margin:auto;border:5px solid var(--card-metal);border-radius:50%;background:#12151b;box-shadow:0 0 0 3px #111,0 9px 20px #0009}
+.atx-hall-kind{width:fit-content;padding:5px 8px;border:1px solid var(--card-metal);background:#080b0fd9;color:#fff5c7;font:900 10px/1 Inter,sans-serif;letter-spacing:.13em;text-transform:uppercase;box-shadow:2px 2px 0 #0008}
+.atx-hall-performance{justify-self:center;width:fit-content;border:1px solid #fff9;background:#090b0fe6;padding:7px 10px;border-radius:3px;color:#fff;font:900 11px/1.2 Inter,sans-serif;letter-spacing:.03em}
+.atx-hall-card small{justify-self:center;color:#fff;font-size:11px;font-weight:750;letter-spacing:.04em}
+.atx-hall-endurance_winner{--card-metal:#f4d36d;--card-face:#9a631a;--card-deep:#24190c}
+.atx-hall-first_victory{--card-metal:#f2aa72;--card-face:#a84027;--card-deep:#32131a}
+.atx-hall-podium_p2{--card-metal:#dbe6f3;--card-face:#607892;--card-deep:#1b2638}
+.atx-hall-podium_p3{--card-metal:#dfa77d;--card-face:#925d42;--card-deep:#2c1c20}
+.atx-hall-fast_driver{--card-metal:#f1c66d;--card-face:#bf2c43;--card-deep:#421328}
+.atx-hall-gentleman_driver{--card-metal:#b9edf0;--card-face:#16879a;--card-deep:#0b3543}
 .atx-race-podium{position:relative;overflow:hidden;padding:clamp(16px,3vw,34px);border-color:#e16b69;background:radial-gradient(ellipse at 50% 0%,#8c293d80,transparent 60%),linear-gradient(145deg,#202d42,#10131c);box-shadow:inset 0 1px #ffffff35,0 18px 38px #0006}
 .atx-race-podium>h3{font-size:clamp(19px,2.5vw,28px);text-shadow:0 0 24px #ffbb7a80}
 .atx-podium-stage{gap:clamp(5px,1.5vw,20px)}

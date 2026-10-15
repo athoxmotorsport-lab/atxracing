@@ -119,8 +119,6 @@
           card.append(el('span','atx-hall-kind',label));
           if(record.avatar&&/^https:\/\//.test(record.avatar)){const img=el('img','atx-hall-avatar');img.src=record.avatar;img.alt='';img.loading='lazy';card.append(img)}
           card.append(el('strong','',record.driver));
-          const context=String(record.circuit_name||record.circuit||record.track_name||record.event||'').trim();
-          if(context&&!/^(?:atx|atx\s*racing|atx\s*series|serveur\s*atx\s*racing)$/i.test(context))card.append(el('span','atx-hall-context',context));
           const performance=type==='fast_driver'&&Number.isFinite(Number(record.best_lap_ms))&&Number(record.best_lap_ms)>0
             ?tr('Meilleur tour','Best lap')+' · '+(Math.floor(Number(record.best_lap_ms)/60000)+':'+String(Math.floor(Number(record.best_lap_ms)%60000/1000)).padStart(2,'0')+'.'+String(Math.floor(Number(record.best_lap_ms)%1000)).padStart(3,'0'))
             :null;
