@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {expandCrews,simgridTeams} from '../supabase/functions/ingest-acc-results/crews.mjs';
+import {attributeCrewPenalties,expandCrews,simgridTeams} from '../supabase/functions/ingest-acc-results/crews.mjs';
 const a={playerId:'S76561198000000001',firstName:'First',lastName:'Driver'},b={playerId:'S76561198000000002',firstName:'Second',lastName:'Driver'},reserve={playerId:'S76561198000000003'};
 const result={numeroVoiture:69,position:1,meilleurTourMs:100000,pilote:{steamId:b.playerId}};
 const raw={sessionResult:{leaderBoardLines:[{car:{raceNumber:69,drivers:[a,b,reserve],teamName:''},currentDriver:b,driverTotalTimes:[123,456,0]}]}};
@@ -27,4 +27,24 @@ test('an unused duplicate car cannot replace a driver who actually raced',()=>{
  assert.equal(rows.length,2);assert.equal(rows.find(r=>r.pilote.steamId===a.playerId.slice(1)).numeroVoiture,69);
  assert.equal(rows.find(r=>r.pilote.steamId===a.playerId.slice(1)).personalBestLapMs,108000);
  assert.equal(rows.find(r=>r.pilote.steamId===b.playerId.slice(1)).personalBestLapMs,null);
+});
+
+test('crew penalties use the driver active on the violating car lap',()=>{
+ const source=structuredClone(raw);
+ source.sessionResult.leaderBoardLines[0].car.carId=1008;
+ source.laps=[
+  ...Array.from({length:23},()=>({carId:1008,driverIndex:0})),
+  ...Array.from({length:23},()=>({carId:1008,driverIndex:1})),
+  {carId:1008,driverIndex:0},
+ ];
+ source.penalties=[
+  {carId:1008,driverIndex:0,reason:'PitSpeeding',penalty:'StopAndGo_30',violationInLap:46,clearedInLap:47},
+  {carId:1008,driverIndex:0,reason:'Cutting',penalty:'None',violationInLap:0,clearedInLap:168},
+ ];
+ const penalties=attributeCrewPenalties([
+  {steamId:a.playerId,tourViolation:46},
+  {steamId:a.playerId,tourViolation:0},
+ ],source);
+ assert.equal(penalties[0].steamId,b.playerId.slice(1));
+ assert.equal(penalties[1].steamId,a.playerId);
 });

@@ -1,5 +1,5 @@
 import {raceStatuses,resultStatus} from './finish-status.mjs';
-import {expandCrews,loadSimgridTeams} from './crews.mjs';
+import {attributeCrewPenalties,expandCrews,loadSimgridTeams} from './crews.mjs';
 import {worldGTChampionship} from '../_shared/worldgt-scoring.ts';
 import {competitiveRace} from '../_shared/race-visibility.mjs';
 import {competitionCode,matchPublishedRace} from './race-link.mjs';
@@ -53,7 +53,7 @@ type ImportPayload = {
   }>;
 };
 
-const PROCESSOR_VERSION = "acc-v7-finishers";
+const PROCESSOR_VERSION = "acc-v8-crew-penalties";
 const MAX_VALID_ACC_LAP_TIME_MS = 3_600_000;
 
 type EventRow = {
@@ -370,7 +370,11 @@ const ingest = async (payload: ImportPayload, rawJson: string) => {
       const {data:existingRegistrations,error:registrationError}=await supabase.from('registrations').select('race_number,team_name').eq('event_id',event.id);
       if(registrationError)throw registrationError;
       for(const row of existingRegistrations??[])if(row.team_name?.trim()&&!teams.has(row.race_number))teams.set(row.race_number,row.team_name.trim());
-      payload={...payload,resultats:expandCrews(payload.resultats,raw,teams)};
+      payload={
+        ...payload,
+        resultats:expandCrews(payload.resultats,raw,teams),
+        penalites:attributeCrewPenalties(payload.penalites,raw),
+      };
     }
     const {data:cars,error:carsError}=await supabase.from('atx_acc_cars').select('car_model_id,name');
     if(carsError)throw carsError;

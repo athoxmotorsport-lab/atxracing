@@ -1,5 +1,21 @@
 /* ACC leaderboards are car results; currentDriver alone loses the other stints. */
 export const steamId = value => String(value ?? '').trim().match(/^S?(\d{17})$/i)?.[1] ?? '';
+export function attributeCrewPenalties(penalties, raw) {
+ const source=Array.isArray(raw?.penalties)?raw.penalties:[];
+ const lines=raw?.sessionResult?.leaderBoardLines;
+ if(!Array.isArray(penalties)||!Array.isArray(lines))return penalties??[];
+ return penalties.map((penalty,index)=>{
+  const original=source[index];
+  const violation=Number(original?.violationInLap??penalty.tourViolation);
+  if(!original||!Number.isInteger(violation)||violation<1)return penalty;
+  const line=lines.find(row=>Number(row.car?.carId)===Number(original.carId));
+  const carLaps=(raw.laps??[]).filter(lap=>Number(lap.carId)===Number(original.carId));
+  const lap=carLaps[violation-1];
+  const driver=line?.car?.drivers?.[Number(lap?.driverIndex)];
+  const owner=steamId(driver?.playerId);
+  return owner?{...penalty,steamId:owner}:penalty;
+ });
+}
 export function expandCrews(results, raw, teamNames = new Map()) {
  const lines=raw?.sessionResult?.leaderBoardLines;
  if(!Array.isArray(lines))throw Error('ACC leaderboard missing');
