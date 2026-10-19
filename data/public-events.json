@@ -1032,7 +1032,7 @@
     "site_registration_enabled": true,
     "mandatory_stop_count": 0,
     "car_class": "GT3",
-    "result_publication_state": "provisional",
+    "result_publication_state": "official",
     "event_schedule": [
       {
         "end": "20:32",
@@ -1056,7 +1056,7 @@
         "labelFr": "Course"
       }
     ],
-    "status": "registration_open"
+    "status": "completed"
   },
   {
     "slug": "atx-f2fff187a7e44778b33f6132",
