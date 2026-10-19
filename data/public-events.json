@@ -450,56 +450,6 @@
     "status": "registration_open"
   },
   {
-    "slug": "2026-12-13-nurburgring-gp-sprint-atx-racing-gtworld-s1-manche-1-06bebef5",
-    "title_fr": "WGT: ATX RACING - Manche 1",
-    "title_en": "WGT: ATX RACING - Race 1",
-    "description_fr": null,
-    "description_en": null,
-    "circuit_name": "Nurburgring GP",
-    "starts_at": "2026-12-13T13:00:00+00:00",
-    "duration_minutes": 60,
-    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2026-12-13/ef784cf2-ed6b-4147-b0c4-5586c0eff1dd.jpg",
-    "simgrid_url": "https://www.thesimgrid.com/championships/27625",
-    "competition_code": "WGT",
-    "format_code": null,
-    "championship_code": "WGT_SPRINT",
-    "site_registration_enabled": false,
-    "mandatory_stop_count": null,
-    "car_class": "GT3",
-    "result_publication_state": "provisional",
-    "event_schedule": [
-      {
-        "end": "14:40",
-        "key": "practice_1",
-        "start": "14:10",
-        "labelEn": "Free practice",
-        "labelFr": "Essais libres"
-      },
-      {
-        "end": "14:10",
-        "key": "briefing",
-        "start": "14:00",
-        "labelEn": "Free practice 2 - Briefing (Discord)",
-        "labelFr": "Essais libres 2 - Briefing (Discord)"
-      },
-      {
-        "end": "15:00",
-        "key": "qualifying",
-        "start": "14:40",
-        "labelEn": "Qualifying",
-        "labelFr": "Qualifications"
-      },
-      {
-        "end": "17:00",
-        "key": "race",
-        "start": "15:00",
-        "labelEn": "Race",
-        "labelFr": "Course"
-      }
-    ],
-    "status": "registration_open"
-  },
-  {
     "slug": "2027-01-17-watkins-glen-wgt-600-miles-watkins-glen-b2c97403",
     "title_fr": "WGT: 600 MILES WATKINS GLEN",
     "title_en": "WGT: 600 MILES WATKINS GLEN",
@@ -543,206 +493,6 @@
         "end": "16:00",
         "key": "race",
         "start": "10:40",
-        "labelEn": "Race",
-        "labelFr": "Course"
-      }
-    ],
-    "status": "registration_open"
-  },
-  {
-    "slug": "2027-05-02-brands-hach-sprint-atx-racing-gtworld-s1-manche-2-5d126963",
-    "title_fr": "WGT: ATX RACING - Manche 2",
-    "title_en": "WGT: ATX RACING - Race 2",
-    "description_fr": null,
-    "description_en": null,
-    "circuit_name": "Brands Hach",
-    "starts_at": "2027-05-02T12:00:00+00:00",
-    "duration_minutes": 60,
-    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2027-05-02/4ae3503d-a180-4210-9a4f-162a4791e01a.jpg",
-    "simgrid_url": "https://www.thesimgrid.com/championships/27625",
-    "competition_code": "WGT",
-    "format_code": null,
-    "championship_code": "WGT_SPRINT",
-    "site_registration_enabled": false,
-    "mandatory_stop_count": null,
-    "car_class": "GT3",
-    "result_publication_state": "provisional",
-    "event_schedule": [
-      {
-        "end": "14:40",
-        "key": "practice_1",
-        "start": "14:10",
-        "labelEn": "Free practice",
-        "labelFr": "Essais libres"
-      },
-      {
-        "end": "14:10",
-        "key": "briefing",
-        "start": "14:00",
-        "labelEn": "Free practice 2 - Briefing (Discord)",
-        "labelFr": "Essais libres 2 - Briefing (Discord)"
-      },
-      {
-        "end": "15:00",
-        "key": "qualifying",
-        "start": "14:40",
-        "labelEn": "Qualifying",
-        "labelFr": "Qualifications"
-      },
-      {
-        "end": "17:00",
-        "key": "race",
-        "start": "15:00",
-        "labelEn": "Race",
-        "labelFr": "Course"
-      }
-    ],
-    "status": "registration_open"
-  },
-  {
-    "slug": "2027-07-18-misano-sprint-atx-racing-gtworld-s1-manche-3-8dbd0500",
-    "title_fr": "WGT: ATX RACING - Manche 3",
-    "title_en": "WGT: ATX RACING - Race 3",
-    "description_fr": null,
-    "description_en": null,
-    "circuit_name": "Misano",
-    "starts_at": "2027-07-18T12:00:00+00:00",
-    "duration_minutes": 60,
-    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2027-07-18/bcb2408c-c0b1-43ec-8205-b5d1050a76af.jpg",
-    "simgrid_url": "https://www.thesimgrid.com/championships/27625",
-    "competition_code": "WGT",
-    "format_code": null,
-    "championship_code": "WGT_SPRINT",
-    "site_registration_enabled": false,
-    "mandatory_stop_count": null,
-    "car_class": "GT3",
-    "result_publication_state": "provisional",
-    "event_schedule": [
-      {
-        "end": "14:40",
-        "key": "practice_1",
-        "start": "14:10",
-        "labelEn": "Free practice",
-        "labelFr": "Essais libres"
-      },
-      {
-        "end": "14:10",
-        "key": "briefing",
-        "start": "14:00",
-        "labelEn": "Free practice 2 - Briefing (Discord)",
-        "labelFr": "Essais libres 2 - Briefing (Discord)"
-      },
-      {
-        "end": "15:00",
-        "key": "qualifying",
-        "start": "14:40",
-        "labelEn": "Qualifying",
-        "labelFr": "Qualifications"
-      },
-      {
-        "end": "17:00",
-        "key": "race",
-        "start": "15:00",
-        "labelEn": "Race",
-        "labelFr": "Course"
-      }
-    ],
-    "status": "registration_open"
-  },
-  {
-    "slug": "2027-09-19-zandvoort-sprint-atx-racing-gtworld-s1-manche-4-a459a73a",
-    "title_fr": "WGT: ATX RACING - Manche 4",
-    "title_en": "WGT: ATX RACING - Race 4",
-    "description_fr": null,
-    "description_en": null,
-    "circuit_name": "Zandvoort",
-    "starts_at": "2027-09-19T12:00:00+00:00",
-    "duration_minutes": 60,
-    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2027-09-19/3ac0ebae-1af9-4983-9e95-4930ecf6936c.jpg",
-    "simgrid_url": "https://www.thesimgrid.com/championships/27625",
-    "competition_code": "WGT",
-    "format_code": null,
-    "championship_code": "WGT_SPRINT",
-    "site_registration_enabled": false,
-    "mandatory_stop_count": null,
-    "car_class": "GT3",
-    "result_publication_state": "provisional",
-    "event_schedule": [
-      {
-        "end": "14:40",
-        "key": "practice_1",
-        "start": "14:10",
-        "labelEn": "Free practice",
-        "labelFr": "Essais libres"
-      },
-      {
-        "end": "14:10",
-        "key": "briefing",
-        "start": "14:00",
-        "labelEn": "Free practice 2 - Briefing (Discord)",
-        "labelFr": "Essais libres 2 - Briefing (Discord)"
-      },
-      {
-        "end": "15:00",
-        "key": "qualifying",
-        "start": "14:40",
-        "labelEn": "Qualifying",
-        "labelFr": "Qualifications"
-      },
-      {
-        "end": "17:00",
-        "key": "race",
-        "start": "15:00",
-        "labelEn": "Race",
-        "labelFr": "Course"
-      }
-    ],
-    "status": "registration_open"
-  },
-  {
-    "slug": "2027-10-03-hungaroring-sprint-atx-racing-gtworld-s1-manche-5-77e3aa92",
-    "title_fr": "WGT: ATX RACING - Manche 5",
-    "title_en": "WGT: ATX RACING - Race 5",
-    "description_fr": null,
-    "description_en": null,
-    "circuit_name": "Hungaroring",
-    "starts_at": "2027-10-03T12:00:00+00:00",
-    "duration_minutes": 60,
-    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2027-10-03/345e5848-b9a5-459d-bebb-d784a2344f1b.jpg",
-    "simgrid_url": "https://www.thesimgrid.com/championships/27625",
-    "competition_code": "WGT",
-    "format_code": null,
-    "championship_code": "WGT_SPRINT",
-    "site_registration_enabled": false,
-    "mandatory_stop_count": null,
-    "car_class": "GT3",
-    "result_publication_state": "provisional",
-    "event_schedule": [
-      {
-        "end": "14:40",
-        "key": "practice_1",
-        "start": "14:10",
-        "labelEn": "Free practice",
-        "labelFr": "Essais libres"
-      },
-      {
-        "end": "14:10",
-        "key": "briefing",
-        "start": "14:00",
-        "labelEn": "Free practice 2 - Briefing (Discord)",
-        "labelFr": "Essais libres 2 - Briefing (Discord)"
-      },
-      {
-        "end": "15:00",
-        "key": "qualifying",
-        "start": "14:40",
-        "labelEn": "Qualifying",
-        "labelFr": "Qualifications"
-      },
-      {
-        "end": "17:00",
-        "key": "race",
-        "start": "15:00",
         "labelEn": "Race",
         "labelFr": "Course"
       }
@@ -895,7 +645,7 @@
     "site_registration_enabled": true,
     "mandatory_stop_count": 0,
     "car_class": "GT3",
-    "result_publication_state": "provisional",
+    "result_publication_state": "official",
     "event_schedule": [
       {
         "end": "13:02",
@@ -919,7 +669,7 @@
         "labelFr": "Course"
       }
     ],
-    "status": "registration_open"
+    "status": "completed"
   },
   {
     "slug": "atx-4317206bc9934293a35fec99",
@@ -1051,49 +801,6 @@
     "status": "completed"
   },
   {
-    "slug": "atx-77b88c23a6f04480b9080a05",
-    "title_fr": "ATX Series Donington park",
-    "title_en": "ATX Series Donington park",
-    "description_fr": "Rendez-vous toutes les 90 minutes : 2 minutes d’essais, 15 minutes de qualifications et 45 minutes de course. Inscription sur le site obligatoire, classement ATXS.",
-    "description_en": "Rendezvous every 90 minutes: 2 minutes of practice, 15 minutes of qualifying and a 45-minute race. Website registration required, ATXS standings.",
-    "circuit_name": "donington park",
-    "starts_at": "2026-10-19T17:00:00+00:00",
-    "duration_minutes": 45,
-    "image_url": "https://athoxmotorsport-lab.github.io/atxracing/assets/circuits/donington.webp",
-    "simgrid_url": null,
-    "competition_code": "ATXS",
-    "format_code": "ATXS",
-    "championship_code": null,
-    "site_registration_enabled": true,
-    "mandatory_stop_count": 0,
-    "car_class": "GT3",
-    "result_publication_state": "provisional",
-    "event_schedule": [
-      {
-        "end": "19:02",
-        "key": "practice_1",
-        "start": "19:00",
-        "labelEn": "Free practice",
-        "labelFr": "Essais libres"
-      },
-      {
-        "end": "19:17",
-        "key": "qualifying",
-        "start": "19:02",
-        "labelEn": "Qualifying",
-        "labelFr": "Qualifications"
-      },
-      {
-        "end": "20:02",
-        "key": "race",
-        "start": "19:17",
-        "labelEn": "Race",
-        "labelFr": "Course"
-      }
-    ],
-    "status": "registration_open"
-  },
-  {
     "slug": "atx-831899e44403467095a0c143",
     "title_fr": "ATX Series · Misano",
     "title_en": "ATX Series · Misano",
@@ -1110,7 +817,7 @@
     "site_registration_enabled": true,
     "mandatory_stop_count": 0,
     "car_class": "GT3",
-    "result_publication_state": "provisional",
+    "result_publication_state": "official",
     "event_schedule": [
       {
         "end": "14:32",
@@ -1134,7 +841,7 @@
         "labelFr": "Course"
       }
     ],
-    "status": "registration_open"
+    "status": "completed"
   },
   {
     "slug": "atx-920c64c1abca4d669be4e9b4",
@@ -1153,7 +860,7 @@
     "site_registration_enabled": true,
     "mandatory_stop_count": 0,
     "car_class": "GT3",
-    "result_publication_state": "provisional",
+    "result_publication_state": "official",
     "event_schedule": [
       {
         "end": "16:02",
@@ -1177,7 +884,7 @@
         "labelFr": "Course"
       }
     ],
-    "status": "registration_open"
+    "status": "completed"
   },
   {
     "slug": "atx-ccdc6c2c05114783bdf2e5cd",
