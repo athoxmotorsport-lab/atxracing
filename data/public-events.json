@@ -250,6 +250,27 @@
     "status": "completed"
   },
   {
+    "slug": "2026-10-20-red-bull-ring-ull-ring-133821-1f994a5e",
+    "title_fr": "ATXRACING | ATXS Redbull Ring",
+    "title_en": "ATXRACING | ATXS Redbull Ring",
+    "description_fr": null,
+    "description_en": null,
+    "circuit_name": "Red Bull Ring",
+    "starts_at": "2026-10-20T11:38:21+00:00",
+    "duration_minutes": 60,
+    "image_url": null,
+    "simgrid_url": null,
+    "competition_code": "ATXS",
+    "format_code": null,
+    "championship_code": null,
+    "site_registration_enabled": false,
+    "mandatory_stop_count": null,
+    "car_class": "GT3",
+    "result_publication_state": "official",
+    "event_schedule": [],
+    "status": "completed"
+  },
+  {
     "slug": "2026-10-23-laguna-seca-american-dream-d7340b71",
     "title_fr": "WGT: AMERICAN DREAM MANCHE 3",
     "title_en": "WGT: AMERICAN DREAM MANCHE 3",
@@ -493,49 +514,6 @@
         "end": "16:00",
         "key": "race",
         "start": "10:40",
-        "labelEn": "Race",
-        "labelFr": "Course"
-      }
-    ],
-    "status": "registration_open"
-  },
-  {
-    "slug": "atx-13cafda86fe543e09216275c",
-    "title_fr": "ATX Series Redbull ring",
-    "title_en": "ATX Series Redbull ring",
-    "description_fr": "Rendez-vous toutes les 90 minutes : 2 minutes d’essais, 15 minutes de qualifications et 45 minutes de course. Inscription sur le site obligatoire, classement ATXS.",
-    "description_en": "Rendezvous every 90 minutes: 2 minutes of practice, 15 minutes of qualifying and a 45-minute race. Website registration required, ATXS standings.",
-    "circuit_name": "redbull ring",
-    "starts_at": "2026-10-20T11:00:00+00:00",
-    "duration_minutes": 45,
-    "image_url": "https://athoxmotorsport-lab.github.io/atxracing/assets/circuits/red-bull-ring.jpg",
-    "simgrid_url": null,
-    "competition_code": "ATXS",
-    "format_code": "ATXS",
-    "championship_code": null,
-    "site_registration_enabled": true,
-    "mandatory_stop_count": 0,
-    "car_class": "GT3",
-    "result_publication_state": "provisional",
-    "event_schedule": [
-      {
-        "end": "13:02",
-        "key": "practice_1",
-        "start": "13:00",
-        "labelEn": "Free practice",
-        "labelFr": "Essais libres"
-      },
-      {
-        "end": "13:17",
-        "key": "qualifying",
-        "start": "13:02",
-        "labelEn": "Qualifying",
-        "labelFr": "Qualifications"
-      },
-      {
-        "end": "14:02",
-        "key": "race",
-        "start": "13:17",
         "labelEn": "Race",
         "labelFr": "Course"
       }
@@ -930,49 +908,6 @@
     "status": "completed"
   },
   {
-    "slug": "atx-d4cf65e860c34d5c91baf848",
-    "title_fr": "ATX Series · Zolder",
-    "title_en": "ATX Series · Zolder",
-    "description_fr": "Rendez-vous toutes les 90 minutes : 2 minutes d’essais, 15 minutes de qualifications et 45 minutes de course. Inscription sur le site obligatoire, classement ATXS.",
-    "description_en": "Rendezvous every 90 minutes: 2 minutes of practice, 15 minutes of qualifying and a 45-minute race. Website registration required, ATXS standings.",
-    "circuit_name": "Zolder",
-    "starts_at": "2026-10-20T14:00:00+00:00",
-    "duration_minutes": 45,
-    "image_url": "https://athoxmotorsport-lab.github.io/atxracing/assets/circuits/zolder.webp",
-    "simgrid_url": null,
-    "competition_code": "ATXS",
-    "format_code": "ATXS",
-    "championship_code": null,
-    "site_registration_enabled": true,
-    "mandatory_stop_count": 0,
-    "car_class": "GT3",
-    "result_publication_state": "provisional",
-    "event_schedule": [
-      {
-        "end": "16:02",
-        "key": "practice_1",
-        "start": "16:00",
-        "labelEn": "Free practice",
-        "labelFr": "Essais libres"
-      },
-      {
-        "end": "16:17",
-        "key": "qualifying",
-        "start": "16:02",
-        "labelEn": "Qualifying",
-        "labelFr": "Qualifications"
-      },
-      {
-        "end": "17:02",
-        "key": "race",
-        "start": "16:17",
-        "labelEn": "Race",
-        "labelFr": "Course"
-      }
-    ],
-    "status": "registration_open"
-  },
-  {
     "slug": "atx-d98c480cdbce4b06bcc90626",
     "title_fr": "ATX Series · Imola",
     "title_en": "ATX Series · Imola",
@@ -1075,7 +1010,7 @@
     "site_registration_enabled": true,
     "mandatory_stop_count": 0,
     "car_class": "GT3",
-    "result_publication_state": "provisional",
+    "result_publication_state": "official",
     "event_schedule": [
       {
         "end": "14:32",
@@ -1099,6 +1034,6 @@
         "labelFr": "Course"
       }
     ],
-    "status": "registration_open"
+    "status": "completed"
   }
 ]
