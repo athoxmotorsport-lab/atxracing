@@ -271,6 +271,56 @@
     "status": "completed"
   },
   {
+    "slug": "2026-10-23-laguna-seca-american-dream-d7340b71",
+    "title_fr": "ATXRACING | American Dream Manche 3",
+    "title_en": "ATXRACING | American Dream Manche 3",
+    "description_fr": null,
+    "description_en": null,
+    "circuit_name": "Laguna Seca",
+    "starts_at": "2026-10-23T21:01:22+00:00",
+    "duration_minutes": 90,
+    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2026-10-23/9d2100a3-4fd1-41c2-ba84-6c4e16f153a8.jpg",
+    "simgrid_url": "https://www.thesimgrid.com/championships/27979/races",
+    "competition_code": "WGT",
+    "format_code": null,
+    "championship_code": "WGT_AMERICAN_DREAM",
+    "site_registration_enabled": false,
+    "mandatory_stop_count": null,
+    "car_class": "GT3",
+    "result_publication_state": "official",
+    "event_schedule": [
+      {
+        "end": "21:00",
+        "key": "practice_1",
+        "start": "18:45",
+        "labelEn": "Free practice",
+        "labelFr": "Essais libres"
+      },
+      {
+        "end": "00:00",
+        "key": "briefing",
+        "start": "00:00",
+        "labelEn": "Free practice 2 - Briefing (Discord)",
+        "labelFr": "Essais libres 2 - Briefing (Discord)"
+      },
+      {
+        "end": "21:15",
+        "key": "qualifying",
+        "start": "21:00",
+        "labelEn": "Qualifying",
+        "labelFr": "Qualifications"
+      },
+      {
+        "end": "22:45",
+        "key": "race",
+        "start": "21:15",
+        "labelEn": "Race",
+        "labelFr": "Course"
+      }
+    ],
+    "status": "completed"
+  },
+  {
     "slug": "2026-10-25-redbull-ring-daily-race-redbull-ring-21ac5563",
     "title_fr": "Daily Race REDBULL RING",
     "title_en": "Daily Race REDBULL RING",
