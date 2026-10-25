@@ -321,56 +321,6 @@
     "status": "completed"
   },
   {
-    "slug": "2026-10-25-redbull-ring-daily-race-redbull-ring-21ac5563",
-    "title_fr": "Daily Race REDBULL RING",
-    "title_en": "Daily Race REDBULL RING",
-    "description_fr": null,
-    "description_en": null,
-    "circuit_name": "REDBULL RING",
-    "starts_at": "2026-10-25T12:45:00+00:00",
-    "duration_minutes": 90,
-    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2026-10-25/c1db1820-87af-4f83-bf71-fcf49d64c7f1.jpg",
-    "simgrid_url": "https://www.thesimgrid.com/championships/28030",
-    "competition_code": null,
-    "format_code": null,
-    "championship_code": null,
-    "site_registration_enabled": false,
-    "mandatory_stop_count": null,
-    "car_class": "GT3",
-    "result_publication_state": "provisional",
-    "event_schedule": [
-      {
-        "end": "15:00",
-        "key": "practice_1",
-        "start": "13:45",
-        "labelEn": "Free practice",
-        "labelFr": "Essais libres"
-      },
-      {
-        "end": "15:00",
-        "key": "briefing",
-        "start": "14:50",
-        "labelEn": "Free practice 2 - Briefing (Discord)",
-        "labelFr": "Essais libres 2 - Briefing (Discord)"
-      },
-      {
-        "end": "15:15",
-        "key": "qualifying",
-        "start": "15:00",
-        "labelEn": "Qualifying",
-        "labelFr": "Qualifications"
-      },
-      {
-        "end": "16:45",
-        "key": "race",
-        "start": "15:15",
-        "labelEn": "Race",
-        "labelFr": "Course"
-      }
-    ],
-    "status": "registration_open"
-  },
-  {
     "slug": "2026-10-30-watkins-glen-american-dream-d71ddeac",
     "title_fr": "WGT: AMERICAN DREAM MANCHE 4",
     "title_en": "WGT: AMERICAN DREAM MANCHE 4",
