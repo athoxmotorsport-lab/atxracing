@@ -271,56 +271,6 @@
     "status": "completed"
   },
   {
-    "slug": "2026-10-30-watkins-glen-american-dream-d71ddeac",
-    "title_fr": "WGT: AMERICAN DREAM MANCHE 4",
-    "title_en": "WGT: AMERICAN DREAM MANCHE 4",
-    "description_fr": null,
-    "description_en": null,
-    "circuit_name": "Watkins Glen",
-    "starts_at": "2026-10-30T17:45:00+00:00",
-    "duration_minutes": 90,
-    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2026-10-30/191e285d-afbf-42bc-96ed-27736a5590f8.jpg",
-    "simgrid_url": "https://www.thesimgrid.com/championships/27979/races",
-    "competition_code": "WGT",
-    "format_code": null,
-    "championship_code": "WGT_AMERICAN_DREAM",
-    "site_registration_enabled": false,
-    "mandatory_stop_count": null,
-    "car_class": "GT3",
-    "result_publication_state": "provisional",
-    "event_schedule": [
-      {
-        "end": "21:00",
-        "key": "practice_1",
-        "start": "18:45",
-        "labelEn": "Free practice",
-        "labelFr": "Essais libres"
-      },
-      {
-        "end": "00:00",
-        "key": "briefing",
-        "start": "00:00",
-        "labelEn": "Free practice 2 - Briefing (Discord)",
-        "labelFr": "Essais libres 2 - Briefing (Discord)"
-      },
-      {
-        "end": "21:15",
-        "key": "qualifying",
-        "start": "21:00",
-        "labelEn": "Qualifying",
-        "labelFr": "Qualifications"
-      },
-      {
-        "end": "22:45",
-        "key": "race",
-        "start": "21:15",
-        "labelEn": "Race",
-        "labelFr": "Course"
-      }
-    ],
-    "status": "registration_open"
-  },
-  {
     "slug": "2026-11-15-silverstone-endu-1-000-km-silverstone-0767b68c",
     "title_fr": "WGT: 1.000 Km Silverstone",
     "title_en": "WGT: 1.000 Km Silverstone",
