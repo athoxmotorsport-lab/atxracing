@@ -271,56 +271,6 @@
     "status": "completed"
   },
   {
-    "slug": "2026-11-15-silverstone-endu-1-000-km-silverstone-0767b68c",
-    "title_fr": "WGT: 1.000 Km Silverstone",
-    "title_en": "WGT: 1.000 Km Silverstone",
-    "description_fr": null,
-    "description_en": null,
-    "circuit_name": "Silverstone",
-    "starts_at": "2026-11-15T07:00:00+00:00",
-    "duration_minutes": 350,
-    "image_url": "https://twjpjzalyvbsdpbzhqln.supabase.co/storage/v1/object/public/event-posters/2026-11-15/f23a72e5-eb92-4757-85e7-752c77b1172b.jpg",
-    "simgrid_url": "https://www.thesimgrid.com/championships/27601",
-    "competition_code": "WGT",
-    "format_code": null,
-    "championship_code": "WGT_ENDURANCE",
-    "site_registration_enabled": false,
-    "mandatory_stop_count": null,
-    "car_class": "GT3",
-    "result_publication_state": "provisional",
-    "event_schedule": [
-      {
-        "end": "10:00",
-        "key": "practice_1",
-        "start": "08:00",
-        "labelEn": "Free practice",
-        "labelFr": "Essais libres"
-      },
-      {
-        "end": "10:20",
-        "key": "briefing",
-        "start": "10:00",
-        "labelEn": "Free practice 2 - Briefing (Discord)",
-        "labelFr": "Essais libres 2 - Briefing (Discord)"
-      },
-      {
-        "end": "10:50",
-        "key": "qualifying",
-        "start": "10:20",
-        "labelEn": "Qualifying",
-        "labelFr": "Qualifications"
-      },
-      {
-        "end": "16:40",
-        "key": "race",
-        "start": "10:50",
-        "labelEn": "Race",
-        "labelFr": "Course"
-      }
-    ],
-    "status": "registration_open"
-  },
-  {
     "slug": "2027-01-17-watkins-glen-wgt-600-miles-watkins-glen-b2c97403",
     "title_fr": "WGT: 600 MILES WATKINS GLEN",
     "title_en": "WGT: 600 MILES WATKINS GLEN",
